@@ -8,11 +8,10 @@ namespace Untitled_Part_Failure_Mod
 {
     class BaseFailureModule : PartModule
     {
-        System.Random r = new System.Random();
+        UnityEngine.Random r = new UnityEngine.Random();
         public bool willFail = false;
         [KSPField(isPersistant = true, guiActive = false)]
         public bool hasFailed = false;
-        [KSPField(isPersistant = true, guiActive = true, guiName = "Expected Lifetime", guiUnits = " Flights")]
         public float expectedLifetime = 2;
         ModuleSYPartTracker SYP;
         float chanceOfFailure = 0.5f;
@@ -22,6 +21,7 @@ namespace Untitled_Part_Failure_Mod
 
         private void Start()
         {
+            if (HighLogic.LoadedSceneIsEditor) return;
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             Initialise();
         }
@@ -45,28 +45,35 @@ namespace Untitled_Part_Failure_Mod
                 Events["RepairChecks"].active = true;
                 return;
             }
+            Debug.Log("[UPFM]: " + part.name + " has initialised");
             if (FailCheck(true))
             {
-                failureTime = Planetarium.GetUniversalTime() + r.Next(1, 1800);
+                failureTime = Planetarium.GetUniversalTime() + (1800*UnityEngine.Random.value);
                 willFail = true;
                 Debug.Log("[UPFM]: " + part.name + " will attempt to fail at " + failureTime);
             }
         }
-
+        public void SetFailedHighlight()
+        {
+            part.SetHighlightColor(Color.red);
+            part.SetHighlightType(Part.HighlightType.AlwaysOn);
+            part.SetHighlight(true, false);
+        }
         protected virtual void FailPart() { }
 
         protected virtual void RepairPart() { }
 
+        protected virtual bool FailureAllowed() { return false; }
+
         private void FixedUpdate()
         {
-            if (hasFailed)
-            {
-                FailPart();
-                return;
-            }
+            if (HighLogic.LoadedSceneIsEditor) return;
+            if (!FailureAllowed()) return;
             if (!willFail) return;
             if (Planetarium.GetUniversalTime() < failureTime) return;
             FailPart();
+            if (hasFailed) return;
+            if (!willFail) return;
             hasFailed = true;
             Events["RepairChecks"].active = true;
             if (!FailCheck(false)) return;
@@ -82,7 +89,7 @@ namespace Untitled_Part_Failure_Mod
                 if (SYP.TimesRecovered > 0) chanceOfFailure = chanceOfFailure * ((SYP.TimesRecovered / expectedLifetime));
             }
             Debug.Log("[UPFM]: Chances of "+part.name+" failing calculated to be " + chanceOfFailure * 100 + "%");
-            if (r.NextDouble() < chanceOfFailure) return true;
+            if (UnityEngine.Random.value < chanceOfFailure) return true;
             return false;
         }
 
@@ -103,6 +110,7 @@ namespace Untitled_Part_Failure_Mod
             Events["RepairChecks"].active = false;
             RepairPart();
             Debug.Log("[UPFM]: " + part.name + " was successfully repaired");
+            part.highlightType = Part.HighlightType.OnMouseOver;
         }
 
         private void OnDestroy()

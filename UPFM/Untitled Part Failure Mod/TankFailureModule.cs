@@ -8,30 +8,20 @@ namespace Untitled_Part_Failure_Mod
 {
     class TankFailureModule : BaseFailureModule
     {
+        System.Random r = new System.Random();
         PartResource leaking;
         [KSPField(isPersistant = true, guiActive = false)]
         public string leakingName = "None";
-        private readonly string savedFile = KSPUtil.ApplicationRootPath + "/GameData/UntitledFailures/MM Patches/DontLeak.cfg";
-        System.Random r = new System.Random();
-        [KSPField(isPersistant = true, guiActive = false)]
-        public string FailureType = "None";
+        private string savedFile;
+
+        protected override bool FailureAllowed()
+        {
+            return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().TankFailureModuleAllowed;
+        }
 
         protected override void FailPart()
         {
-            if (FailureType == "None")
-            {
-                switch (r.Next(1, 3))
-                {
-                    case 1:
-                        FailureType = "Leak";
-                        break;
-                    case 2:
-                        FailureType = "Valve";
-                        break;
-                    default:
-                        return;
-                }
-            }
+            savedFile = KSPUtil.ApplicationRootPath + "/GameData/UntitledFailures/MM Patches/DontLeak.cfg";
             if (leaking == null)
             {
                 if (leakingName != "None")
@@ -39,6 +29,7 @@ namespace Untitled_Part_Failure_Mod
                     leaking = part.Resources[leakingName];
                     return;
                 }
+                List<PartResource> potentialLeakCache = part.Resources.ToList();
                 List<PartResource> potentialLeaks = part.Resources.ToList();
                 if (potentialLeaks.Count == 0) return;
                 ConfigNode cn = ConfigNode.Load(savedFile);
@@ -50,15 +41,14 @@ namespace Untitled_Part_Failure_Mod
                         for (int i = 0; i < blackListNode.Count(); i++)
                         {
                             ConfigNode node = blackListNode.ElementAt(i);
-                            for (int p = 0; p < potentialLeaks.Count(); p++)
+                            for (int p = 0; p < potentialLeakCache.Count(); p++)
                             {
-                                PartResource pr = potentialLeaks.ElementAt(i);
+                                PartResource pr = potentialLeakCache.ElementAt(p);
                                 if (pr.resourceName == node.GetValue("name")) potentialLeaks.Remove(pr);
                             }
                         }
                         if (potentialLeaks.Count == 0)
                         {
-                            FailureType = "None";
                             leaking = null;
                             leakingName = "None";
                             hasFailed = false;
@@ -68,40 +58,13 @@ namespace Untitled_Part_Failure_Mod
                         }
                     }
                 }
-                switch (FailureType)
-                {
-                    case "Leak":
-                        leaking = potentialLeaks.ElementAt(r.Next(0, potentialLeaks.Count()));
-                        leakingName = leaking.resourceName;
-                        Debug.Log("[UPFM}: " + leaking.resourceName + " started leaking from " + part.name);
-                        ScreenMessages.PostScreenMessage("A tank of " + leaking.resourceName + " started to leak!");
-                        break;
-                    case "Valve":
-                        leaking = potentialLeaks.ElementAt(r.Next(0, potentialLeaks.Count()));
-                        leakingName = leaking.resourceName;
-                        Debug.Log("[UPFM}: The flow valve on " + leaking.resourceName + " siezed on " + part.name);
-                        ScreenMessages.PostScreenMessage("The " + leaking.resourceName + " valve has failed on " + part.name + "!");
-                        break;
-                }
+                leaking = potentialLeaks.ElementAt(r.Next(0, potentialLeaks.Count()));
+                leakingName = leaking.resourceName;
+                Debug.Log("[UPFM]: " + leaking.resourceName + " started leaking from " + part.name);
+                ScreenMessages.PostScreenMessage("A tank of " + leaking.resourceName + " started to leak!");
             }
-
-            switch (FailureType)
-            {
-                case "Leak":
-                    leaking.amount = leaking.amount * 0.999f;
-                    break;
-                case "Valve":
-                    leaking._flowState = false;
-                    break;
-            }
-        }
-
-        protected override void RepairPart()
-        {
-            if (FailureType == "Valve")
-            {
-                leaking._flowState = true;
-            }
+            leaking.amount = leaking.amount * 0.999f;
+            SetFailedHighlight();
         }
     }
 }

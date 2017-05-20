@@ -16,10 +16,16 @@ namespace Untitled_Part_Failure_Mod
         float staticThrust;
         ModuleGimbal gimbal;
 
+        protected override bool FailureAllowed()
+        {
+            return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().EngineFailureModuleAllowed;
+        }
+
         protected override void FailPart()
         {
             engine = part.FindModuleImplementing<ModuleEngines>();
             if (engine.currentThrottle == 0) return;
+            SetFailedHighlight();
             if (failureType == "none")
             {
                 int i = r.Next(1, 5);

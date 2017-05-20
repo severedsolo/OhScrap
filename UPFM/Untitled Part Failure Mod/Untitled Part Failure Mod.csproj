@@ -53,11 +53,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseFailureModule.cs" />
+    <Compile Include="BatteryFailureModule.cs" />
     <Compile Include="Broken.cs" />
+    <Compile Include="ControlSurfaceFailureModule.cs" />
     <Compile Include="EngineFailureModule.cs" />
+    <Compile Include="ParachuteFailureModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReactionWheelFailureModule.cs" />
     <Compile Include="TankFailureModule.cs" />
+    <Compile Include="UPFMSettings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
