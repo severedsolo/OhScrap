@@ -4,9 +4,9 @@ namespace Untitled_Part_Failure_Mod
 {
     class UPFMSettings : GameParameters.CustomParameterNode
     {
-        public override string Title { get { return "UPFM Options"; } }
+        public override string Title { get { return "Allowed Failures"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
-        public override string Section { get { return "Allowed Failures"; } }
+        public override string Section { get { return "UPFM Options"; } }
         public override int SectionOrder { get { return 1; } }
         public override bool HasPresets { get { return false; } }
         public bool autoPersistance = true;
