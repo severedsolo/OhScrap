@@ -25,13 +25,13 @@ namespace Untitled_Part_Failure_Mod
             part.AddModule("DontRecoverMe");
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             Initialise();
-            GameEvents.onStageActivate.Add(onStageActivate);
+            GameEvents.onLaunch.Add(onLaunch);
         }
 
-        private void onStageActivate(int data)
+        private void onLaunch(EventReport data)
         {
             PartModule dontRecover = part.FindModuleImplementing<DontRecoverMe>();
-            if(dontRecover == null) return;
+            if (dontRecover == null) return;
             part.RemoveModule(dontRecover);
             Debug.Log("[UPFM]: " + part.name + "marked as recoverable");
         }
@@ -125,7 +125,7 @@ namespace Untitled_Part_Failure_Mod
 
         private void OnDestroy()
         {
-            GameEvents.onStageActivate.Remove(onStageActivate);
+            GameEvents.onLaunch.Remove(onLaunch);
             if (ScrapYardEvents.OnSYTrackerUpdated == null) return;
             ScrapYardEvents.OnSYTrackerUpdated.Remove(OnSYTrackerUpdated);
         }
