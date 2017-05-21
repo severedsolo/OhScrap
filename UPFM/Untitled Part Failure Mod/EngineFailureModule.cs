@@ -23,6 +23,7 @@ namespace Untitled_Part_Failure_Mod
 
         protected override void FailPart()
         {
+            if (part.Resources.Contains("SolidFuel")) return;
             engine = part.FindModuleImplementing<ModuleEngines>();
             if (engine.currentThrottle == 0) return;
             SetFailedHighlight();
@@ -93,6 +94,10 @@ namespace Untitled_Part_Failure_Mod
                     engine.thrustPercentage = 100;
                     Debug.Log("[UPFM]: Reset Thrust on " + part.name);
                     break;
+                case "Gimbal Failure":
+                    gimbal.gimbalLock = false;
+                    break;
+
                 default:
                     return;
             }

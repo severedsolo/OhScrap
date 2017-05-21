@@ -97,6 +97,7 @@ namespace Untitled_Part_Failure_Mod
             {
                 chanceOfFailure = chanceOfFailure / generation;
                 if (SYP.TimesRecovered > 0) chanceOfFailure = chanceOfFailure * ((SYP.TimesRecovered / expectedLifetime));
+
             }
             Debug.Log("[UPFM]: Chances of "+part.name+" failing calculated to be " + chanceOfFailure * 100 + "%");
             if (UnityEngine.Random.value < chanceOfFailure) return true;
