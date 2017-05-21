@@ -14,7 +14,7 @@ namespace Untitled_Part_Failure_Mod
         public bool hasFailed = false;
         public float expectedLifetime = 2;
         ModuleSYPartTracker SYP;
-        float chanceOfFailure = 0.5f;
+        double chanceOfFailure = 0.5f;
         [KSPField(isPersistant = true, guiActive = true, guiName = "Generation")]
         public int generation = 0;
         double failureTime = 0;
@@ -96,7 +96,7 @@ namespace Untitled_Part_Failure_Mod
             if (recalcChance)
             {
                 chanceOfFailure = chanceOfFailure / generation;
-                if (SYP.TimesRecovered > 0) chanceOfFailure = chanceOfFailure * ((SYP.TimesRecovered / expectedLifetime));
+                chanceOfFailure = 1 - (1 - chanceOfFailure) * Math.Exp(-SYP.TimesRecovered / expectedLifetime); ;
 
             }
             Debug.Log("[UPFM]: Chances of "+part.name+" failing calculated to be " + chanceOfFailure * 100 + "%");
