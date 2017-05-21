@@ -22,8 +22,18 @@ namespace Untitled_Part_Failure_Mod
         private void Start()
         {
             if (HighLogic.LoadedSceneIsEditor) return;
+            part.AddModule("DontRecoverMe");
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             Initialise();
+            GameEvents.onStageActivate.Add(onStageActivate);
+        }
+
+        private void onStageActivate(int data)
+        {
+            PartModule dontRecover = part.FindModuleImplementing<DontRecoverMe>();
+            if(dontRecover == null) return;
+            part.RemoveModule(dontRecover);
+            Debug.Log("[UPFM]: " + part.name + "marked as recoverable");
         }
 
         private void OnSYTrackerUpdated(IEnumerable<InventoryPart> data)
@@ -115,6 +125,7 @@ namespace Untitled_Part_Failure_Mod
 
         private void OnDestroy()
         {
+            GameEvents.onStageActivate.Remove(onStageActivate);
             if (ScrapYardEvents.OnSYTrackerUpdated == null) return;
             ScrapYardEvents.OnSYTrackerUpdated.Remove(OnSYTrackerUpdated);
         }
