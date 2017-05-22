@@ -18,6 +18,7 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = true, guiActive = true, guiName = "Generation")]
         public int generation = 0;
         double failureTime = 0;
+        public double maxTimeToFailure = 1800;
 
         private void Start()
         {
@@ -58,7 +59,7 @@ namespace Untitled_Part_Failure_Mod
             Debug.Log("[UPFM]: " + part.name + " has initialised");
             if (FailCheck(true))
             {
-                failureTime = Planetarium.GetUniversalTime() + (1800*UnityEngine.Random.value);
+                failureTime = Planetarium.GetUniversalTime() + (maxTimeToFailure*UnityEngine.Random.value);
                 willFail = true;
                 Debug.Log("[UPFM]: " + part.name + " will attempt to fail at " + failureTime);
             }
