@@ -14,6 +14,7 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = true, guiActive = false)]
         string failureType = "none";
         float staticThrust;
+        new double maxTimeToFailure = 120;
         ModuleGimbal gimbal;
 
         protected override bool FailureAllowed()
