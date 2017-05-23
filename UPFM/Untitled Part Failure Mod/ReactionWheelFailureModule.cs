@@ -30,6 +30,7 @@ namespace Untitled_Part_Failure_Mod
 
         protected override void RepairPart()
         {
+            rw = part.FindModuleImplementing<ModuleReactionWheel>();
             rw.isEnabled = true;
             rw.wheelState = ModuleReactionWheel.WheelState.Active;
         }

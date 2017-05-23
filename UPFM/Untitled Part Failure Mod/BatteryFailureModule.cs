@@ -25,6 +25,7 @@ namespace Untitled_Part_Failure_Mod
 
         protected override void RepairPart()
         {
+            battery = part.Resources["ElectricCharge"];
             battery.flowState = true;
         }
 

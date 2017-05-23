@@ -14,8 +14,12 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = true, guiActive = false)]
         string failureType = "none";
         float staticThrust;
-        new double maxTimeToFailure = 120;
         ModuleGimbal gimbal;
+
+        protected override void Overrides()
+        {
+            maxTimeToFailure = 120;
+        }
 
         protected override bool FailureAllowed()
         {
@@ -85,7 +89,8 @@ namespace Untitled_Part_Failure_Mod
 
         protected override void RepairPart()
         {
-            switch(failureType)
+            engine = part.FindModuleImplementing<ModuleEngines>();
+            switch (failureType)
             {
                 case "Fuel Flow Failure":
                     engine.Activate();

@@ -34,6 +34,7 @@ namespace Untitled_Part_Failure_Mod
 
         protected override void RepairPart()
         {
+            controlSurface = part.FindModuleImplementing<ModuleControlSurface>();
             controlSurface.ignorePitch = false;
             controlSurface.ignoreRoll = false;
             controlSurface.ignoreYaw = false;

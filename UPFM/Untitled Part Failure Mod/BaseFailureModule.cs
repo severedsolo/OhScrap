@@ -9,6 +9,7 @@ namespace Untitled_Part_Failure_Mod
     class BaseFailureModule : PartModule
     {
         UnityEngine.Random r = new UnityEngine.Random();
+        [KSPField(isPersistant = true, guiActive = false)]
         public bool willFail = false;
         [KSPField(isPersistant = true, guiActive = false)]
         public bool hasFailed = false;
@@ -17,12 +18,14 @@ namespace Untitled_Part_Failure_Mod
         float chanceOfFailure = 0.5f;
         [KSPField(isPersistant = true, guiActive = true, guiName = "Generation")]
         public int generation = 0;
+        [KSPField(isPersistant = true, guiActive = false)]
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
 
         private void Start()
         {
             if (HighLogic.LoadedSceneIsEditor) return;
+            Overrides();
             part.AddModule("DontRecoverMe");
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             Initialise();
@@ -70,6 +73,8 @@ namespace Untitled_Part_Failure_Mod
             part.SetHighlightType(Part.HighlightType.AlwaysOn);
             part.SetHighlight(true, false);
         }
+        protected virtual void Overrides() { }
+
         protected virtual void FailPart() { }
 
         protected virtual void RepairPart() { }
