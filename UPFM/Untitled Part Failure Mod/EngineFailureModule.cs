@@ -19,6 +19,7 @@ namespace Untitled_Part_Failure_Mod
         protected override void Overrides()
         {
             maxTimeToFailure = 120;
+            Fields["displayChance"].guiName = "Chance of Engine Failure";
         }
 
         protected override bool FailureAllowed()

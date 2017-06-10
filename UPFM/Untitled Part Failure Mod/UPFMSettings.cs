@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Untitled_Part_Failure_Mod
 {
@@ -7,6 +8,7 @@ namespace Untitled_Part_Failure_Mod
         public override string Title { get { return "UPFM Options"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override string Section { get { return "Allowed Failures"; } }
+        public override string DisplaySection { get { return Section; } }
         public override int SectionOrder { get { return 1; } }
         public override bool HasPresets { get { return false; } }
         public bool autoPersistance = true;

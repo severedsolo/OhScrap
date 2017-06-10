@@ -11,6 +11,11 @@ namespace Untitled_Part_Failure_Mod
         ModuleReactionWheel rw;
         bool message = false;
 
+        protected override void Overrides()
+        {
+            Fields["displayChance"].guiName = "Chance of Reaction Wheel Failure";
+        }
+
         protected override bool FailureAllowed()
         {
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ReactionWheelFailureModuleAllowed;

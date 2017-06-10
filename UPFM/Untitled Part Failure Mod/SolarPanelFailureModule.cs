@@ -10,6 +10,10 @@ namespace Untitled_Part_Failure_Mod
     {
         ModuleDeployableSolarPanel panel;
         bool originallyRetractable;
+        protected override void Overrides()
+        {
+            Fields["displayChance"].guiName = "Chance of Solar Panel Failure";
+        }
         protected override bool FailureAllowed()
         {
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().SolarPanelFailureModuleAllowed;

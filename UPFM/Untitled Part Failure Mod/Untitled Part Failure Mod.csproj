@@ -32,14 +32,15 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.2.2 ModDev\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.3 Playable\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.2.2 ModDev\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.3 Playable\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="ScrapYard">
-      <HintPath>F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.2.2 ModDev\GameData\ScrapYard\ScrapYard.dll</HintPath>
+    <Reference Include="ScrapYard, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.3 Playable\GameData\ScrapYard\ScrapYard.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -49,7 +50,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.2.2 ModDev\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.3 Playable\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -69,8 +70,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"D:\OneDrive\Documents\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"
-xcopy /Y "$(TargetPath)" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.2.2 ModDev\GameData\UntitledFailures"
-xcopy /Y "$(TargetDir)$(TargetName).pdb" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.2.2 ModDev\GameData\UntitledFailures"
-xcopy /Y "$(TargetDir)$(TargetName).dll.mdb" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.2.2 ModDev\GameData\UntitledFailures"</PostBuildEvent>
+xcopy /Y "$(TargetPath)" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.3 ModDev\GameData\UntitledFailures"
+xcopy /Y "$(TargetDir)$(TargetName).pdb" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.3 ModDev\GameData\UntitledFailures"
+xcopy /Y "$(TargetDir)$(TargetName).dll.mdb" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.3 ModDev\GameData\UntitledFailures"</PostBuildEvent>
   </PropertyGroup>
 </Project>

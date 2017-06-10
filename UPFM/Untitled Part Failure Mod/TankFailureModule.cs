@@ -13,7 +13,10 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = true, guiActive = false)]
         public string leakingName = "None";
         private string savedFile;
-
+        protected override void Overrides()
+        {
+            Fields["displayChance"].guiName = "Chance of Resource Tank Failure";
+        }
         protected override bool FailureAllowed()
         {
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().TankFailureModuleAllowed;

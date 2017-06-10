@@ -13,6 +13,11 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = true, guiActive = false)]
         bool message;
 
+        protected override void Overrides()
+        {
+            Fields["displayChance"].guiName = "Chance of COntrol Surface Failure";
+        }
+
         protected override bool FailureAllowed()
         {
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ControlSurfaceFailureModuleAllowed;

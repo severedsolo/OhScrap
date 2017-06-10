@@ -11,6 +11,10 @@ namespace Untitled_Part_Failure_Mod
         PartResource battery;
         bool message;
 
+        protected override void Overrides()
+        {
+            Fields["displayChance"].guiName = "Chance of Battery Failure";
+        }
         protected override void FailPart()
         {
             battery = part.Resources["ElectricCharge"];

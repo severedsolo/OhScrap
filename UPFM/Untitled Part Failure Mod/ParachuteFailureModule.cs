@@ -16,6 +16,11 @@ namespace Untitled_Part_Failure_Mod
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ParachuteFailureModuleAllowed;
         }
 
+        protected override void Overrides()
+        {
+            Fields["displayChance"].guiName = "Chance of Parachute Failure";
+        }
+
         protected override void FailPart()
         {
             chute = part.FindModuleImplementing<ModuleParachute>();
