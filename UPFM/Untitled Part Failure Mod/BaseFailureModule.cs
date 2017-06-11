@@ -65,7 +65,7 @@ namespace Untitled_Part_Failure_Mod
             if (generation == 0)
             {
                 generation = (ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW) - SYP.TimesRecovered);
-                if (HighLogic.LoadedSceneIsEditor) generation++;
+                if (HighLogic.LoadedSceneIsEditor && SYP.TimesRecovered == 0) generation++;
             }
             if (generation < 1) generation = 1;
             if (hasFailed)
@@ -73,8 +73,8 @@ namespace Untitled_Part_Failure_Mod
                 Events["RepairChecks"].active = true;
                 return;
             }
-            Debug.Log("[UPFM]: " + part.name + " has initialised");
-            if (FailCheck(true))
+            if(part != null) Debug.Log("[UPFM]: " + part.name + " has initialised");
+            if (FailCheck(true) && !HighLogic.LoadedSceneIsEditor)
             {
                 failureTime = Planetarium.GetUniversalTime() + (maxTimeToFailure*UnityEngine.Random.value);
                 willFail = true;
@@ -120,7 +120,7 @@ namespace Untitled_Part_Failure_Mod
                 if (SYP.TimesRecovered > 0) chanceOfFailure = chanceOfFailure * ((SYP.TimesRecovered / expectedLifetime));
 
             }
-            Debug.Log("[UPFM]: Chances of "+part.name+" failing calculated to be " + chanceOfFailure * 100 + "%");
+            if(part != null) Debug.Log("[UPFM]: Chances of "+part.name+" failing calculated to be " + chanceOfFailure * 100 + "%");
             if (UnityEngine.Random.value < chanceOfFailure) return true;
             return false;
         }
