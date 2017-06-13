@@ -3,6 +3,7 @@ using ScrapYard;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Untitled_Part_Failure_Mod
 {
@@ -14,7 +15,6 @@ namespace Untitled_Part_Failure_Mod
         public bool hasFailed = false;
         public float expectedLifetime = 2;
         ModuleSYPartTracker SYP;
-        [KSPField(isPersistant = true, guiActive = false)]
         public float chanceOfFailure = 0.5f;
         [KSPField(isPersistant = true, guiActive = true, guiName = "BaseFailure" ,guiActiveEditor = true, guiUnits = "%")]
         public int displayChance = 0;
@@ -74,12 +74,12 @@ namespace Untitled_Part_Failure_Mod
                 return;
             }
             if(part != null) Debug.Log("[UPFM]: " + part.name + " has initialised");
-            if (FailCheck(true) && !HighLogic.LoadedSceneIsEditor)
-            {
-                failureTime = Planetarium.GetUniversalTime() + (maxTimeToFailure*UnityEngine.Random.value);
-                willFail = true;
-                Debug.Log("[UPFM]: " + part.name + " will attempt to fail at " + failureTime);
-            }
+                if (FailCheck(true) && !HighLogic.LoadedSceneIsEditor)
+                {
+                    failureTime = Planetarium.GetUniversalTime() + (maxTimeToFailure * UnityEngine.Random.value);
+                    willFail = true;
+                    Debug.Log("[UPFM]: " + part.name + " will attempt to fail at " + failureTime);
+                }
             displayChance = (int)(chanceOfFailure * 100);
         }
         public void SetFailedHighlight()
@@ -118,7 +118,6 @@ namespace Untitled_Part_Failure_Mod
             {
                 chanceOfFailure = chanceOfFailure / generation;
                 if (SYP.TimesRecovered > 0) chanceOfFailure = chanceOfFailure * ((SYP.TimesRecovered / expectedLifetime));
-
             }
             if(part != null) Debug.Log("[UPFM]: Chances of "+part.name+" failing calculated to be " + chanceOfFailure * 100 + "%");
             if (UnityEngine.Random.value < chanceOfFailure) return true;
