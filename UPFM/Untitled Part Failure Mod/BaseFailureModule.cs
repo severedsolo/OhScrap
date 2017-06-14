@@ -26,7 +26,6 @@ namespace Untitled_Part_Failure_Mod
         private void Start()
         {
             Overrides();
-            if(!HighLogic.LoadedSceneIsEditor) part.AddModule("DontRecoverMe");
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             ScrapYardEvents.OnSYInventoryAppliedToVessel.Add(OnSYInventoryAppliedToVessel);
             Initialise();
@@ -36,6 +35,7 @@ namespace Untitled_Part_Failure_Mod
         private void OnSYInventoryAppliedToVessel()
         {
             Debug.Log("[UPFM]: ScrayYard Inventory Applied. Recalculating failure chance");
+            if(EditorWarnings.instance != null) EditorWarnings.instance.damagedParts.Remove(part);
             willFail = false;
             generation = 0;
             chanceOfFailure = 0.5f;
@@ -56,6 +56,7 @@ namespace Untitled_Part_Failure_Mod
             willFail = false;
             generation = 0;
             chanceOfFailure = 0.5f;
+            part.AddModule("DontRecoverMe");
             Initialise();
         }
 
@@ -81,6 +82,12 @@ namespace Untitled_Part_Failure_Mod
                     Debug.Log("[UPFM]: " + part.name + " will attempt to fail at " + failureTime);
                 }
             displayChance = (int)(chanceOfFailure * 100);
+            if(displayChance >= HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold && EditorWarnings.instance != null)
+            {
+                if (EditorWarnings.instance.damagedParts.ContainsKey(part)) return;
+                EditorWarnings.instance.damagedParts.Add(part, displayChance);
+                EditorWarnings.instance.display = true;
+            }
         }
         public void SetFailedHighlight()
         {
@@ -123,10 +130,11 @@ namespace Untitled_Part_Failure_Mod
             if (UnityEngine.Random.value < chanceOfFailure) return true;
             return false;
         }
-        [KSPEvent(active = true, guiActiveUnfocused = false, unfocusedRange = 5.0f, externalToEVAOnly = true, guiName = "Trash Part ")]
+        [KSPEvent(active = true, guiActiveUnfocused = false, unfocusedRange = 5.0f, externalToEVAOnly = false, guiName = "Trash Part ")]
         public void TrashPart()
         {
-
+            if (part.FindModuleImplementing<Broken>() == null) part.AddModule("Broken");
+            ScreenMessages.PostScreenMessage("This part will not be recovered");
         }
         [KSPEvent(active = false, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = true, guiName = "Repair ")]
         public void RepairChecks()

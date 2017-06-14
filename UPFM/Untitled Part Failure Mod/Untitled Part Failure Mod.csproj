@@ -59,6 +59,7 @@
     <Compile Include="Broken.cs" />
     <Compile Include="ControlSurfaceFailureModule.cs" />
     <Compile Include="DontRecoverMe.cs" />
+    <Compile Include="EditorWarnings.cs" />
     <Compile Include="EngineFailureModule.cs" />
     <Compile Include="ParachuteFailureModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

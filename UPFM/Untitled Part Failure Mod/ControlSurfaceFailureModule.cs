@@ -15,7 +15,7 @@ namespace Untitled_Part_Failure_Mod
 
         protected override void Overrides()
         {
-            Fields["displayChance"].guiName = "Chance of COntrol Surface Failure";
+            Fields["displayChance"].guiName = "Chance of Control Surface Failure";
         }
 
         protected override bool FailureAllowed()
