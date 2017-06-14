@@ -31,12 +31,15 @@ namespace Untitled_Part_Failure_Mod
         }
         void GUIDisplay(int windowID)
         {
+            int counter = 0;
             GUILayout.Label("WARNING: The following parts are above the safety threshold");
             foreach (var v in damagedParts)
             {
                 if (v.Key == null) continue;
                 GUILayout.Label(v.Key.name + ": " + v.Value+"%");
+                counter++;
             }
+            if (counter == 0) display = false;
             if(GUILayout.Button("Dismiss"))
             {
                 display = false;

@@ -23,6 +23,7 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = true, guiActive = false)]
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
+
         private void Start()
         {
             Overrides();
@@ -107,11 +108,13 @@ namespace Untitled_Part_Failure_Mod
         {
             if (HighLogic.LoadedSceneIsEditor) return;
             if (!FailureAllowed()) return;
+            if (hasFailed)
+            {
+                FailPart();
+                return;
+            }
             if (!willFail) return;
             if (Planetarium.GetUniversalTime() < failureTime) return;
-            FailPart();
-            if (hasFailed) return;
-            if (!willFail) return;
             hasFailed = true;
             Events["RepairChecks"].active = true;
             if (!FailCheck(false)) return;
