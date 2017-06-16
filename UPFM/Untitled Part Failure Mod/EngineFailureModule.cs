@@ -31,6 +31,7 @@ namespace Untitled_Part_Failure_Mod
         {
             if (part.Resources.Contains("SolidFuel")) return;
             engine = part.FindModuleImplementing<ModuleEngines>();
+            gimbal = part.FindModuleImplementing<ModuleGimbal>();
             if (engine.currentThrottle == 0) return;
             SetFailedHighlight();
             if (failureType == "none")
@@ -51,7 +52,6 @@ namespace Untitled_Part_Failure_Mod
                         Debug.Log("[UPFM]: attempted to perform Underthrust on " + part.name);
                         break;
                     case 4:
-                        gimbal = part.FindModuleImplementing<ModuleGimbal>();
                         if (gimbal == null) return;
                         failureType = "Gimbal Failure";
                         Debug.Log("[UPFM]: attempted to lock gimbal on" + part.name);
