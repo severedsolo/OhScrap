@@ -30,6 +30,7 @@ namespace Untitled_Part_Failure_Mod
                 if (leakingName != "None")
                 {
                     leaking = part.Resources[leakingName];
+                    failureType = leaking.resourceName +" leak";
                     return;
                 }
                 List<PartResource> potentialLeakCache = part.Resources.ToList();
@@ -56,6 +57,7 @@ namespace Untitled_Part_Failure_Mod
                             leakingName = "None";
                             hasFailed = false;
                             willFail = false;
+                            postMessage = false;
                             Debug.Log("[UPFM]: "+part.name + "has no resources that could fail. Failure aborted");
                             return;
                         }
@@ -65,6 +67,7 @@ namespace Untitled_Part_Failure_Mod
                 leakingName = leaking.resourceName;
                 Debug.Log("[UPFM]: " + leaking.resourceName + " started leaking from " + part.name);
                 ScreenMessages.PostScreenMessage("A tank of " + leaking.resourceName + " started to leak!");
+                failureType = leaking.resourceName+" leak";
             }
             leaking.amount = leaking.amount * 0.999f;
             SetFailedHighlight();

@@ -2,8 +2,9 @@
 using ScrapYard;
 using UnityEngine;
 using System;
+using System.Text;
 using System.Collections.Generic;
-using System.Reflection;
+using KSP.UI.Screens;
 
 namespace Untitled_Part_Failure_Mod
 {
@@ -13,6 +14,10 @@ namespace Untitled_Part_Failure_Mod
         public bool willFail = false;
         [KSPField(isPersistant = true, guiActive = false)]
         public bool hasFailed = false;
+        [KSPField(isPersistant = true, guiActive = false)]
+        public bool postMessage = true;
+        [KSPField(isPersistant = true, guiActive = false)]
+        public string failureType = "none";
         public float expectedLifetime = 2;
         ModuleSYPartTracker SYP;
         public float chanceOfFailure = 0.5f;
@@ -23,6 +28,7 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = true, guiActive = false)]
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
+
 
         private void Start()
         {
@@ -111,15 +117,22 @@ namespace Untitled_Part_Failure_Mod
             if (hasFailed)
             {
                 FailPart();
+                if (postMessage)
+                {
+                    PostFailureMessage();
+                    postMessage = false;
+                }                    
                 return;
             }
             if (!willFail) return;
             if (Planetarium.GetUniversalTime() < failureTime) return;
             hasFailed = true;
             Events["RepairChecks"].active = true;
-            if (!FailCheck(false)) return;
-            part.AddModule("Broken");
-            Debug.Log("[UPFM]: " + part.name + "is too badly damaged to be salvaged");
+            if (FailCheck(false))
+            {
+                part.AddModule("Broken");
+                Debug.Log("[UPFM]: " + part.name + "is too badly damaged to be salvaged");
+            }
         }
 
         bool FailCheck(bool recalcChance)
@@ -159,11 +172,24 @@ namespace Untitled_Part_Failure_Mod
             part.highlightType = Part.HighlightType.OnMouseOver;
         }
 
+        void PostFailureMessage()
+        {
+            StringBuilder msg = new StringBuilder();
+            msg.AppendLine(part.vessel.vesselName);
+            msg.AppendLine("");
+            msg.AppendLine(part.name + "has suffered a " + failureType);
+            msg.AppendLine("");
+            if (part.FindModuleImplementing<Broken>() != null) msg.AppendLine("The part is damaged beyond repair");
+            else msg.AppendLine("Chance of a successful repair is " + (100 - displayChance)+"%");
+            MessageSystem.Message m = new MessageSystem.Message("UPFM", msg.ToString(), MessageSystemButton.MessageButtonColor.ORANGE,MessageSystemButton.ButtonIcons.ALERT);
+            MessageSystem.Instance.AddMessage(m);
+        }
+
         private void OnDestroy()
         {
             GameEvents.onLaunch.Remove(onLaunch);
-            if (ScrapYardEvents.OnSYTrackerUpdated == null) return;
-            ScrapYardEvents.OnSYTrackerUpdated.Remove(OnSYTrackerUpdated);
+            if (ScrapYardEvents.OnSYTrackerUpdated != null) ScrapYardEvents.OnSYTrackerUpdated.Remove(OnSYTrackerUpdated);
+            if (ScrapYardEvents.OnSYInventoryAppliedToVessel != null) ScrapYardEvents.OnSYInventoryAppliedToVessel.Remove(OnSYInventoryAppliedToVessel);
         }
     }
 }

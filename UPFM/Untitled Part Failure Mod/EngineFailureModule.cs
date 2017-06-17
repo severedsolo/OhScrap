@@ -12,7 +12,6 @@ namespace Untitled_Part_Failure_Mod
         double timeBetweenFailureEvents = 0;
         System.Random r = new System.Random();
         [KSPField(isPersistant = true, guiActive = false)]
-        string failureType = "none";
         float staticThrust;
         ModuleGimbal gimbal;
 
@@ -20,6 +19,7 @@ namespace Untitled_Part_Failure_Mod
         {
             maxTimeToFailure = 120;
             Fields["displayChance"].guiName = "Chance of Engine Failure";
+            postMessage = false;
         }
 
         protected override bool FailureAllowed()
@@ -62,6 +62,8 @@ namespace Untitled_Part_Failure_Mod
                         break;
                 }
                 ScreenMessages.PostScreenMessage(failureType + " detected on " + part.name);
+                postMessage = true;
+                return;
             }
             switch (failureType)
             {

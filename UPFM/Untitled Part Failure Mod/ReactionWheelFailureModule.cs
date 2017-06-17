@@ -14,6 +14,7 @@ namespace Untitled_Part_Failure_Mod
         protected override void Overrides()
         {
             Fields["displayChance"].guiName = "Chance of Reaction Wheel Failure";
+            failureType = "reaction wheel failure";
         }
 
         protected override bool FailureAllowed()
