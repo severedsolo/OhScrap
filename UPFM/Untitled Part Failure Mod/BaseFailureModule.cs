@@ -87,6 +87,11 @@ namespace Untitled_Part_Failure_Mod
             if (hasFailed)
             {
                 Events["RepairChecks"].active = true;
+                if(EditorWarnings.instance != null)
+                {
+                    if (!EditorWarnings.instance.brokenParts.ContainsKey(part)) EditorWarnings.instance.brokenParts.Add(part, displayChance);
+                    EditorWarnings.instance.damagedParts.Remove(part);
+                }
                 return;
             }
             if(part != null) Debug.Log("[UPFM]: " + part.name + moduleName+ " has initialised");
@@ -101,7 +106,7 @@ namespace Untitled_Part_Failure_Mod
             {
                 if (EditorWarnings.instance.damagedParts.ContainsKey(part)) return;
                 EditorWarnings.instance.damagedParts.Add(part, displayChance);
-                EditorWarnings.instance.display = true;
+                if(HighLogic.LoadedSceneIsEditor) EditorWarnings.instance.display = true;
             }
         }
         public void SetFailedHighlight()
@@ -135,6 +140,12 @@ namespace Untitled_Part_Failure_Mod
             if (!willFail) return;
             if (Planetarium.GetUniversalTime() < failureTime) return;
             hasFailed = true;
+            if (!hasFailed) return;
+            if(EditorWarnings.instance != null)
+            {
+                if (!EditorWarnings.instance.brokenParts.ContainsKey(part)) EditorWarnings.instance.brokenParts.Add(part, displayChance);
+                EditorWarnings.instance.damagedParts.Remove(part);
+            }
             Events["RepairChecks"].active = true;
             if (FailCheck(false))
             {
