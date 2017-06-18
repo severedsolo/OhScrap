@@ -20,6 +20,7 @@ namespace Untitled_Part_Failure_Mod
         {
             Fields["displayChance"].guiName = "Chance of Parachute Failure";
             failureType = "parachute failure";
+            postMessage = false;
         }
 
         protected override void FailPart()
@@ -32,6 +33,7 @@ namespace Untitled_Part_Failure_Mod
             SetFailedHighlight();
             if (message) return;
             message = true;
+            postMessage = true;
             ScreenMessages.PostScreenMessage("Parachute Failure!");
             Debug.Log("[UPFM]: " + part.name + " has failed");
         }

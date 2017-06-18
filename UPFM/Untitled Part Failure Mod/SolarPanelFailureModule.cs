@@ -14,6 +14,7 @@ namespace Untitled_Part_Failure_Mod
         {
             Fields["displayChance"].guiName = "Chance of Solar Panel Failure";
             failureType = "retraction error";
+            postMessage = false;
         }
         protected override bool FailureAllowed()
         {
@@ -32,6 +33,7 @@ namespace Untitled_Part_Failure_Mod
                 ScreenMessages.PostScreenMessage(part.name + " retraction mechanism jammed");
                 Debug.Log("[UPFM]: " + part.name + " retraction mechanism has jammed");
                 SetFailedHighlight();
+                postMessage = true;
             }
         }
 

@@ -13,14 +13,19 @@ namespace Untitled_Part_Failure_Mod
         UnityEngine.Random r = new UnityEngine.Random();
         public bool willFail = false;
         [KSPField(isPersistant = true, guiActive = false)]
+        public bool launched = false;
+        [KSPField(isPersistant = true, guiActive = false)]
         public bool hasFailed = false;
         [KSPField(isPersistant = true, guiActive = false)]
         public bool postMessage = true;
         [KSPField(isPersistant = true, guiActive = false)]
         public string failureType = "none";
+        [KSPField(isPersistant = true, guiActive = false)]
         public float expectedLifetime = 2;
         ModuleSYPartTracker SYP;
         public float chanceOfFailure = 0.5f;
+        [KSPField(isPersistant = true, guiActive = false)]
+        public float baseChanceOfFailure = 0.5f;
         [KSPField(isPersistant = true, guiActive = true, guiName = "BaseFailure" ,guiActiveEditor = true, guiUnits = "%")]
         public int displayChance = 0;
         [KSPField(isPersistant = true, guiActive = false)]
@@ -32,10 +37,11 @@ namespace Untitled_Part_Failure_Mod
 
         private void Start()
         {
+            chanceOfFailure = baseChanceOfFailure;
             Overrides();
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             ScrapYardEvents.OnSYInventoryAppliedToVessel.Add(OnSYInventoryAppliedToVessel);
-            Initialise();
+            if(launched || HighLogic.LoadedSceneIsEditor) Initialise();
             GameEvents.onLaunch.Add(onLaunch);
         }
 
@@ -45,12 +51,14 @@ namespace Untitled_Part_Failure_Mod
             if(EditorWarnings.instance != null) EditorWarnings.instance.damagedParts.Remove(part);
             willFail = false;
             generation = 0;
-            chanceOfFailure = 0.5f;
+            chanceOfFailure = baseChanceOfFailure;
             Initialise();
         }
 
         private void onLaunch(EventReport data)
         {
+            launched = true;
+            Initialise();
             PartModule dontRecover = part.FindModuleImplementing<DontRecoverMe>();
             if (dontRecover == null) return;
             part.RemoveModule(dontRecover);
@@ -62,7 +70,7 @@ namespace Untitled_Part_Failure_Mod
             Debug.Log("[UPFM]: ScrayYard Tracker updated. Recalculating failure chance");
             willFail = false;
             generation = 0;
-            chanceOfFailure = 0.5f;
+            chanceOfFailure = baseChanceOfFailure;
             part.AddModule("DontRecoverMe");
             Initialise();
         }
@@ -81,13 +89,13 @@ namespace Untitled_Part_Failure_Mod
                 Events["RepairChecks"].active = true;
                 return;
             }
-            if(part != null) Debug.Log("[UPFM]: " + part.name + " has initialised");
-                if (FailCheck(true) && !HighLogic.LoadedSceneIsEditor)
-                {
-                    failureTime = Planetarium.GetUniversalTime() + (maxTimeToFailure * UnityEngine.Random.value);
-                    willFail = true;
-                    Debug.Log("[UPFM]: " + part.name + " will attempt to fail at " + failureTime);
-                }
+            if(part != null) Debug.Log("[UPFM]: " + part.name + moduleName+ " has initialised");
+            if (FailCheck(true) && !HighLogic.LoadedSceneIsEditor && launched)
+            {
+                failureTime = Planetarium.GetUniversalTime() + (maxTimeToFailure * UnityEngine.Random.value);
+                willFail = true;
+                Debug.Log("[UPFM]: " + part.name + " will attempt to fail at " + failureTime);
+            }
             displayChance = (int)(chanceOfFailure * 100);
             if(displayChance >= HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold && EditorWarnings.instance != null)
             {
@@ -142,7 +150,7 @@ namespace Untitled_Part_Failure_Mod
                 chanceOfFailure = chanceOfFailure / generation;
                 if (SYP.TimesRecovered > 0) chanceOfFailure = chanceOfFailure * ((SYP.TimesRecovered / expectedLifetime));
             }
-            if(part != null) Debug.Log("[UPFM]: Chances of "+part.name+" failing calculated to be " + chanceOfFailure * 100 + "%");
+            if (part != null) Debug.Log("[UPFM]: Chances of " + part.name + moduleName +" failing calculated to be " + chanceOfFailure * 100 + "%");
             if (UnityEngine.Random.value < chanceOfFailure) return true;
             return false;
         }
@@ -152,6 +160,7 @@ namespace Untitled_Part_Failure_Mod
             if (part.FindModuleImplementing<Broken>() == null) part.AddModule("Broken");
             ScreenMessages.PostScreenMessage("This part will not be recovered");
         }
+
         [KSPEvent(active = false, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = true, guiName = "Repair ")]
         public void RepairChecks()
         {
@@ -168,7 +177,7 @@ namespace Untitled_Part_Failure_Mod
             ScreenMessages.PostScreenMessage("The part should be ok to use now");
             Events["RepairChecks"].active = false;
             RepairPart();
-            Debug.Log("[UPFM]: " + part.name + " was successfully repaired");
+            Debug.Log("[UPFM]: " + part.name + moduleName+ " was successfully repaired");
             part.highlightType = Part.HighlightType.OnMouseOver;
         }
 
@@ -177,7 +186,7 @@ namespace Untitled_Part_Failure_Mod
             StringBuilder msg = new StringBuilder();
             msg.AppendLine(part.vessel.vesselName);
             msg.AppendLine("");
-            msg.AppendLine(part.name + "has suffered a " + failureType);
+            msg.AppendLine(part.name + " has suffered a " + failureType);
             msg.AppendLine("");
             if (part.FindModuleImplementing<Broken>() != null) msg.AppendLine("The part is damaged beyond repair");
             else msg.AppendLine("Chance of a successful repair is " + (100 - displayChance)+"%");
