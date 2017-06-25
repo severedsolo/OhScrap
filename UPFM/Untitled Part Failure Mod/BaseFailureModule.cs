@@ -111,6 +111,7 @@ namespace Untitled_Part_Failure_Mod
         }
         public void SetFailedHighlight()
         {
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().highlightFailures) return;
             part.SetHighlightColor(Color.red);
             part.SetHighlightType(Part.HighlightType.AlwaysOn);
             part.SetHighlight(true, false);

@@ -81,9 +81,8 @@ namespace Untitled_Part_Failure_Mod
             {
                 int repairChance = 0;
                 if (v.Key == null) continue;
-                if (!v.Key.Modules.Contains("Broken")) repairChance = v.Value;
-                GUILayout.Label(v.Key.name + ": Chance of Repair: " + (100-repairChance) + "%");
-                counter++;
+                if (!v.Key.Modules.Contains("Broken")) repairChance = 100-v.Value;
+                GUILayout.Label(v.Key.name + ": Chance of Repair: " + (repairChance) + "%");
             }
             if (HighLogic.LoadedSceneIsEditor)
             {

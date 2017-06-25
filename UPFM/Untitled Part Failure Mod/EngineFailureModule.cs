@@ -9,6 +9,7 @@ namespace Untitled_Part_Failure_Mod
     class EngineFailureModule : BaseFailureModule
     {
         ModuleEngines engine;
+        ModuleEnginesFX engineFX;
         double timeBetweenFailureEvents = 0;
         System.Random r = new System.Random();
         [KSPField(isPersistant = true, guiActive = false)]
@@ -31,8 +32,16 @@ namespace Untitled_Part_Failure_Mod
         {
             if (part.Resources.Contains("SolidFuel")) return;
             engine = part.FindModuleImplementing<ModuleEngines>();
+            if (engine == null) engineFX = part.FindModuleImplementing<ModuleEnginesFX>();
             gimbal = part.FindModuleImplementing<ModuleGimbal>();
-            if (engine.currentThrottle == 0) return;
+            if(engine != null)
+            {
+                if (engine.currentThrottle == 0) return;
+            }
+            else
+            {
+                if (engineFX.currentThrottle == 0) return;
+            }
             SetFailedHighlight();
             if (failureType == "none")
             {
@@ -76,11 +85,14 @@ namespace Untitled_Part_Failure_Mod
                 case "Underthrust":
                     if (timeBetweenFailureEvents <= Planetarium.GetUniversalTime())
                     {
-                        engine.thrustPercentage = engine.thrustPercentage * 0.9f;
+                        if (engine != null) engine.thrustPercentage = engine.thrustPercentage * 0.9f;
+                        else engineFX.thrustPercentage = engine.thrustPercentage * 0.9f;
                         timeBetweenFailureEvents = Planetarium.GetUniversalTime() + r.Next(10,30);
-                        staticThrust = engine.thrustPercentage;
+                        if (engine != null) staticThrust = engine.thrustPercentage;
+                        else staticThrust = engineFX.thrustPercentage;
                     }
-                    engine.thrustPercentage = staticThrust;
+                    if (engine != null) engine.thrustPercentage = staticThrust;
+                    else engineFX.thrustPercentage = staticThrust;
                     break;
                 case "Gimbal Failure":
                     gimbal.gimbalLock = true;
@@ -93,14 +105,17 @@ namespace Untitled_Part_Failure_Mod
         protected override void RepairPart()
         {
             engine = part.FindModuleImplementing<ModuleEngines>();
+            if (engine == null) engineFX = part.FindModuleImplementing<ModuleEnginesFX>();
             switch (failureType)
             {
                 case "Fuel Flow Failure":
-                    engine.Activate();
+                    if (engine != null) engine.Activate();
+                    else engineFX.Activate();
                     Debug.Log("[UPFM]: Re-activated " + part.name);
                     break;
                 case "Underthrust":
-                    engine.thrustPercentage = 100;
+                    if (engine != null) engine.thrustPercentage = 100;
+                    else engineFX.thrustPercentage = 100;
                     Debug.Log("[UPFM]: Reset Thrust on " + part.name);
                     break;
                 case "Gimbal Failure":

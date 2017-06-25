@@ -15,6 +15,8 @@ namespace Untitled_Part_Failure_Mod
         public bool newGameOnly = false;
         [GameParameters.CustomParameterUI("Display Safety Warnings?")]
         public bool safetyWarning = true;
+        [GameParameters.CustomParameterUI("Highlight Part Failures?")]
+        public bool highlightFailures = true;
         [GameParameters.CustomIntParameterUI("Safety Threshold", toolTip = "At what failure threshold should UPFM display a warning?")]
         public int safetyThreshold = 66;
         [GameParameters.CustomParameterUI("Battery")]
