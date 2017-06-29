@@ -15,6 +15,8 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = true, guiActive = false)]
         public bool launched = false;
         [KSPField(isPersistant = true, guiActive = false)]
+        public bool highlight = true;
+        [KSPField(isPersistant = true, guiActive = false)]
         public bool hasFailed = false;
         [KSPField(isPersistant = true, guiActive = false)]
         public bool postMessage = true;
@@ -59,6 +61,7 @@ namespace Untitled_Part_Failure_Mod
         {
             launched = true;
             Initialise();
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyRecover && displayChance < HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) return;
             PartModule dontRecover = part.FindModuleImplementing<DontRecoverMe>();
             if (dontRecover == null) return;
             part.RemoveModule(dontRecover);
@@ -71,8 +74,8 @@ namespace Untitled_Part_Failure_Mod
             willFail = false;
             generation = 0;
             chanceOfFailure = baseChanceOfFailure;
-            part.AddModule("DontRecoverMe");
             Initialise();
+            part.AddModule("DontRecoverMe");
         }
 
         private void Initialise()
@@ -87,6 +90,7 @@ namespace Untitled_Part_Failure_Mod
             if (hasFailed)
             {
                 Events["RepairChecks"].active = true;
+                Events["ToggleHighlight"].active = true;
                 if(EditorWarnings.instance != null)
                 {
                     if (!EditorWarnings.instance.brokenParts.ContainsKey(part)) EditorWarnings.instance.brokenParts.Add(part, displayChance);
@@ -135,6 +139,7 @@ namespace Untitled_Part_Failure_Mod
                 {
                     PostFailureMessage();
                     postMessage = false;
+                    Events["ToggleHighlight"].active = true;
                 }                    
                 return;
             }
@@ -166,12 +171,24 @@ namespace Untitled_Part_Failure_Mod
             if (UnityEngine.Random.value < chanceOfFailure) return true;
             return false;
         }
-        [KSPEvent(active = true, guiActiveUnfocused = false, unfocusedRange = 5.0f, externalToEVAOnly = false, guiName = "Trash Part ")]
+        [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false, guiName = "Trash Part")]
         public void TrashPart()
         {
             if (part.FindModuleImplementing<Broken>() == null) part.AddModule("Broken");
-            ScreenMessages.PostScreenMessage("This part will not be recovered");
+            ScreenMessages.PostScreenMessage(part.name+" will not be recovered");
         }
+        [KSPEvent(active = false, guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false, guiName = "Toggle Failure Highlight")]
+        public void ToggleHighlight()
+        {
+            if (highlight)
+            {
+                part.HighlightActive = false;
+                part.highlightType = Part.HighlightType.OnMouseOver;
+                highlight = false;
+            }
+            else highlight = true;
+        }
+
 
         [KSPEvent(active = false, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = true, guiName = "Repair ")]
         public void RepairChecks()

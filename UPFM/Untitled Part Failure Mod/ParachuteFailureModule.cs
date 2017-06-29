@@ -30,7 +30,7 @@ namespace Untitled_Part_Failure_Mod
             if (chute.vessel != FlightGlobals.ActiveVessel) return;
             if (chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED) chute.CutParachute();
             else return;
-            SetFailedHighlight();
+            if(highlight)SetFailedHighlight();
             if (message) return;
             message = true;
             postMessage = true;

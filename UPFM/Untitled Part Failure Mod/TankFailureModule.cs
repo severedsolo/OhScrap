@@ -70,7 +70,7 @@ namespace Untitled_Part_Failure_Mod
                 failureType = leaking.resourceName+" leak";
             }
             leaking.amount = leaking.amount * 0.999f;
-            SetFailedHighlight();
+            if(highlight)SetFailedHighlight();
         }
     }
 }

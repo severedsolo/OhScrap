@@ -26,6 +26,7 @@ namespace Untitled_Part_Failure_Mod
         bool dontBother = false;
         public static EditorWarnings instance;
         Rect Window = new Rect(500, 100, 240, 50);
+        StringBuilder s = new StringBuilder();
 
         ApplicationLauncherButton ToolbarButton;
 
@@ -37,6 +38,8 @@ namespace Untitled_Part_Failure_Mod
         private void Start()
         {
             GameEvents.onGUIApplicationLauncherReady.Add(GUIReady);
+            s.Append("WARNING: The following parts are above the safety threshold");
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyRecover) s.Append(" and won't be recovered");
         }
 
         public void GUIReady()
@@ -69,7 +72,7 @@ namespace Untitled_Part_Failure_Mod
         void GUIDisplay(int windowID)
         {
             int counter = 0;
-            GUILayout.Label("WARNING: The following parts are above the safety threshold");
+            GUILayout.Label(s.ToString());
             foreach (var v in damagedParts)
             {
                 if (v.Key == null) continue;

@@ -21,7 +21,7 @@ namespace Untitled_Part_Failure_Mod
             battery = part.Resources["ElectricCharge"];
             battery.amount = 0;
             battery.flowState = false;
-            SetFailedHighlight();
+            if(highlight)SetFailedHighlight();
             if (message) return;
             ScreenMessages.PostScreenMessage("Battery short circuited!");
             Debug.Log("[UPFM]: " + part.name + "has short circuited");

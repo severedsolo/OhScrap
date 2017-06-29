@@ -42,7 +42,7 @@ namespace Untitled_Part_Failure_Mod
             {
                 if (engineFX.currentThrottle == 0) return;
             }
-            SetFailedHighlight();
+            if(highlight) SetFailedHighlight();
             if (failureType == "none")
             {
                 int i = r.Next(1, 5);

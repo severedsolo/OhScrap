@@ -31,7 +31,7 @@ namespace Untitled_Part_Failure_Mod
             controlSurface.ignorePitch = true;
             controlSurface.ignoreRoll = true;
             controlSurface.ignoreYaw = true;
-            SetFailedHighlight();
+            if(highlight)SetFailedHighlight();
             if (message) return;
             ScreenMessages.PostScreenMessage("Control Surface Failure!");
             Debug.Log("[UPFM]: " + part.name + " has suffered a control surface failure");
