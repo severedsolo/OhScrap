@@ -43,6 +43,7 @@ namespace Untitled_Part_Failure_Mod
             Overrides();
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             ScrapYardEvents.OnSYInventoryAppliedToVessel.Add(OnSYInventoryAppliedToVessel);
+            if (HighLogic.LoadedSceneIsEditor) generation = 0;
             if(launched || HighLogic.LoadedSceneIsEditor) Initialise();
             GameEvents.onLaunch.Add(onLaunch);
         }
