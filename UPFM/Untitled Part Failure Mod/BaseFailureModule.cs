@@ -183,11 +183,11 @@ namespace Untitled_Part_Failure_Mod
         {
             if (highlight)
             {
-                part.HighlightActive = false;
+                part.SetHighlight(false, false);
                 part.highlightType = Part.HighlightType.OnMouseOver;
                 highlight = false;
             }
-            else highlight = true;
+            else SetFailedHighlight();
         }
 
 
