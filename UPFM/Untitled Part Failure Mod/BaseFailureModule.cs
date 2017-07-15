@@ -5,17 +5,18 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using KSP.UI.Screens;
+using System.Collections;
 
 namespace Untitled_Part_Failure_Mod
 {
     class BaseFailureModule : PartModule
     {
         UnityEngine.Random r = new UnityEngine.Random();
+        bool ready = false;
+        public float randomisation;
         public bool willFail = false;
         [KSPField(isPersistant = true, guiActive = false)]
         public bool launched = false;
-        [KSPField(isPersistant = true, guiActive = false)]
-        public bool highlight = true;
         [KSPField(isPersistant = true, guiActive = false)]
         public bool hasFailed = false;
         [KSPField(isPersistant = true, guiActive = false)]
@@ -31,10 +32,9 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = true, guiActive = true, guiName = "BaseFailure" ,guiActiveEditor = true, guiUnits = "%")]
         public int displayChance = 0;
         [KSPField(isPersistant = true, guiActive = false)]
-        public int generation = 0;
-        [KSPField(isPersistant = true, guiActive = false)]
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
+        public ModuleUPFMEvents UPFM;
 
 
         private void Start()
@@ -43,9 +43,9 @@ namespace Untitled_Part_Failure_Mod
             Overrides();
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             ScrapYardEvents.OnSYInventoryAppliedToVessel.Add(OnSYInventoryAppliedToVessel);
-            if (HighLogic.LoadedSceneIsEditor) generation = 0;
-            if(launched || HighLogic.LoadedSceneIsEditor) Initialise();
+            if (launched || HighLogic.LoadedSceneIsEditor) Initialise();
             GameEvents.onLaunch.Add(onLaunch);
+            UPFM = part.FindModuleImplementing<ModuleUPFMEvents>();
         }
 
         private void OnSYInventoryAppliedToVessel()
@@ -53,7 +53,6 @@ namespace Untitled_Part_Failure_Mod
             Debug.Log("[UPFM]: ScrayYard Inventory Applied. Recalculating failure chance");
             if(EditorWarnings.instance != null) EditorWarnings.instance.damagedParts.Remove(part);
             willFail = false;
-            generation = 0;
             chanceOfFailure = baseChanceOfFailure;
             Initialise();
         }
@@ -73,7 +72,6 @@ namespace Untitled_Part_Failure_Mod
         {
             Debug.Log("[UPFM]: ScrayYard Tracker updated. Recalculating failure chance");
             willFail = false;
-            generation = 0;
             chanceOfFailure = baseChanceOfFailure;
             Initialise();
             part.AddModule("DontRecoverMe");
@@ -82,16 +80,13 @@ namespace Untitled_Part_Failure_Mod
         private void Initialise()
         {
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
-            if (generation == 0)
-            {
-                generation = (ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW) - SYP.TimesRecovered);
-                if (HighLogic.LoadedSceneIsEditor && SYP.TimesRecovered == 0) generation++;
-            }
-            if (generation < 1) generation = 1;
+            ready = SYP.ID != "";
+            if (!ready) return;
+            randomisation = EditorWarnings.instance.GetRandomisation(part);
             if (hasFailed)
             {
                 Events["RepairChecks"].active = true;
-                Events["ToggleHighlight"].active = true;
+                UPFM.Events["ToggleHighlight"].active = true;
                 if(EditorWarnings.instance != null)
                 {
                     if (!EditorWarnings.instance.brokenParts.ContainsKey(part)) EditorWarnings.instance.brokenParts.Add(part, displayChance);
@@ -109,17 +104,15 @@ namespace Untitled_Part_Failure_Mod
             displayChance = (int)(chanceOfFailure * 100);
             if(displayChance >= HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold && EditorWarnings.instance != null)
             {
-                if (EditorWarnings.instance.damagedParts.ContainsKey(part)) return;
+                int i;
+                if(EditorWarnings.instance.damagedParts.TryGetValue(part, out i))
+                {
+                    if (i >= displayChance) return;
+                }
+                EditorWarnings.instance.damagedParts.Remove(part);
                 EditorWarnings.instance.damagedParts.Add(part, displayChance);
-                if(HighLogic.LoadedSceneIsEditor) EditorWarnings.instance.display = true;
+                EditorWarnings.instance.display = true;
             }
-        }
-        public void SetFailedHighlight()
-        {
-            if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().highlightFailures) return;
-            part.SetHighlightColor(Color.red);
-            part.SetHighlightType(Part.HighlightType.AlwaysOn);
-            part.SetHighlight(true, false);
         }
         protected virtual void Overrides() { }
 
@@ -131,6 +124,7 @@ namespace Untitled_Part_Failure_Mod
 
         private void FixedUpdate()
         {
+            if (!ready) Initialise();
             if (HighLogic.LoadedSceneIsEditor) return;
             if (!FailureAllowed()) return;
             if (hasFailed)
@@ -140,7 +134,7 @@ namespace Untitled_Part_Failure_Mod
                 {
                     PostFailureMessage();
                     postMessage = false;
-                    Events["ToggleHighlight"].active = true;
+                    UPFMEvents["ToggleHighlight"].active = true;
                 }                    
                 return;
             }
@@ -163,39 +157,18 @@ namespace Untitled_Part_Failure_Mod
 
         bool FailCheck(bool recalcChance)
         {
-            if (recalcChance)
-            {
-                chanceOfFailure = chanceOfFailure / generation;
-                if (SYP.TimesRecovered > 0) chanceOfFailure = chanceOfFailure * ((SYP.TimesRecovered / expectedLifetime));
-            }
+            if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure + randomisation;
+            else chanceOfFailure = (SYP.TimesRecovered / expectedLifetime)+randomisation;
             if (part != null) Debug.Log("[UPFM]: Chances of " + part.name + moduleName +" failing calculated to be " + chanceOfFailure * 100 + "%");
             if (UnityEngine.Random.value < chanceOfFailure) return true;
             return false;
         }
-        [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false, guiName = "Trash Part")]
-        public void TrashPart()
-        {
-            if (part.FindModuleImplementing<Broken>() == null) part.AddModule("Broken");
-            ScreenMessages.PostScreenMessage(part.name+" will not be recovered");
-        }
-        [KSPEvent(active = false, guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false, guiName = "Toggle Failure Highlight")]
-        public void ToggleHighlight()
-        {
-            if (highlight)
-            {
-                part.SetHighlight(false, false);
-                part.highlightType = Part.HighlightType.OnMouseOver;
-                highlight = false;
-            }
-            else SetFailedHighlight();
-        }
-
 
         [KSPEvent(active = false, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = true, guiName = "Repair ")]
         public void RepairChecks()
         {
             Debug.Log("[UPFM]: Attempting EVA repairs");
-            if(FailCheck(false) || part.Modules.Contains("Broken"))
+            if (FailCheck(false) || part.Modules.Contains("Broken"))
             {
                 ScreenMessages.PostScreenMessage("This part is beyond repair");
                 if (!part.Modules.Contains("Broken")) part.AddModule("Broken");
@@ -207,7 +180,7 @@ namespace Untitled_Part_Failure_Mod
             ScreenMessages.PostScreenMessage("The part should be ok to use now");
             Events["RepairChecks"].active = false;
             RepairPart();
-            Debug.Log("[UPFM]: " + part.name + moduleName+ " was successfully repaired");
+            Debug.Log("[UPFM]: " + part.name + moduleName + " was successfully repaired");
             part.highlightType = Part.HighlightType.OnMouseOver;
         }
 

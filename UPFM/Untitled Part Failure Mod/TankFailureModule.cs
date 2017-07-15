@@ -70,7 +70,8 @@ namespace Untitled_Part_Failure_Mod
                 failureType = leaking.resourceName+" leak";
             }
             leaking.amount = leaking.amount * 0.999f;
-            if(highlight)SetFailedHighlight();
+            ModuleUPFMEvents UPFM = part.FindModuleImplementing<ModuleUPFMEvents>();
+            if(UPFM.highlight)UPFM.SetFailedHighlight();
         }
     }
 }

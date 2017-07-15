@@ -5,6 +5,8 @@ using System.Text;
 using UnityEngine;
 using System.Reflection;
 using KSP.UI.Screens;
+using ScrapYard;
+using ScrapYard.Modules;
 
 namespace Untitled_Part_Failure_Mod
 {
@@ -22,6 +24,7 @@ namespace Untitled_Part_Failure_Mod
     {
         public Dictionary<Part,int> damagedParts = new Dictionary<Part, int>();
         public Dictionary<Part, int> brokenParts = new Dictionary<Part, int>();
+        public Dictionary<string, float> randomisation = new Dictionary<string, float>();
         public bool display = false;
         bool dontBother = false;
         public static EditorWarnings instance;
@@ -34,6 +37,22 @@ namespace Untitled_Part_Failure_Mod
         {
             instance = this;
         }
+        public float GetRandomisation(Part p)
+        {
+            ModuleSYPartTracker SYP = p.FindModuleImplementing<ModuleSYPartTracker>();
+            if (SYP == null) return 0;
+            float f;
+            if (randomisation.TryGetValue(SYP.ID, out f)) return f;
+            int builds;
+            if (HighLogic.LoadedSceneIsEditor) builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW) + 1;
+            else builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW);
+            f = (UnityEngine.Random.value / 3) / builds;
+            f = (float)Math.Round(f, 2);
+            randomisation.Add(SYP.ID, f);
+            Debug.Log("[UPFM]: Applied Random Factor of " + f + " to part " + p.partName);
+            return f;
+        }
+
 
         private void Start()
         {
