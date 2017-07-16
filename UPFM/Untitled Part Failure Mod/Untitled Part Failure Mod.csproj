@@ -59,11 +59,11 @@
     <Compile Include="Broken.cs" />
     <Compile Include="ControlSurfaceFailureModule.cs" />
     <Compile Include="DontRecoverMe.cs" />
-    <Compile Include="EditorWarnings.cs" />
+    <Compile Include="UPFMUtils.cs" />
     <Compile Include="EngineFailureModule.cs" />
     <Compile Include="ModuleUPFMEvents.cs" />
     <Compile Include="ParachuteFailureModule.cs" />
-    <Compile Include="PartTracker.cs" />
+    <Compile Include="UPFMData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReactionWheelFailureModule.cs" />
     <Compile Include="SolarPanelFailureModule.cs" />

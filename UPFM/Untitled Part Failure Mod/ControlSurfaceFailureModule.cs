@@ -38,7 +38,7 @@ namespace Untitled_Part_Failure_Mod
             message = true;
         }
 
-        protected override void RepairPart()
+        public override void RepairPart()
         {
             controlSurface = part.FindModuleImplementing<ModuleControlSurface>();
             controlSurface.ignorePitch = false;

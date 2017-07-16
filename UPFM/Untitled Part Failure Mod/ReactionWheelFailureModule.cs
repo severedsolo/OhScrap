@@ -34,7 +34,7 @@ namespace Untitled_Part_Failure_Mod
             ScreenMessages.PostScreenMessage("A reaction wheel has failed");
         }
 
-        protected override void RepairPart()
+        public override void RepairPart()
         {
             rw = part.FindModuleImplementing<ModuleReactionWheel>();
             rw.isEnabled = true;

@@ -102,7 +102,7 @@ namespace Untitled_Part_Failure_Mod
             }
         }
 
-        protected override void RepairPart()
+        public override void RepairPart()
         {
             engine = part.FindModuleImplementing<ModuleEngines>();
             if (engine == null) engineFX = part.FindModuleImplementing<ModuleEnginesFX>();

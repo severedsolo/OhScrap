@@ -11,23 +11,23 @@ using ScrapYard.Modules;
 namespace Untitled_Part_Failure_Mod
 {
     [KSPAddon(KSPAddon.Startup.EditorAny, false)]
-    class EditorAnyWarnings : EditorWarnings
+    class EditorAnyWarnings : UPFMUtils
     {
 
     }
     [KSPAddon(KSPAddon.Startup.Flight, false)]
-    class FlightWarnings : EditorWarnings
+    class FlightWarnings : UPFMUtils
     {
         
     }
-    class EditorWarnings : MonoBehaviour
+    class UPFMUtils : MonoBehaviour
     {
         public Dictionary<Part,int> damagedParts = new Dictionary<Part, int>();
         public Dictionary<Part, int> brokenParts = new Dictionary<Part, int>();
         public Dictionary<string, float> randomisation = new Dictionary<string, float>();
         public bool display = false;
         bool dontBother = false;
-        public static EditorWarnings instance;
+        public static UPFMUtils instance;
         Rect Window = new Rect(500, 100, 240, 50);
         StringBuilder s = new StringBuilder();
 

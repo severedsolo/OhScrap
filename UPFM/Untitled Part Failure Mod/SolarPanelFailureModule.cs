@@ -37,7 +37,7 @@ namespace Untitled_Part_Failure_Mod
             }
         }
 
-        protected override void RepairPart()
+        public override void RepairPart()
         {
             panel = part.FindModuleImplementing<ModuleDeployableSolarPanel>();
             if (originallyRetractable) panel.retractable = true;

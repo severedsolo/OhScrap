@@ -9,7 +9,7 @@ using ScrapYard;
 namespace Untitled_Part_Failure_Mod
 {
     [KSPScenario(ScenarioCreationOptions.AddToAllGames, GameScenes.FLIGHT, GameScenes.EDITOR)]
-    public class PartTracker : ScenarioModule
+    public class UPFMData : ScenarioModule
     {
         public override void OnSave(ConfigNode node)
         {
@@ -19,8 +19,8 @@ namespace Untitled_Part_Failure_Mod
                 node.AddNode("UPFMTracker");
                 temp = node.GetNode("UPFMTracker");
             }
-            if (EditorWarnings.instance.randomisation.Count() == 0) return;
-            foreach (var v in EditorWarnings.instance.randomisation)
+            if (UPFMUtils.instance.randomisation.Count() == 0) return;
+            foreach (var v in UPFMUtils.instance.randomisation)
             {
                 if (v.Key == null) continue;
                 if (v.Key == "") continue;
@@ -35,7 +35,7 @@ namespace Untitled_Part_Failure_Mod
         {
             ConfigNode temp = node.GetNode("UPFMTracker");
             if (temp == null) return;
-            EditorWarnings.instance.randomisation.Clear();
+            UPFMUtils.instance.randomisation.Clear();
             ConfigNode[] nodes = temp.GetNodes("PART");
             if (nodes.Count() == 0) return;
             string s;
@@ -45,7 +45,7 @@ namespace Untitled_Part_Failure_Mod
                 ConfigNode cn = nodes.ElementAt(i);
                 s = cn.GetValue("ID");
                 if(!float.TryParse(cn.GetValue("RandomFactor"),out f)) continue;
-                EditorWarnings.instance.randomisation.Add(s, f);
+                UPFMUtils.instance.randomisation.Add(s, f);
             }
         }
     }

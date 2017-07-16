@@ -51,7 +51,7 @@ namespace Untitled_Part_Failure_Mod
         private void OnSYInventoryAppliedToVessel()
         {
             Debug.Log("[UPFM]: ScrayYard Inventory Applied. Recalculating failure chance");
-            if(EditorWarnings.instance != null) EditorWarnings.instance.damagedParts.Remove(part);
+            if(UPFMUtils.instance != null) UPFMUtils.instance.damagedParts.Remove(part);
             willFail = false;
             chanceOfFailure = baseChanceOfFailure;
             Initialise();
@@ -82,15 +82,15 @@ namespace Untitled_Part_Failure_Mod
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
             ready = SYP.ID != "";
             if (!ready) return;
-            randomisation = EditorWarnings.instance.GetRandomisation(part);
+            randomisation = UPFMUtils.instance.GetRandomisation(part);
             if (hasFailed)
             {
-                Events["RepairChecks"].active = true;
+                UPFM.Events["RepairChecks"].active = true;
                 UPFM.Events["ToggleHighlight"].active = true;
-                if(EditorWarnings.instance != null)
+                if(UPFMUtils.instance != null)
                 {
-                    if (!EditorWarnings.instance.brokenParts.ContainsKey(part)) EditorWarnings.instance.brokenParts.Add(part, displayChance);
-                    EditorWarnings.instance.damagedParts.Remove(part);
+                    if (!UPFMUtils.instance.brokenParts.ContainsKey(part)) UPFMUtils.instance.brokenParts.Add(part, displayChance);
+                    UPFMUtils.instance.damagedParts.Remove(part);
                 }
                 return;
             }
@@ -102,23 +102,23 @@ namespace Untitled_Part_Failure_Mod
                 Debug.Log("[UPFM]: " + part.name + " will attempt to fail at " + failureTime);
             }
             displayChance = (int)(chanceOfFailure * 100);
-            if(displayChance >= HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold && EditorWarnings.instance != null)
+            if(displayChance >= HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold && UPFMUtils.instance != null)
             {
                 int i;
-                if(EditorWarnings.instance.damagedParts.TryGetValue(part, out i))
+                if(UPFMUtils.instance.damagedParts.TryGetValue(part, out i))
                 {
                     if (i >= displayChance) return;
                 }
-                EditorWarnings.instance.damagedParts.Remove(part);
-                EditorWarnings.instance.damagedParts.Add(part, displayChance);
-                EditorWarnings.instance.display = true;
+                UPFMUtils.instance.damagedParts.Remove(part);
+                UPFMUtils.instance.damagedParts.Add(part, displayChance);
+                UPFMUtils.instance.display = true;
             }
         }
         protected virtual void Overrides() { }
 
         protected virtual void FailPart() { }
 
-        protected virtual void RepairPart() { }
+        public virtual void RepairPart() { }
 
         protected virtual bool FailureAllowed() { return false; }
 
@@ -130,11 +130,12 @@ namespace Untitled_Part_Failure_Mod
             if (hasFailed)
             {
                 FailPart();
+                UPFM.SetFailedHighlight();
                 if (postMessage)
                 {
                     PostFailureMessage();
                     postMessage = false;
-                    UPFMEvents["ToggleHighlight"].active = true;
+                    UPFM.Events["ToggleHighlight"].active = true;
                 }                    
                 return;
             }
@@ -142,12 +143,12 @@ namespace Untitled_Part_Failure_Mod
             if (Planetarium.GetUniversalTime() < failureTime) return;
             hasFailed = true;
             if (!hasFailed) return;
-            if(EditorWarnings.instance != null)
+            if(UPFMUtils.instance != null)
             {
-                if (!EditorWarnings.instance.brokenParts.ContainsKey(part)) EditorWarnings.instance.brokenParts.Add(part, displayChance);
-                EditorWarnings.instance.damagedParts.Remove(part);
+                if (!UPFMUtils.instance.brokenParts.ContainsKey(part)) UPFMUtils.instance.brokenParts.Add(part, displayChance);
+                UPFMUtils.instance.damagedParts.Remove(part);
             }
-            Events["RepairChecks"].active = true;
+            UPFM.Events["RepairChecks"].active = true;
             if (FailCheck(false))
             {
                 part.AddModule("Broken");
@@ -155,33 +156,13 @@ namespace Untitled_Part_Failure_Mod
             }
         }
 
-        bool FailCheck(bool recalcChance)
+        public bool FailCheck(bool recalcChance)
         {
             if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure + randomisation;
             else chanceOfFailure = (SYP.TimesRecovered / expectedLifetime)+randomisation;
             if (part != null) Debug.Log("[UPFM]: Chances of " + part.name + moduleName +" failing calculated to be " + chanceOfFailure * 100 + "%");
             if (UnityEngine.Random.value < chanceOfFailure) return true;
             return false;
-        }
-
-        [KSPEvent(active = false, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = true, guiName = "Repair ")]
-        public void RepairChecks()
-        {
-            Debug.Log("[UPFM]: Attempting EVA repairs");
-            if (FailCheck(false) || part.Modules.Contains("Broken"))
-            {
-                ScreenMessages.PostScreenMessage("This part is beyond repair");
-                if (!part.Modules.Contains("Broken")) part.AddModule("Broken");
-                Debug.Log("[UPFM]: " + part.name + " is too badly damaged to be fixed");
-                return;
-            }
-            hasFailed = false;
-            willFail = false;
-            ScreenMessages.PostScreenMessage("The part should be ok to use now");
-            Events["RepairChecks"].active = false;
-            RepairPart();
-            Debug.Log("[UPFM]: " + part.name + moduleName + " was successfully repaired");
-            part.highlightType = Part.HighlightType.OnMouseOver;
         }
 
         void PostFailureMessage()
