@@ -25,8 +25,16 @@ namespace Untitled_Part_Failure_Mod
                 if (v.Key == null) continue;
                 if (v.Key == "") continue;
                 ConfigNode cn = new ConfigNode("PART");
-                cn.SetValue("ID",v.Key,true);
+                cn.SetValue("ID", v.Key, true);
                 cn.SetValue("RandomFactor", v.Value, true);
+                int i;
+                if (UPFMUtils.instance.batteryLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("BatteryLifetime", i, true);
+                if (UPFMUtils.instance.controlSurfaceLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("ControlSurfaceLifetime", i, true);
+                if (UPFMUtils.instance.engineLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("EngineLifetime", i, true);
+                if (UPFMUtils.instance.parachuteLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("ParachuteLifetime", i, true);
+                if (UPFMUtils.instance.solarPanelLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("SolarPanelLifetime", i, true);
+                if (UPFMUtils.instance.reactionWheelLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("ReactionWheelLifetime", i, true);
+                if (UPFMUtils.instance.tankLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("TankLifetime", i, true);
                 temp.AddNode(cn);
             }
         }
@@ -36,16 +44,28 @@ namespace Untitled_Part_Failure_Mod
             ConfigNode temp = node.GetNode("UPFMTracker");
             if (temp == null) return;
             UPFMUtils.instance.randomisation.Clear();
+            UPFMUtils.instance.batteryLifetimes.Clear();
+            UPFMUtils.instance.controlSurfaceLifetimes.Clear();
+            UPFMUtils.instance.engineLifetimes.Clear();
+            UPFMUtils.instance.parachuteLifetimes.Clear();
+            UPFMUtils.instance.reactionWheelLifetimes.Clear();
+            UPFMUtils.instance.solarPanelLifetimes.Clear();
+            UPFMUtils.instance.tankLifetimes.Clear();
             ConfigNode[] nodes = temp.GetNodes("PART");
             if (nodes.Count() == 0) return;
-            string s;
-            float f;
             for(int i = 0; i<nodes.Count(); i++)
             {
                 ConfigNode cn = nodes.ElementAt(i);
-                s = cn.GetValue("ID");
-                if(!float.TryParse(cn.GetValue("RandomFactor"),out f)) continue;
-                UPFMUtils.instance.randomisation.Add(s, f);
+                string s = cn.GetValue("ID");
+                int dict;
+                if (float.TryParse(cn.GetValue("RandomFactor"),out float f)) UPFMUtils.instance.randomisation.Add(s, f);
+                if (int.TryParse(cn.GetValue("ControlSurfaceLifetime"), out dict)) UPFMUtils.instance.controlSurfaceLifetimes.Add(s, dict);
+                if (int.TryParse(cn.GetValue("EngineLifetime"), out dict)) UPFMUtils.instance.engineLifetimes.Add(s, dict);
+                if (int.TryParse(cn.GetValue("ParachuteLifetime"), out dict)) UPFMUtils.instance.parachuteLifetimes.Add(s, dict);
+                if (int.TryParse(cn.GetValue("ReactionWheelLifetime"), out dict)) UPFMUtils.instance.reactionWheelLifetimes.Add(s, dict);
+                if (int.TryParse(cn.GetValue("SolarPanelLifetime"), out dict)) UPFMUtils.instance.solarPanelLifetimes.Add(s, dict);
+                if (int.TryParse(cn.GetValue("TankLifetime"), out dict)) UPFMUtils.instance.tankLifetimes.Add(s, dict);
+                if (int.TryParse(cn.GetValue("BatteryLifetime"), out dict)) UPFMUtils.instance.batteryLifetimes.Add(s, dict);
             }
         }
     }

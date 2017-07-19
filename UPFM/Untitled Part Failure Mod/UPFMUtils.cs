@@ -25,11 +25,20 @@ namespace Untitled_Part_Failure_Mod
         public Dictionary<Part,int> damagedParts = new Dictionary<Part, int>();
         public Dictionary<Part, int> brokenParts = new Dictionary<Part, int>();
         public Dictionary<string, float> randomisation = new Dictionary<string, float>();
+        public Dictionary<string, int> batteryLifetimes = new Dictionary<string, int>();
+        public Dictionary<string, int> controlSurfaceLifetimes = new Dictionary<string, int>();
+        public Dictionary<string, int> engineLifetimes = new Dictionary<string, int>();
+        public Dictionary<string, int> parachuteLifetimes = new Dictionary<string, int>();
+        public Dictionary<string, int> reactionWheelLifetimes = new Dictionary<string, int>();
+        public Dictionary<string, int> solarPanelLifetimes = new Dictionary<string, int>();
+        public Dictionary<string, int> tankLifetimes = new Dictionary<string, int>();
+
         public bool display = false;
         bool dontBother = false;
         public static UPFMUtils instance;
         Rect Window = new Rect(500, 100, 240, 50);
         StringBuilder s = new StringBuilder();
+        System.Random r = new System.Random();
 
         ApplicationLauncherButton ToolbarButton;
 
@@ -41,16 +50,64 @@ namespace Untitled_Part_Failure_Mod
         {
             ModuleSYPartTracker SYP = p.FindModuleImplementing<ModuleSYPartTracker>();
             if (SYP == null) return 0;
-            float f;
-            if (randomisation.TryGetValue(SYP.ID, out f)) return f;
+            if (randomisation.TryGetValue(SYP.ID, out float f)) return f;
             int builds;
             if (HighLogic.LoadedSceneIsEditor) builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW) + 1;
             else builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW);
             f = (UnityEngine.Random.value / 3) / builds;
             f = (float)Math.Round(f, 2);
-            randomisation.Add(SYP.ID, f);
-            Debug.Log("[UPFM]: Applied Random Factor of " + f + " to part " + p.partName);
+            if (!float.IsNaN(f))
+            {
+                randomisation.Add(SYP.ID, f);
+                Debug.Log("[UPFM]: Applied Random Factor of " + f + " to part " + p.partName);
+            }
             return f;
+        }
+
+        public int GetExpectedLifetime(Part p, int expectedLifetime, string failureModule)
+        {
+            ModuleSYPartTracker SYP = p.FindModuleImplementing<ModuleSYPartTracker>();
+            if (SYP == null) return 0;
+            int i = 0;
+            switch (failureModule)
+            {
+                case "BatteryFailureModule":
+                    if (batteryLifetimes.TryGetValue(SYP.ID, out i)) return i;
+                    i = r.Next(expectedLifetime / 2, expectedLifetime * 2);
+                    batteryLifetimes.Add(SYP.ID, i);
+                    break;
+                case "ControlSurfaceFailureModule":
+                    if (controlSurfaceLifetimes.TryGetValue(SYP.ID, out i)) return i;
+                    i = r.Next(expectedLifetime / 2, expectedLifetime * 2);
+                    controlSurfaceLifetimes.Add(SYP.ID, i);
+                    break;
+                case "EngineFailureModule":
+                    if (engineLifetimes.TryGetValue(SYP.ID, out i)) return i;
+                    i = r.Next(expectedLifetime / 2, expectedLifetime * 2);
+                    engineLifetimes.Add(SYP.ID, i);
+                    break;
+                case "ParachuteFailureModule":
+                    if (parachuteLifetimes.TryGetValue(SYP.ID, out i)) return i;
+                    i = r.Next(expectedLifetime / 2, expectedLifetime * 2);
+                    parachuteLifetimes.Add(SYP.ID, i);
+                    break;
+                case "ReactionWheelFailureModule":
+                    if (reactionWheelLifetimes.TryGetValue(SYP.ID, out i)) return i;
+                    i = r.Next(expectedLifetime / 2, expectedLifetime * 2);
+                    reactionWheelLifetimes.Add(SYP.ID, i);
+                    break;
+                case "SolarPanelFailureModule":
+                    if (solarPanelLifetimes.TryGetValue(SYP.ID, out i)) return i;
+                    i = r.Next(expectedLifetime / 2, expectedLifetime * 2);
+                    solarPanelLifetimes.Add(SYP.ID, i);
+                    break;
+                case "TankFailureModule":
+                    if (tankLifetimes.TryGetValue(SYP.ID, out i)) return i;
+                    i = r.Next(expectedLifetime / 2, expectedLifetime * 2);
+                    tankLifetimes.Add(SYP.ID, i);
+                    break;
+            }
+            return i;
         }
 
 
@@ -109,6 +166,31 @@ namespace Untitled_Part_Failure_Mod
             if (HighLogic.LoadedSceneIsEditor)
             {
                 if (counter == 0) display = false;
+                if (GUILayout.Button("Replace unsafe parts"))
+                {
+                    List<Part> repairedList = new List<Part>();
+                    foreach (var v in damagedParts)
+                    {
+                        ModuleSYPartTracker SYP = v.Key.FindModuleImplementing<ModuleSYPartTracker>();
+                        SYP.MakeFresh();
+                        repairedList.Add(v.Key);
+                    }
+                    damagedParts.Clear();
+                    if (repairedList.Count() == 0) return;
+                    for(int d = 0; d<repairedList.Count; d++)
+                    {
+                        Part p = repairedList.ElementAt(d);
+                        List<BaseFailureModule> failureModules = p.FindModulesImplementing<BaseFailureModule>();
+                        if (failureModules.Count() == 0) continue;
+                        for(int i = 0; i<failureModules.Count(); i++)
+                        {
+                            BaseFailureModule bfm = failureModules.ElementAt(i);
+                            if (bfm == null) continue;
+                            bfm.chanceOfFailure = bfm.baseChanceOfFailure;
+                            bfm.Initialise();
+                        }
+                    }
+                }
                 if (GUILayout.Button("Dismiss"))
                 {
                     display = false;

@@ -24,14 +24,14 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = true, guiActive = false)]
         public string failureType = "none";
         [KSPField(isPersistant = true, guiActive = false)]
-        public float expectedLifetime = 2;
+        public int expectedLifetime = 2;
+        public float actualLifetime;
         ModuleSYPartTracker SYP;
         public float chanceOfFailure = 0.5f;
         [KSPField(isPersistant = true, guiActive = false)]
         public float baseChanceOfFailure = 0.5f;
-        [KSPField(isPersistant = true, guiActive = true, guiName = "BaseFailure" ,guiActiveEditor = true, guiUnits = "%")]
+        [KSPField(isPersistant = false, guiActive = true, guiName = "BaseFailure" ,guiActiveEditor = true, guiUnits = "%")]
         public int displayChance = 0;
-        [KSPField(isPersistant = true, guiActive = false)]
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
         public ModuleUPFMEvents UPFM;
@@ -44,7 +44,7 @@ namespace Untitled_Part_Failure_Mod
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             ScrapYardEvents.OnSYInventoryAppliedToVessel.Add(OnSYInventoryAppliedToVessel);
             if (launched || HighLogic.LoadedSceneIsEditor) Initialise();
-            GameEvents.onLaunch.Add(onLaunch);
+            GameEvents.onLaunch.Add(OnLaunch);
             UPFM = part.FindModuleImplementing<ModuleUPFMEvents>();
         }
 
@@ -57,7 +57,7 @@ namespace Untitled_Part_Failure_Mod
             Initialise();
         }
 
-        private void onLaunch(EventReport data)
+        private void OnLaunch(EventReport data)
         {
             launched = true;
             Initialise();
@@ -77,12 +77,13 @@ namespace Untitled_Part_Failure_Mod
             part.AddModule("DontRecoverMe");
         }
 
-        private void Initialise()
+        public void Initialise()
         {
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
             ready = SYP.ID != "";
             if (!ready) return;
             randomisation = UPFMUtils.instance.GetRandomisation(part);
+            actualLifetime = UPFMUtils.instance.GetExpectedLifetime(part, expectedLifetime, ClassName);
             if (hasFailed)
             {
                 UPFM.Events["RepairChecks"].active = true;
@@ -104,8 +105,7 @@ namespace Untitled_Part_Failure_Mod
             displayChance = (int)(chanceOfFailure * 100);
             if(displayChance >= HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold && UPFMUtils.instance != null)
             {
-                int i;
-                if(UPFMUtils.instance.damagedParts.TryGetValue(part, out i))
+                if(UPFMUtils.instance.damagedParts.TryGetValue(part, out int i))
                 {
                     if (i >= displayChance) return;
                 }
@@ -136,6 +136,7 @@ namespace Untitled_Part_Failure_Mod
                     PostFailureMessage();
                     postMessage = false;
                     UPFM.Events["ToggleHighlight"].active = true;
+                    UPFM.highlight = true;
                 }                    
                 return;
             }
@@ -159,7 +160,7 @@ namespace Untitled_Part_Failure_Mod
         public bool FailCheck(bool recalcChance)
         {
             if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure + randomisation;
-            else chanceOfFailure = (SYP.TimesRecovered / expectedLifetime)+randomisation;
+            else chanceOfFailure = (SYP.TimesRecovered / actualLifetime)+randomisation;
             if (part != null) Debug.Log("[UPFM]: Chances of " + part.name + moduleName +" failing calculated to be " + chanceOfFailure * 100 + "%");
             if (UnityEngine.Random.value < chanceOfFailure) return true;
             return false;
@@ -180,7 +181,7 @@ namespace Untitled_Part_Failure_Mod
 
         private void OnDestroy()
         {
-            GameEvents.onLaunch.Remove(onLaunch);
+            GameEvents.onLaunch.Remove(OnLaunch);
             if (ScrapYardEvents.OnSYTrackerUpdated != null) ScrapYardEvents.OnSYTrackerUpdated.Remove(OnSYTrackerUpdated);
             if (ScrapYardEvents.OnSYInventoryAppliedToVessel != null) ScrapYardEvents.OnSYInventoryAppliedToVessel.Remove(OnSYInventoryAppliedToVessel);
         }

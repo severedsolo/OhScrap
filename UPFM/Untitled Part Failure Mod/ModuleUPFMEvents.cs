@@ -32,16 +32,16 @@ namespace Untitled_Part_Failure_Mod
                 part.highlightType = Part.HighlightType.OnMouseOver;
                 highlight = false;
             }
-            else SetFailedHighlight();
+            else highlight = true;
         }
 
         public void SetFailedHighlight()
         {
             if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().highlightFailures) return;
+            if (!highlight) return;
             part.SetHighlightColor(Color.red);
             part.SetHighlightType(Part.HighlightType.AlwaysOn);
             part.SetHighlight(true, false);
-            highlight = true;
         }
 
         [KSPEvent(active = false, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = true, guiName = "Repair ")]
