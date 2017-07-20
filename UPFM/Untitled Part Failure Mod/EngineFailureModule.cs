@@ -21,6 +21,12 @@ namespace Untitled_Part_Failure_Mod
             maxTimeToFailure = 120;
             Fields["displayChance"].guiName = "Chance of Engine Failure";
             postMessage = false;
+            engine = part.FindModuleImplementing<ModuleEngines>();
+            if(engine.maxThrust < 100.0f)
+            {
+                expectedLifetime = 25;
+                baseChanceOfFailure = 0.05f;
+            }
         }
 
         protected override bool FailureAllowed()

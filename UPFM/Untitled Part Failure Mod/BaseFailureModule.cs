@@ -35,7 +35,6 @@ namespace Untitled_Part_Failure_Mod
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
         public ModuleUPFMEvents UPFM;
-        double nextCheck = 0;
 
 
         private void Start()
@@ -141,13 +140,7 @@ namespace Untitled_Part_Failure_Mod
                 }                    
                 return;
             }
-            if (!willFail)
-            {
-                if (Planetarium.GetUniversalTime() < nextCheck) return;
-                Initialise();
-                nextCheck = Planetarium.GetUniversalTime() + 1800;
-                return;
-            }
+            if (!willFail) return;
             if (Planetarium.GetUniversalTime() < failureTime) return;
             hasFailed = true;
             if (!hasFailed) return;
