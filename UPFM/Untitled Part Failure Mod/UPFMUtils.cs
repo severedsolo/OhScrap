@@ -39,8 +39,9 @@ namespace Untitled_Part_Failure_Mod
         Rect Window = new Rect(500, 100, 240, 50);
         StringBuilder s = new StringBuilder();
         System.Random r = new System.Random();
-
         ApplicationLauncherButton ToolbarButton;
+
+
 
         private void Awake()
         {

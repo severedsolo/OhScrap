@@ -126,6 +126,7 @@ namespace Untitled_Part_Failure_Mod
         {
             if (!ready) Initialise();
             if (HighLogic.LoadedSceneIsEditor) return;
+            if (KRASHWrapper.simulationActive()) return;
             if (!FailureAllowed()) return;
             if (hasFailed)
             {
