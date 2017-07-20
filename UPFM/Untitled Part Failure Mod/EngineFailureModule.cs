@@ -56,24 +56,24 @@ namespace Untitled_Part_Failure_Mod
                 {
                     case 1:
                         failureType = "Fuel Flow Failure";
-                        Debug.Log("[UPFM]: attempted to perform Fuel Flow Failure on " + part.name);
+                        Debug.Log("[UPFM]: attempted to perform Fuel Flow Failure on " + SYP.ID);
                         break;
                     case 2:
                         failureType = "Fuel Line Leak";
-                        Debug.Log("[UPFM]: attempted to perform Fuel Line Leak on " + part.name);
+                        Debug.Log("[UPFM]: attempted to perform Fuel Line Leak on " + SYP.ID);
                         break;
                     case 3:
                         failureType = "Underthrust";
-                        Debug.Log("[UPFM]: attempted to perform Underthrust on " + part.name);
+                        Debug.Log("[UPFM]: attempted to perform Underthrust on " + SYP.ID);
                         break;
                     case 4:
                         if (gimbal == null) return;
                         failureType = "Gimbal Failure";
-                        Debug.Log("[UPFM]: attempted to lock gimbal on" + part.name);
+                        Debug.Log("[UPFM]: attempted to lock gimbal on" + SYP.ID);
                         break;
                     default:
                         failureType = "none";
-                        Debug.Log("[UPFM]: "+part.name+" decided not to fail after all");
+                        Debug.Log("[UPFM]: "+SYP.ID+" decided not to fail after all");
                         break;
                 }
                 ScreenMessages.PostScreenMessage(failureType + " detected on " + part.name);
@@ -117,12 +117,12 @@ namespace Untitled_Part_Failure_Mod
                 case "Fuel Flow Failure":
                     if (engine != null) engine.Activate();
                     else engineFX.Activate();
-                    Debug.Log("[UPFM]: Re-activated " + part.name);
+                    Debug.Log("[UPFM]: Re-activated " + SYP.ID);
                     break;
                 case "Underthrust":
                     if (engine != null) engine.thrustPercentage = 100;
                     else engineFX.thrustPercentage = 100;
-                    Debug.Log("[UPFM]: Reset Thrust on " + part.name);
+                    Debug.Log("[UPFM]: Reset Thrust on " + SYP.ID);
                     break;
                 case "Gimbal Failure":
                     gimbal.gimbalLock = false;

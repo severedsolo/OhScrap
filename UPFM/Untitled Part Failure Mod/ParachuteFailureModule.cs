@@ -35,7 +35,7 @@ namespace Untitled_Part_Failure_Mod
             message = true;
             postMessage = true;
             ScreenMessages.PostScreenMessage("Parachute Failure!");
-            Debug.Log("[UPFM]: " + part.name + " has failed");
+            Debug.Log("[UPFM]: " + SYP.ID + " parachute has failed");
         }
     }
 }

@@ -58,14 +58,14 @@ namespace Untitled_Part_Failure_Mod
                             hasFailed = false;
                             willFail = false;
                             postMessage = false;
-                            Debug.Log("[UPFM]: "+part.name + "has no resources that could fail. Failure aborted");
+                            Debug.Log("[UPFM]: "+SYP.ID + "has no resources that could fail. Failure aborted");
                             return;
                         }
                     }
                 }
                 leaking = potentialLeaks.ElementAt(r.Next(0, potentialLeaks.Count()));
                 leakingName = leaking.resourceName;
-                Debug.Log("[UPFM]: " + leaking.resourceName + " started leaking from " + part.name);
+                Debug.Log("[UPFM]: " + leaking.resourceName + " started leaking from " + SYP.ID);
                 ScreenMessages.PostScreenMessage("A tank of " + leaking.resourceName + " started to leak!");
                 failureType = leaking.resourceName+" leak";
             }

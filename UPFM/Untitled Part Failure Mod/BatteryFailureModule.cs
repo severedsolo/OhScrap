@@ -24,7 +24,7 @@ namespace Untitled_Part_Failure_Mod
             if(UPFM.highlight)UPFM.SetFailedHighlight();
             if (message) return;
             ScreenMessages.PostScreenMessage("Battery short circuited!");
-            Debug.Log("[UPFM]: " + part.name + "has short circuited");
+            Debug.Log("[UPFM]: " + SYP.ID + " has suffered a short circuit failure");
             message = true;
         }
 

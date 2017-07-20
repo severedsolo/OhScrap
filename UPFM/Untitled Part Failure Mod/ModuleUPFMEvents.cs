@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using ScrapYard.Modules;
 
 namespace Untitled_Part_Failure_Mod
 {
@@ -10,10 +11,12 @@ namespace Untitled_Part_Failure_Mod
     {
         public bool highlight = false;
         BaseFailureModule repair;
-
+        ModuleSYPartTracker SYP;
+        
         private void Start()
         {
-            Debug.Log("[UPFM]: UPFMEvents is Awake on "+part.partName);
+            SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
+            Debug.Log("[UPFM]: UPFMEvents is Awake on "+SYP.ID);
         }
 
         [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false, guiName = "Trash Part")]
@@ -54,7 +57,7 @@ namespace Untitled_Part_Failure_Mod
                 {
                     ScreenMessages.PostScreenMessage("This part is beyond repair");
                     if (!part.Modules.Contains("Broken")) part.AddModule("Broken");
-                    Debug.Log("[UPFM]: " + part.name + " is too badly damaged to be fixed");
+                    Debug.Log("[UPFM]: " + SYP.ID + " is too badly damaged to be fixed");
                     return;
                 }
                 repair.hasFailed = false;
@@ -62,7 +65,7 @@ namespace Untitled_Part_Failure_Mod
                 ScreenMessages.PostScreenMessage("The part should be ok to use now");
                 Events["RepairChecks"].active = false;
                 repair.RepairPart();
-                Debug.Log("[UPFM]: " + part.name + moduleName + " was successfully repaired");
+                Debug.Log("[UPFM]: " + SYP.ID+" " + moduleName + " was successfully repaired");
                 part.highlightType = Part.HighlightType.OnMouseOver;
             }
         }

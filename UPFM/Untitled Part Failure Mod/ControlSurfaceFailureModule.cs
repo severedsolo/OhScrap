@@ -34,7 +34,7 @@ namespace Untitled_Part_Failure_Mod
             if(UPFM.highlight)UPFM.SetFailedHighlight();
             if (message) return;
             ScreenMessages.PostScreenMessage("Control Surface Failure!");
-            Debug.Log("[UPFM]: " + part.name + " has suffered a control surface failure");
+            Debug.Log("[UPFM]: " + SYP.ID + " has suffered a control surface failure");
             message = true;
         }
 

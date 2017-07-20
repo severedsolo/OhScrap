@@ -26,7 +26,7 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = true, guiActive = false)]
         public int expectedLifetime = 2;
         public float actualLifetime;
-        ModuleSYPartTracker SYP;
+        public ModuleSYPartTracker SYP;
         public float chanceOfFailure = 0.5f;
         [KSPField(isPersistant = true, guiActive = false)]
         public float baseChanceOfFailure = 0.5f;
@@ -65,7 +65,7 @@ namespace Untitled_Part_Failure_Mod
             PartModule dontRecover = part.FindModuleImplementing<DontRecoverMe>();
             if (dontRecover == null) return;
             part.RemoveModule(dontRecover);
-            Debug.Log("[UPFM]: " + part.name + "marked as recoverable");
+            Debug.Log("[UPFM]: " + SYP.ID + "marked as recoverable");
         }
 
         private void OnSYTrackerUpdated(IEnumerable<InventoryPart> data)
@@ -99,7 +99,7 @@ namespace Untitled_Part_Failure_Mod
             {
                 failureTime = Planetarium.GetUniversalTime() + (maxTimeToFailure * UnityEngine.Random.value);
                 willFail = true;
-                Debug.Log("[UPFM]: " + part.name + " will attempt to fail at " + failureTime);
+                Debug.Log("[UPFM]: " + SYP.ID + " " + ClassName+ " will attempt to fail at " + failureTime);
             }
             displayChance = (int)(chanceOfFailure * 100);
             if(displayChance >= HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold && UPFMUtils.instance != null)
@@ -153,7 +153,7 @@ namespace Untitled_Part_Failure_Mod
             if (FailCheck(false))
             {
                 part.AddModule("Broken");
-                Debug.Log("[UPFM]: " + part.name + "is too badly damaged to be salvaged");
+                Debug.Log("[UPFM]: " + SYP.ID + "is too badly damaged to be salvaged");
             }
         }
 
@@ -161,7 +161,7 @@ namespace Untitled_Part_Failure_Mod
         {
             if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure + randomisation;
             else chanceOfFailure = (SYP.TimesRecovered / actualLifetime)+randomisation;
-            if (part != null) Debug.Log("[UPFM]: Chances of " + part.name + moduleName +" failing calculated to be " + chanceOfFailure * 100 + "%");
+            if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID +" "+ moduleName +" failing calculated to be " + chanceOfFailure * 100 + "%");
             if (UnityEngine.Random.value < chanceOfFailure) return true;
             return false;
         }

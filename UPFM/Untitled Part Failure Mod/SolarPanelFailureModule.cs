@@ -31,7 +31,7 @@ namespace Untitled_Part_Failure_Mod
                 panel.retractable = false;
                 originallyRetractable = true;
                 ScreenMessages.PostScreenMessage(part.name + " retraction mechanism jammed");
-                Debug.Log("[UPFM]: " + part.name + " retraction mechanism has jammed");
+                Debug.Log("[UPFM]: " + SYP.ID + " retraction mechanism has jammed");
                 if(UPFM.highlight)UPFM.SetFailedHighlight();
                 postMessage = true;
             }

@@ -41,12 +41,33 @@ namespace Untitled_Part_Failure_Mod
         System.Random r = new System.Random();
         ApplicationLauncherButton ToolbarButton;
 
-
-
         private void Awake()
         {
             instance = this;
         }
+        private void Start()
+        {
+            GameEvents.onPartDie.Add(OnPartDie);
+            GameEvents.onGUIApplicationLauncherReady.Add(GUIReady);
+            s.Append("WARNING: The following parts are above the safety threshold");
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyRecover) s.Append(" and won't be recovered");
+        }
+
+        private void OnPartDie(Part part)
+        {
+            ModuleSYPartTracker SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
+            if (SYP == null) return;
+            randomisation.Remove(SYP.ID);
+            batteryLifetimes.Remove(SYP.ID);
+            controlSurfaceLifetimes.Remove(SYP.ID);
+            engineLifetimes.Remove(SYP.ID);
+            parachuteLifetimes.Remove(SYP.ID);
+            reactionWheelLifetimes.Remove(SYP.ID);
+            solarPanelLifetimes.Remove(SYP.ID);
+            tankLifetimes.Remove(SYP.ID);
+            Debug.Log("[UPFM]: Stopped Tracking " + SYP.ID);
+        }
+
         public float GetRandomisation(Part p)
         {
             ModuleSYPartTracker SYP = p.FindModuleImplementing<ModuleSYPartTracker>();
@@ -60,7 +81,7 @@ namespace Untitled_Part_Failure_Mod
             if (!float.IsNaN(f))
             {
                 randomisation.Add(SYP.ID, f);
-                Debug.Log("[UPFM]: Applied Random Factor of " + f + " to part " + p.partName);
+                Debug.Log("[UPFM]: Applied Random Factor of " + f + " to part " + SYP.ID);
             }
             return f;
         }
@@ -109,14 +130,6 @@ namespace Untitled_Part_Failure_Mod
                     break;
             }
             return i;
-        }
-
-
-        private void Start()
-        {
-            GameEvents.onGUIApplicationLauncherReady.Add(GUIReady);
-            s.Append("WARNING: The following parts are above the safety threshold");
-            if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyRecover) s.Append(" and won't be recovered");
         }
 
         public void GUIReady()
@@ -209,6 +222,7 @@ namespace Untitled_Part_Failure_Mod
         {
             display = false;
             GameEvents.onGUIApplicationLauncherReady.Remove(GUIReady);
+            GameEvents.onPartDie.Remove(OnPartDie);
             if (ToolbarButton == null) return;
             ApplicationLauncher.Instance.RemoveModApplication(ToolbarButton);
         }
