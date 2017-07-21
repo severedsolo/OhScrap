@@ -43,14 +43,15 @@ namespace Untitled_Part_Failure_Mod
             Overrides();
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             ScrapYardEvents.OnSYInventoryAppliedToVessel.Add(OnSYInventoryAppliedToVessel);
+            UPFM = part.FindModuleImplementing<ModuleUPFMEvents>();
+            UPFM.RefreshPart();
             if (launched || HighLogic.LoadedSceneIsEditor) Initialise();
             GameEvents.onLaunch.Add(OnLaunch);
-            UPFM = part.FindModuleImplementing<ModuleUPFMEvents>();
         }
 
         private void OnSYInventoryAppliedToVessel()
         {
-            Debug.Log("[UPFM]: ScrayYard Inventory Applied. Recalculating failure chance");
+            Debug.Log("[UPFM]: ScrayYard Inventory Applied. Recalculating failure chance for "+SYP.ID+" "+ClassName);
             if(UPFMUtils.instance != null) UPFMUtils.instance.damagedParts.Remove(part);
             willFail = false;
             chanceOfFailure = baseChanceOfFailure;
@@ -70,7 +71,7 @@ namespace Untitled_Part_Failure_Mod
 
         private void OnSYTrackerUpdated(IEnumerable<InventoryPart> data)
         {
-            Debug.Log("[UPFM]: ScrayYard Tracker updated. Recalculating failure chance");
+            Debug.Log("[UPFM]: ScrayYard Tracker updated. Recalculating failure chance for "+SYP.ID+" "+ClassName);
             willFail = false;
             chanceOfFailure = baseChanceOfFailure;
             Initialise();

@@ -12,13 +12,20 @@ namespace Untitled_Part_Failure_Mod
         public bool highlight = false;
         BaseFailureModule repair;
         ModuleSYPartTracker SYP;
+        public bool refreshed = false;
         
         private void Start()
         {
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
-            Debug.Log("[UPFM]: UPFMEvents is Awake on "+SYP.ID);
+            Debug.Log("[UPFM]: UPFMEvents.Start "+SYP.ID);
         }
-
+        public void RefreshPart()
+        {
+            if (!HighLogic.LoadedSceneIsEditor || refreshed) return;
+            SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
+            if(SYP.TimesRecovered == 0) SYP.MakeFresh();
+            refreshed = true;
+        }
         [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false, guiName = "Trash Part")]
         public void TrashPart()
         {
