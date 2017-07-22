@@ -189,6 +189,7 @@ namespace Untitled_Part_Failure_Mod
                         ModuleSYPartTracker SYP = v.Key.FindModuleImplementing<ModuleSYPartTracker>();
                         SYP.MakeFresh();
                         repairedList.Add(v.Key);
+                        ScrapYardWrapper.RemovePartFromInventory(v.Key);
                     }
                     damagedParts.Clear();
                     if (repairedList.Count() == 0) return;
