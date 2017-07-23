@@ -33,7 +33,8 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = false, guiActive = true, guiName = "BaseFailure" ,guiActiveEditor = true, guiUnits = "%")]
         public int displayChance = 0;
         double failureTime = 0;
-        public double maxTimeToFailure = 21600;
+        public double maxTimeToFailure = 1800;
+        double nextUpdate = 0;
         public ModuleUPFMEvents UPFM;
 
 
@@ -105,17 +106,25 @@ namespace Untitled_Part_Failure_Mod
             {
                 if (UPFMUtils.instance.damagedParts.TryGetValue(part, out int i))
                 {
-                    if (i >= displayChance) return;
+                    if (i < displayChance)
+                    {
+                        UPFMUtils.instance.damagedParts.Remove(part);
+                        UPFMUtils.instance.damagedParts.Add(part, displayChance);
+                        UPFMUtils.instance.display = true;
+                    }
                 }
-                UPFMUtils.instance.damagedParts.Remove(part);
-                UPFMUtils.instance.damagedParts.Add(part, displayChance);
-                UPFMUtils.instance.display = true;
+                else
+                {
+                    UPFMUtils.instance.damagedParts.Add(part, displayChance);
+                    UPFMUtils.instance.display = true;
+                }
             }
             if (UPFMUtils.instance != null && hasFailed)
             {
                 if (!UPFMUtils.instance.brokenParts.ContainsKey(part)) UPFMUtils.instance.brokenParts.Add(part, displayChance);
                 UPFMUtils.instance.damagedParts.Remove(part);
             }
+            nextUpdate = Planetarium.GetUniversalTime() + 1800;
         }
         protected virtual void Overrides() { }
 
@@ -141,14 +150,24 @@ namespace Untitled_Part_Failure_Mod
                     postMessage = false;
                     UPFM.Events["ToggleHighlight"].active = true;
                     UPFM.highlight = true;
-                }                    
+                }
                 return;
             }
-            if (!willFail) return;
+            if (!willFail)
+            {
+                if (nextUpdate < Planetarium.GetUniversalTime()) Initialise();
+                return;
+            }
             if (Planetarium.GetUniversalTime() < failureTime) return;
             hasFailed = true;
+            if (Randomiser.instance.NextDouble() > 0.2)
+            {
+                hasFailed = false;
+                willFail = false;
+                Debug.Log("[UPFM]: " + SYP.ID + ClassName + ": Failure Aborted");
+            }
             if (!hasFailed) return;
-            if(UPFMUtils.instance != null)
+            if (UPFMUtils.instance != null)
             {
                 if (!UPFMUtils.instance.brokenParts.ContainsKey(part)) UPFMUtils.instance.brokenParts.Add(part, displayChance);
                 UPFMUtils.instance.damagedParts.Remove(part);
@@ -160,6 +179,7 @@ namespace Untitled_Part_Failure_Mod
                 Debug.Log("[UPFM]: " + SYP.ID + "is too badly damaged to be salvaged");
             }
         }
+        
 
         public bool FailCheck(bool recalcChance)
         {
