@@ -8,7 +8,6 @@ namespace Untitled_Part_Failure_Mod
 {
     class TankFailureModule : BaseFailureModule
     {
-        System.Random r = new System.Random();
         PartResource leaking;
         [KSPField(isPersistant = true, guiActive = false)]
         public string leakingName = "None";
@@ -63,7 +62,7 @@ namespace Untitled_Part_Failure_Mod
                         }
                     }
                 }
-                leaking = potentialLeaks.ElementAt(r.Next(0, potentialLeaks.Count()));
+                leaking = potentialLeaks.ElementAt(Randomiser.instance.RandomInteger(0, potentialLeaks.Count()));
                 leakingName = leaking.resourceName;
                 Debug.Log("[UPFM]: " + leaking.resourceName + " started leaking from " + SYP.ID);
                 ScreenMessages.PostScreenMessage("A tank of " + leaking.resourceName + " started to leak!");

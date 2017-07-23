@@ -60,6 +60,7 @@
     <Compile Include="ControlSurfaceFailureModule.cs" />
     <Compile Include="DontRecoverMe.cs" />
     <Compile Include="KRASHWrapper.cs" />
+    <Compile Include="Randomiser.cs" />
     <Compile Include="UPFMUtils.cs" />
     <Compile Include="EngineFailureModule.cs" />
     <Compile Include="ModuleUPFMEvents.cs" />

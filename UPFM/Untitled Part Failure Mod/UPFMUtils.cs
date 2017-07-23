@@ -38,7 +38,6 @@ namespace Untitled_Part_Failure_Mod
         public static UPFMUtils instance;
         Rect Window = new Rect(500, 100, 240, 50);
         StringBuilder s = new StringBuilder();
-        System.Random r = new System.Random();
         ApplicationLauncherButton ToolbarButton;
 
         private void Awake()
@@ -76,7 +75,7 @@ namespace Untitled_Part_Failure_Mod
             int builds;
             if (HighLogic.LoadedSceneIsEditor) builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW) + 1;
             else builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW);
-            f = (UnityEngine.Random.value / 3) / builds;
+            f = ((float)Randomiser.instance.NextDouble() / 3) / builds;
             f = (float)Math.Round(f, 2);
             if (!float.IsNaN(f))
             {
@@ -96,37 +95,37 @@ namespace Untitled_Part_Failure_Mod
             {
                 case "BatteryFailureModule":
                     if (batteryLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = r.Next(expectedLifetime / 2, (int)maxLifetime);
+                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
                     batteryLifetimes.Add(SYP.ID, i);
                     break;
                 case "ControlSurfaceFailureModule":
                     if (controlSurfaceLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = r.Next(expectedLifetime / 2, (int)maxLifetime);
+                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
                     controlSurfaceLifetimes.Add(SYP.ID, i);
                     break;
                 case "EngineFailureModule":
                     if (engineLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = r.Next(expectedLifetime / 2, (int)maxLifetime);
+                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
                     engineLifetimes.Add(SYP.ID, i);
                     break;
                 case "ParachuteFailureModule":
                     if (parachuteLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = r.Next(expectedLifetime / 2, (int)maxLifetime);
+                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
                     parachuteLifetimes.Add(SYP.ID, i);
                     break;
                 case "ReactionWheelFailureModule":
                     if (reactionWheelLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = r.Next(expectedLifetime / 2, (int)maxLifetime);
+                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
                     reactionWheelLifetimes.Add(SYP.ID, i);
                     break;
                 case "SolarPanelFailureModule":
                     if (solarPanelLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = r.Next(expectedLifetime / 2, (int)maxLifetime);
+                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
                     solarPanelLifetimes.Add(SYP.ID, i);
                     break;
                 case "TankFailureModule":
                     if (tankLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = r.Next(expectedLifetime / 2, (int)maxLifetime);
+                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
                     tankLifetimes.Add(SYP.ID, i);
                     break;
             }

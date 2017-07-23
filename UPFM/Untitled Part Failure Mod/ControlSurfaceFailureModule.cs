@@ -9,7 +9,6 @@ namespace Untitled_Part_Failure_Mod
     class ControlSurfaceFailureModule : BaseFailureModule
     {
         ModuleControlSurface controlSurface;
-        System.Random r = new System.Random();
         [KSPField(isPersistant = true, guiActive = false)]
         bool message;
 

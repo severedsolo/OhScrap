@@ -11,7 +11,6 @@ namespace Untitled_Part_Failure_Mod
         ModuleEngines engine;
         ModuleEnginesFX engineFX;
         double timeBetweenFailureEvents = 0;
-        System.Random r = new System.Random();
         [KSPField(isPersistant = true, guiActive = false)]
         float staticThrust;
         ModuleGimbal gimbal;
@@ -51,7 +50,7 @@ namespace Untitled_Part_Failure_Mod
             if(UPFM.highlight) UPFM.SetFailedHighlight();
             if (failureType == "none")
             {
-                int i = r.Next(1, 5);
+                int i = Randomiser.instance.RandomInteger(1, 5);
                 switch (i)
                 {
                     case 1:
@@ -93,7 +92,7 @@ namespace Untitled_Part_Failure_Mod
                     {
                         if (engine != null) engine.thrustPercentage = engine.thrustPercentage * 0.9f;
                         else engineFX.thrustPercentage = engine.thrustPercentage * 0.9f;
-                        timeBetweenFailureEvents = Planetarium.GetUniversalTime() + r.Next(10,30);
+                        timeBetweenFailureEvents = Planetarium.GetUniversalTime() + Randomiser.instance.RandomInteger(10,30);
                         if (engine != null) staticThrust = engine.thrustPercentage;
                         else staticThrust = engineFX.thrustPercentage;
                     }

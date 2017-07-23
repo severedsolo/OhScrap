@@ -11,7 +11,6 @@ namespace Untitled_Part_Failure_Mod
 {
     class BaseFailureModule : PartModule
     {
-        UnityEngine.Random r = new UnityEngine.Random();
         bool ready = false;
         public float randomisation;
         public bool willFail = false;
@@ -95,7 +94,7 @@ namespace Untitled_Part_Failure_Mod
             {
                 if (FailCheck(true) && !HighLogic.LoadedSceneIsEditor && launched)
                 {
-                    double timeToFailure = (maxTimeToFailure * (1 - chanceOfFailure)) * UnityEngine.Random.value;
+                    double timeToFailure = (maxTimeToFailure * (1 - chanceOfFailure)) * Randomiser.instance.NextDouble();
                     failureTime = Planetarium.GetUniversalTime() + maxTimeToFailure;
                     willFail = true;
                     Debug.Log("[UPFM]: " + SYP.ID + " " + ClassName + " will attempt to fail in " + timeToFailure + " seconds");
@@ -167,7 +166,7 @@ namespace Untitled_Part_Failure_Mod
             if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure + randomisation;
             else chanceOfFailure = (SYP.TimesRecovered / actualLifetime)+randomisation;
             if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID +" "+ moduleName +" failing calculated to be " + chanceOfFailure * 100 + "%");
-            if (UnityEngine.Random.value < chanceOfFailure) return true;
+            if (Randomiser.instance.NextDouble() < chanceOfFailure) return true;
             return false;
         }
 
