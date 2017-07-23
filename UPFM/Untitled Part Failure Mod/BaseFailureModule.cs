@@ -27,13 +27,14 @@ namespace Untitled_Part_Failure_Mod
         public int expectedLifetime = 2;
         public float actualLifetime;
         public ModuleSYPartTracker SYP;
+        [KSPField(isPersistant = true, guiActive = false)]
         public float chanceOfFailure = 0.5f;
         [KSPField(isPersistant = true, guiActive = false)]
         public float baseChanceOfFailure = 0.5f;
         [KSPField(isPersistant = false, guiActive = true, guiName = "BaseFailure" ,guiActiveEditor = true, guiUnits = "%")]
         public int displayChance = 0;
         double failureTime = 0;
-        public double maxTimeToFailure = 1800;
+        public double maxTimeToFailure = 21600;
         public ModuleUPFMEvents UPFM;
 
 
@@ -89,29 +90,32 @@ namespace Untitled_Part_Failure_Mod
             {
                 UPFM.Events["RepairChecks"].active = true;
                 UPFM.Events["ToggleHighlight"].active = true;
-                if(UPFMUtils.instance != null)
-                {
-                    if (!UPFMUtils.instance.brokenParts.ContainsKey(part)) UPFMUtils.instance.brokenParts.Add(part, displayChance);
-                    UPFMUtils.instance.damagedParts.Remove(part);
-                }
-                return;
             }
-            if (FailCheck(true) && !HighLogic.LoadedSceneIsEditor && launched)
+            else
             {
-                failureTime = Planetarium.GetUniversalTime() + (maxTimeToFailure * UnityEngine.Random.value);
-                willFail = true;
-                Debug.Log("[UPFM]: " + SYP.ID + " " + ClassName+ " will attempt to fail at " + failureTime);
+                if (FailCheck(true) && !HighLogic.LoadedSceneIsEditor && launched)
+                {
+                    double timeToFailure = (maxTimeToFailure * (1 - chanceOfFailure)) * UnityEngine.Random.value;
+                    failureTime = Planetarium.GetUniversalTime() + maxTimeToFailure;
+                    willFail = true;
+                    Debug.Log("[UPFM]: " + SYP.ID + " " + ClassName + " will attempt to fail in " + timeToFailure + " seconds");
+                }
             }
             displayChance = (int)(chanceOfFailure * 100);
-            if(displayChance >= HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold && UPFMUtils.instance != null)
+            if (displayChance >= HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold && UPFMUtils.instance != null)
             {
-                if(UPFMUtils.instance.damagedParts.TryGetValue(part, out int i))
+                if (UPFMUtils.instance.damagedParts.TryGetValue(part, out int i))
                 {
                     if (i >= displayChance) return;
                 }
                 UPFMUtils.instance.damagedParts.Remove(part);
                 UPFMUtils.instance.damagedParts.Add(part, displayChance);
                 UPFMUtils.instance.display = true;
+            }
+            if (UPFMUtils.instance != null && hasFailed)
+            {
+                if (!UPFMUtils.instance.brokenParts.ContainsKey(part)) UPFMUtils.instance.brokenParts.Add(part, displayChance);
+                UPFMUtils.instance.damagedParts.Remove(part);
             }
         }
         protected virtual void Overrides() { }

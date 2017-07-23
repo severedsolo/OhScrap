@@ -9,6 +9,7 @@ namespace Untitled_Part_Failure_Mod
 {
     class ModuleUPFMEvents : PartModule
     {
+        [KSPField(isPersistant = true, guiActive = false)]
         public bool highlight = false;
         BaseFailureModule repair;
         ModuleSYPartTracker SYP;
@@ -17,7 +18,7 @@ namespace Untitled_Part_Failure_Mod
         private void Start()
         {
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
-            Debug.Log("[UPFM]: UPFMEvents.Start "+SYP.ID);
+            Debug.Log("[UPFM]: UPFMEvents.Start"+SYP.ID);
         }
         public void RefreshPart()
         {
