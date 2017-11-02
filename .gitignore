@@ -53,3 +53,8 @@ Temporary Items
 *.txt
 *.mdb
 *.zip
+*.lock
+*.ide
+*.ide-shm
+*.ide-wal
+*.CopyComplete
