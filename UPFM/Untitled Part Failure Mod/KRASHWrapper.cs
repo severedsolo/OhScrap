@@ -310,7 +310,6 @@ namespace Untitled_Part_Failure_Mod
 					if (successList != null) {
 						System.Reflection.MethodInfo addMethod = successList.GetType ().GetMethod ("simulationActive");
 						b = (bool)addMethod.Invoke (successList, new object[] { });
-						InfoLog("KRASHWrapper.simulationActive  b: " + b.ToString());
 						return b;
 					} else {
 						InfoLog ("successList == null");
