@@ -1,0 +1,35 @@
+{
+    "NAME"     : "UPFM",
+    "URL"      : "https://github.com/severedsolo/UPFM/blob/master/UPFM/Untitled%20Part%20Failure%20Mod/bin/Release/GameData/UPFM.version",
+    "DOWNLOAD" : "https://github.com/severedsolo/UPFM/releases",
+    "GITHUB" :
+    {
+        "USERNAME" : "severedsolo",
+        "REPOSITORY" : "UPFM"
+    },
+    "VERSION" :
+    {
+        "MAJOR" : 0,
+        "MINOR" : 9,
+        "PATCH" : 1,
+        "BUILD" : 1
+    },
+    "KSP_VERSION" :
+    {
+        "MAJOR" : 1,
+        "MINOR" : 3,
+        "PATCH" : 1
+    },
+    "KSP_VERSION_MIN" :
+    {
+        "MAJOR" : 1,
+        "MINOR" : 3,
+        "PATCH" : 1
+    },
+    "KSP_VERSION_MAX" :
+    {
+        "MAJOR" : 1,
+        "MINOR" : 3,
+        "PATCH" : 1
+    }
+}
