@@ -30,12 +30,11 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = true, guiActive = false)]
         public float chanceOfFailure = 0.5f;
         [KSPField(isPersistant = true, guiActive = false)]
-        public float baseChanceOfFailure = 0.5f;
+        public float baseChanceOfFailure = 0.01f;
         [KSPField(isPersistant = false, guiActive = true, guiName = "BaseFailure" ,guiActiveEditor = true, guiUnits = "%")]
         public int displayChance = 0;
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
-        double nextUpdate = 0;
         public ModuleUPFMEvents UPFM;
 
 
@@ -125,7 +124,6 @@ namespace Untitled_Part_Failure_Mod
                 if (!UPFMUtils.instance.brokenParts.ContainsKey(part)) UPFMUtils.instance.brokenParts.Add(part, displayChance);
                 UPFMUtils.instance.damagedParts.Remove(part);
             }
-            nextUpdate = Planetarium.GetUniversalTime() + 1800;
         }
         protected virtual void Overrides() { }
 
@@ -156,7 +154,6 @@ namespace Untitled_Part_Failure_Mod
             }
             if (!willFail)
             {
-                if (nextUpdate < Planetarium.GetUniversalTime()) Initialise();
                 return;
             }
             if (Planetarium.GetUniversalTime() < failureTime) return;

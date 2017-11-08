@@ -79,7 +79,7 @@ namespace Untitled_Part_Failure_Mod
             int counter = 0;
             while (f < 0.01f)
             {
-                f = ((float)Randomiser.instance.NextDouble() / 2) / builds;
+                f = ((float)Randomiser.instance.NextDouble() / 3) / builds;
                 f = (float)Math.Round(f, 2);
                 counter++;
                 if (counter > 100) f = 0.01f;
