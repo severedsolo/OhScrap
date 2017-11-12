@@ -35,5 +35,7 @@ namespace Untitled_Part_Failure_Mod
         public bool TankFailureModuleAllowed = true;
         [GameParameters.CustomParameterUI("Solar Panels")]
         public bool SolarPanelFailureModuleAllowed = true;
+        [GameParameters.CustomParameterUI("RCS")]
+        public bool RCSFailureModuleAllowed = true;
     }
 }
