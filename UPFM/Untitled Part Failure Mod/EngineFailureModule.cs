@@ -24,7 +24,7 @@ namespace Untitled_Part_Failure_Mod
             if(engine.maxThrust < 100.0f)
             {
                 expectedLifetime = 25;
-                baseChanceOfFailure = 0.05f;
+                baseChanceOfFailure = 0.005f;
             }
         }
 
