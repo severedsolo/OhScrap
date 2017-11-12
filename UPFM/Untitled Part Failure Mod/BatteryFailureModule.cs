@@ -21,14 +21,14 @@ namespace Untitled_Part_Failure_Mod
             battery = part.Resources["ElectricCharge"];
             battery.amount = 0;
             battery.flowState = false;
-            if(highlight)SetFailedHighlight();
+            if(UPFM.highlight)UPFM.SetFailedHighlight();
             if (message) return;
             ScreenMessages.PostScreenMessage("Battery short circuited!");
-            Debug.Log("[UPFM]: " + part.name + "has short circuited");
+            Debug.Log("[UPFM]: " + SYP.ID + " has suffered a short circuit failure");
             message = true;
         }
 
-        protected override void RepairPart()
+        public override void RepairPart()
         {
             battery = part.Resources["ElectricCharge"];
             battery.flowState = true;

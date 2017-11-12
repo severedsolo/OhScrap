@@ -31,13 +31,13 @@ namespace Untitled_Part_Failure_Mod
                 panel.retractable = false;
                 originallyRetractable = true;
                 ScreenMessages.PostScreenMessage(part.name + " retraction mechanism jammed");
-                Debug.Log("[UPFM]: " + part.name + " retraction mechanism has jammed");
-                if(highlight)SetFailedHighlight();
+                Debug.Log("[UPFM]: " + SYP.ID + " retraction mechanism has jammed");
+                if(UPFM.highlight)UPFM.SetFailedHighlight();
                 postMessage = true;
             }
         }
 
-        protected override void RepairPart()
+        public override void RepairPart()
         {
             panel = part.FindModuleImplementing<ModuleDeployableSolarPanel>();
             if (originallyRetractable) panel.retractable = true;

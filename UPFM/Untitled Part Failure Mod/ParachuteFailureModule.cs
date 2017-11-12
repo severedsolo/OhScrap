@@ -30,12 +30,12 @@ namespace Untitled_Part_Failure_Mod
             if (chute.vessel != FlightGlobals.ActiveVessel) return;
             if (chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED) chute.CutParachute();
             else return;
-            if(highlight)SetFailedHighlight();
+            if(UPFM.highlight)UPFM.SetFailedHighlight();
             if (message) return;
             message = true;
             postMessage = true;
             ScreenMessages.PostScreenMessage("Parachute Failure!");
-            Debug.Log("[UPFM]: " + part.name + " has failed");
+            Debug.Log("[UPFM]: " + SYP.ID + " parachute has failed");
         }
     }
 }

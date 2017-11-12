@@ -9,7 +9,6 @@ namespace Untitled_Part_Failure_Mod
     class ControlSurfaceFailureModule : BaseFailureModule
     {
         ModuleControlSurface controlSurface;
-        System.Random r = new System.Random();
         [KSPField(isPersistant = true, guiActive = false)]
         bool message;
 
@@ -31,14 +30,14 @@ namespace Untitled_Part_Failure_Mod
             controlSurface.ignorePitch = true;
             controlSurface.ignoreRoll = true;
             controlSurface.ignoreYaw = true;
-            if(highlight)SetFailedHighlight();
+            if(UPFM.highlight)UPFM.SetFailedHighlight();
             if (message) return;
             ScreenMessages.PostScreenMessage("Control Surface Failure!");
-            Debug.Log("[UPFM]: " + part.name + " has suffered a control surface failure");
+            Debug.Log("[UPFM]: " + SYP.ID + " has suffered a control surface failure");
             message = true;
         }
 
-        protected override void RepairPart()
+        public override void RepairPart()
         {
             controlSurface = part.FindModuleImplementing<ModuleControlSurface>();
             controlSurface.ignorePitch = false;

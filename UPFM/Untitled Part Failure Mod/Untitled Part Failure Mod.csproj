@@ -59,9 +59,14 @@
     <Compile Include="Broken.cs" />
     <Compile Include="ControlSurfaceFailureModule.cs" />
     <Compile Include="DontRecoverMe.cs" />
-    <Compile Include="EditorWarnings.cs" />
+    <Compile Include="KRASHWrapper.cs" />
+    <Compile Include="Randomiser.cs" />
+    <Compile Include="RCSFailureModule.cs" />
+    <Compile Include="UPFMUtils.cs" />
     <Compile Include="EngineFailureModule.cs" />
+    <Compile Include="ModuleUPFMEvents.cs" />
     <Compile Include="ParachuteFailureModule.cs" />
+    <Compile Include="UPFMData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReactionWheelFailureModule.cs" />
     <Compile Include="SolarPanelFailureModule.cs" />
@@ -71,8 +76,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"D:\OneDrive\Documents\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"
-xcopy /Y "$(TargetPath)" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.3 ModDev\GameData\UntitledFailures"
-xcopy /Y "$(TargetDir)$(TargetName).pdb" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.3 ModDev\GameData\UntitledFailures"
-xcopy /Y "$(TargetDir)$(TargetName).dll.mdb" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - 1.3 ModDev\GameData\UntitledFailures"</PostBuildEvent>
+xcopy /Y "$(TargetPath)" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\UntitledFailures"
+xcopy /Y "$(TargetDir)$(TargetName).pdb" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\UntitledFailures"
+xcopy /Y "$(TargetDir)$(TargetName).dll.mdb" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\UntitledFailures"</PostBuildEvent>
   </PropertyGroup>
 </Project>
