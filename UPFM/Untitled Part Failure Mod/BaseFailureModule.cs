@@ -95,7 +95,7 @@ namespace Untitled_Part_Failure_Mod
                 if (FailCheck(true) && !HighLogic.LoadedSceneIsEditor && launched)
                 {
                     double timeToFailure = (maxTimeToFailure * (1 - chanceOfFailure)) * Randomiser.instance.NextDouble();
-                    failureTime = Planetarium.GetUniversalTime() + maxTimeToFailure;
+                    failureTime = Planetarium.GetUniversalTime() + timeToFailure;
                     willFail = true;
                     Debug.Log("[UPFM]: " + SYP.ID + " " + ClassName + " will attempt to fail in " + timeToFailure + " seconds");
                 }
