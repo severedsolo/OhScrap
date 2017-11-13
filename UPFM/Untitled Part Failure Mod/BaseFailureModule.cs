@@ -157,13 +157,6 @@ namespace Untitled_Part_Failure_Mod
             }
             if (Planetarium.GetUniversalTime() < failureTime) return;
             hasFailed = true;
-            if (Randomiser.instance.NextDouble() > 0.2)
-            {
-                hasFailed = false;
-                willFail = false;
-                Debug.Log("[UPFM]: " + SYP.ID + ClassName + ": Failure Aborted");
-            }
-            if (!hasFailed) return;
             if (UPFMUtils.instance != null)
             {
                 if (!UPFMUtils.instance.brokenParts.ContainsKey(part)) UPFMUtils.instance.brokenParts.Add(part, displayChance);
