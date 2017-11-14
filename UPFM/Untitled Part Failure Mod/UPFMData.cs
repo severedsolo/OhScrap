@@ -35,8 +35,10 @@ namespace Untitled_Part_Failure_Mod
                 if (UPFMUtils.instance.solarPanelLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("SolarPanelLifetime", i, true);
                 if (UPFMUtils.instance.reactionWheelLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("ReactionWheelLifetime", i, true);
                 if (UPFMUtils.instance.tankLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("TankLifetime", i, true);
+                if (UPFMUtils.instance.RCSLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("RCSLifetime", i, true);
                 temp.AddNode(cn);
             }
+            Debug.Log("[UPFM]: Saved");
         }
 
         public override void OnLoad(ConfigNode node)
@@ -66,7 +68,9 @@ namespace Untitled_Part_Failure_Mod
                 if (int.TryParse(cn.GetValue("SolarPanelLifetime"), out dict)) UPFMUtils.instance.solarPanelLifetimes.Add(s, dict);
                 if (int.TryParse(cn.GetValue("TankLifetime"), out dict)) UPFMUtils.instance.tankLifetimes.Add(s, dict);
                 if (int.TryParse(cn.GetValue("BatteryLifetime"), out dict)) UPFMUtils.instance.batteryLifetimes.Add(s, dict);
+                if (int.TryParse(cn.GetValue("RCSLifetime"), out dict)) UPFMUtils.instance.RCSLifetimes.Add(s, dict);
             }
+            Debug.Log("[UPFM]: Loaded");
         }
     }
 }

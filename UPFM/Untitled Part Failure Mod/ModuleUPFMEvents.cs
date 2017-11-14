@@ -18,7 +18,9 @@ namespace Untitled_Part_Failure_Mod
         private void Start()
         {
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
+#if DEBUG
             Debug.Log("[UPFM]: UPFMEvents.Start"+SYP.ID);
+#endif
         }
         public void RefreshPart()
         {
@@ -32,6 +34,7 @@ namespace Untitled_Part_Failure_Mod
         {
             if (part.FindModuleImplementing<Broken>() == null) part.AddModule("Broken");
             ScreenMessages.PostScreenMessage(part.name + " will not be recovered");
+            Debug.Log("[UPFM]: TrashPart " + SYP.ID);
         }
 
         [KSPEvent(active = false, guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false, guiName = "Toggle Failure Highlight")]

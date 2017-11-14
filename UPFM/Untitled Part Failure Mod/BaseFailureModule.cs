@@ -51,7 +51,9 @@ namespace Untitled_Part_Failure_Mod
 
         private void OnSYInventoryAppliedToVessel()
         {
+#if DEBUG
             Debug.Log("[UPFM]: ScrayYard Inventory Applied. Recalculating failure chance for "+SYP.ID+" "+ClassName);
+# endif
             if(UPFMUtils.instance != null) UPFMUtils.instance.damagedParts.Remove(part);
             willFail = false;
             chanceOfFailure = baseChanceOfFailure;
@@ -66,12 +68,16 @@ namespace Untitled_Part_Failure_Mod
             PartModule dontRecover = part.FindModuleImplementing<DontRecoverMe>();
             if (dontRecover == null) return;
             part.RemoveModule(dontRecover);
+#if DEBUG
             Debug.Log("[UPFM]: " + SYP.ID + "marked as recoverable");
+#endif
         }
 
         private void OnSYTrackerUpdated(IEnumerable<InventoryPart> data)
         {
+#if DEBUG
             Debug.Log("[UPFM]: ScrayYard Tracker updated. Recalculating failure chance for "+SYP.ID+" "+ClassName);
+#endif
             willFail = false;
             chanceOfFailure = baseChanceOfFailure;
             Initialise();
@@ -98,6 +104,9 @@ namespace Untitled_Part_Failure_Mod
                     failureTime = Planetarium.GetUniversalTime() + timeToFailure;
                     willFail = true;
                     Debug.Log("[UPFM]: " + SYP.ID + " " + ClassName + " will attempt to fail in " + timeToFailure + " seconds");
+#if RELEASE
+                    Debug.Log("[UPFM]: "Chance of Failure was"+displayChance+"%";
+#endif
                 }
             }
             displayChance = (int)(chanceOfFailure * 100);
@@ -109,13 +118,13 @@ namespace Untitled_Part_Failure_Mod
                     {
                         UPFMUtils.instance.damagedParts.Remove(part);
                         UPFMUtils.instance.damagedParts.Add(part, displayChance);
-                        UPFMUtils.instance.display = true;
+                        if (HighLogic.LoadedSceneIsEditor) UPFMUtils.instance.display = true;
                     }
                 }
                 else
                 {
                     UPFMUtils.instance.damagedParts.Add(part, displayChance);
-                    UPFMUtils.instance.display = true;
+                    if(HighLogic.LoadedSceneIsEditor) UPFMUtils.instance.display = true;
                 }
             }
             if (UPFMUtils.instance != null && hasFailed)

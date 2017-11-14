@@ -32,6 +32,7 @@ namespace Untitled_Part_Failure_Mod
         public Dictionary<string, int> reactionWheelLifetimes = new Dictionary<string, int>();
         public Dictionary<string, int> solarPanelLifetimes = new Dictionary<string, int>();
         public Dictionary<string, int> tankLifetimes = new Dictionary<string, int>();
+        public Dictionary<string, int> RCSLifetimes = new Dictionary<string, int>();
 
         public bool display = false;
         bool dontBother = false;
@@ -64,7 +65,9 @@ namespace Untitled_Part_Failure_Mod
             reactionWheelLifetimes.Remove(SYP.ID);
             solarPanelLifetimes.Remove(SYP.ID);
             tankLifetimes.Remove(SYP.ID);
+#if DEBUG
             Debug.Log("[UPFM]: Stopped Tracking " + SYP.ID);
+#endif
         }
 
         public float GetRandomisation(Part p)
@@ -85,11 +88,13 @@ namespace Untitled_Part_Failure_Mod
                 if (counter > 100) f = 0.01f;
             }
             float threshold = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold/100.0f;
-            if (f > threshold) f = threshold;
+            if (f > threshold) f = threshold-1;
             if (!float.IsNaN(f))
             {
                 randomisation.Add(SYP.ID, f);
+#if DEBUG
                 Debug.Log("[UPFM]: Applied Random Factor of " + f + " to part " + SYP.ID);
+#endif
             }
             return f;
         }
@@ -137,6 +142,11 @@ namespace Untitled_Part_Failure_Mod
                     i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
                     tankLifetimes.Add(SYP.ID, i);
                     break;
+                case "RCSFailureModule":
+                    if (RCSLifetimes.TryGetValue(SYP.ID, out i)) return i;
+                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
+                    RCSLifetimes.Add(SYP.ID, i);
+                    break;
             }
             return i;
         }
@@ -166,6 +176,7 @@ namespace Untitled_Part_Failure_Mod
             if (dontBother) return;
             if (!display) return;
             if (damagedParts.Count == 0 && HighLogic.LoadedSceneIsEditor) return;
+            if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) return;
             Window = GUILayout.Window(98399854, Window, GUIDisplay, "UPFM", GUILayout.Width(200));
         }
         void GUIDisplay(int windowID)
