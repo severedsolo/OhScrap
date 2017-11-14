@@ -19,7 +19,7 @@ namespace Untitled_Part_Failure_Mod
         protected override void Overrides()
         {
             Fields["displayChance"].guiName = "Chance of RCS Failure";
-            failureType = "rcs failure";
+            failureType = "RCS failure";
             postMessage = false;
         }
 

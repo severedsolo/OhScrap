@@ -11,6 +11,7 @@ namespace Untitled_Part_Failure_Mod
     {
         System.Random r = new System.Random();
         public static Randomiser instance;
+
         private void Awake()
         {
             instance = this;

@@ -24,6 +24,8 @@ namespace Untitled_Part_Failure_Mod
         public string failureType = "none";
         [KSPField(isPersistant = true, guiActive = false)]
         public int expectedLifetime = 2;
+        [KSPField(isPersistant = true, guiActive = false)]
+        public int counter = 0;
         public float actualLifetime;
         public ModuleSYPartTracker SYP;
         [KSPField(isPersistant = true, guiActive = false)]
@@ -104,8 +106,8 @@ namespace Untitled_Part_Failure_Mod
                     failureTime = Planetarium.GetUniversalTime() + timeToFailure;
                     willFail = true;
                     Debug.Log("[UPFM]: " + SYP.ID + " " + ClassName + " will attempt to fail in " + timeToFailure + " seconds");
-#if RELEASE
-                    Debug.Log("[UPFM]: "Chance of Failure was"+displayChance+"%";
+#if !DEBUG
+                    Debug.Log("[UPFM]: Chance of Failure was "+displayChance+"% (Generation "+ ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW));
 #endif
                 }
             }
@@ -184,7 +186,9 @@ namespace Untitled_Part_Failure_Mod
         {
             if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure + randomisation;
             else chanceOfFailure = (SYP.TimesRecovered / actualLifetime)+randomisation;
+#if DEBUG
             if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID +" "+ moduleName +" failing calculated to be " + chanceOfFailure * 100 + "%");
+#endif
             if (Randomiser.instance.NextDouble() < chanceOfFailure) return true;
             return false;
         }
