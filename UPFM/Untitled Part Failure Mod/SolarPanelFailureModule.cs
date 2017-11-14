@@ -32,7 +32,7 @@ namespace Untitled_Part_Failure_Mod
                 if (Randomiser.instance.NextDouble() < 0.5) trackingFailure = true;
                 else trackingFailure = false;
             }
-            if (panel.retractable && panel.deployState == ModuleDeployablePart.DeployState.EXTENDED && !trackingFailure)
+            if (panel.isTracking && panel.retractable && panel.deployState == ModuleDeployablePart.DeployState.EXTENDED && !trackingFailure)
             {
                 panel.retractable = false;
                 originallyRetractable = true;
@@ -45,7 +45,7 @@ namespace Untitled_Part_Failure_Mod
                 }
                 if (UPFM.highlight) UPFM.SetFailedHighlight();
             }
-            else if (panel.isTracking && panel.deployState == ModuleDeployablePart.DeployState.EXTENDED)
+            else if (panel.isTracking && panel.deployState == ModuleDeployablePart.DeployState.EXTENDED && !originallyRetractable)
             {
                 panel.isTracking = false;
                 if (!postMessage)

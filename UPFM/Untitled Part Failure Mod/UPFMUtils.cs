@@ -88,7 +88,7 @@ namespace Untitled_Part_Failure_Mod
                 if (counter > 100) f = 0.01f;
             }
             float threshold = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold/100.0f;
-            if (f > threshold) f = threshold-1;
+            if (f > threshold) f = threshold-0.1f;
             if (!float.IsNaN(f))
             {
                 randomisation.Add(SYP.ID, f);
@@ -176,7 +176,10 @@ namespace Untitled_Part_Failure_Mod
             if (dontBother) return;
             if (!display) return;
             if (damagedParts.Count == 0 && HighLogic.LoadedSceneIsEditor) return;
-            if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) return;
+            if (!HighLogic.LoadedSceneIsEditor)
+            {
+                if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) return;
+            }
             Window = GUILayout.Window(98399854, Window, GUIDisplay, "UPFM", GUILayout.Width(200));
         }
         void GUIDisplay(int windowID)

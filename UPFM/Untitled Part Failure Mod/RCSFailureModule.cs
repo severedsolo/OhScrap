@@ -28,7 +28,7 @@ namespace Untitled_Part_Failure_Mod
             rcs = part.FindModuleImplementing<ModuleRCS>();
             if (rcs == null) return;
             if (rcs.vessel != FlightGlobals.ActiveVessel) return;
-            rcs.rcs_active = false;
+            rcs.rcsEnabled = false;
             if (UPFM.highlight) UPFM.SetFailedHighlight();
             if (message) return;
             message = true;
