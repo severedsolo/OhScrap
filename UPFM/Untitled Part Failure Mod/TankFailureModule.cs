@@ -42,7 +42,6 @@ namespace Untitled_Part_Failure_Mod
 #if DEBUG
 
                         Debug.Log("[UPFM]: Checking " + node.GetValue("name") + " for blacklist");
-
 #endif
                         for (int p = 0; p < potentialLeakCache.Count(); p++)
                         {
