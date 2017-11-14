@@ -11,7 +11,6 @@ namespace Untitled_Part_Failure_Mod
         PartResource leaking;
         [KSPField(isPersistant = true, guiActive = false)]
         public string leakingName = "None";
-        private string savedFile;
         protected override void Overrides()
         {
             Fields["displayChance"].guiName = "Chance of Resource Tank Failure";
@@ -23,7 +22,6 @@ namespace Untitled_Part_Failure_Mod
 
         protected override void FailPart()
         {
-            savedFile = KSPUtil.ApplicationRootPath + "/GameData/UntitledFailures/MM Patches/DontLeak.cfg";
             if (leaking == null)
             {
                 if (leakingName != "None")
@@ -35,31 +33,32 @@ namespace Untitled_Part_Failure_Mod
                 List<PartResource> potentialLeakCache = part.Resources.ToList();
                 List<PartResource> potentialLeaks = part.Resources.ToList();
                 if (potentialLeaks.Count == 0) return;
-                ConfigNode cn = ConfigNode.Load(savedFile);
-                if (cn != null)
+                ConfigNode[] blackListNode = GameDatabase.Instance.GetConfigNodes("OHSCRAP_RESOURCE_BLACKLIST");
+                if (blackListNode.Count() > 0)
                 {
-                    ConfigNode[] blackListNode = cn.GetNodes("BLACKLISTED");
-                    if (blackListNode.Count() > 0)
+                    for (int i = 0; i < blackListNode.Count(); i++)
                     {
-                        for (int i = 0; i < blackListNode.Count(); i++)
+                        ConfigNode node = blackListNode.ElementAt(i);
+#if DEBUG
+
+                        Debug.Log("[UPFM]: Checking " + node.GetValue("name") + " for blacklist");
+
+#endif
+                        for (int p = 0; p < potentialLeakCache.Count(); p++)
                         {
-                            ConfigNode node = blackListNode.ElementAt(i);
-                            for (int p = 0; p < potentialLeakCache.Count(); p++)
-                            {
-                                PartResource pr = potentialLeakCache.ElementAt(p);
-                                if (pr.resourceName == node.GetValue("name")) potentialLeaks.Remove(pr);
-                            }
+                            PartResource pr = potentialLeakCache.ElementAt(p);
+                            if (pr.resourceName == node.GetValue("name")) potentialLeaks.Remove(pr);
                         }
-                        if (potentialLeaks.Count == 0)
-                        {
-                            leaking = null;
-                            leakingName = "None";
-                            hasFailed = false;
-                            willFail = false;
-                            postMessage = false;
-                            Debug.Log("[UPFM]: "+SYP.ID + "has no resources that could fail. Failure aborted");
-                            return;
-                        }
+                    }
+                    if (potentialLeaks.Count == 0)
+                    {
+                        leaking = null;
+                        leakingName = "None";
+                        hasFailed = false;
+                        willFail = false;
+                        postMessage = false;
+                        Debug.Log("[UPFM]: " + SYP.ID + "has no resources that could fail. Failure aborted");
+                        return;
                     }
                 }
                 leaking = potentialLeaks.ElementAt(Randomiser.instance.RandomInteger(0, potentialLeaks.Count()));
