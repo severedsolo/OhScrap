@@ -107,7 +107,7 @@ namespace Untitled_Part_Failure_Mod
                     willFail = true;
                     Debug.Log("[UPFM]: " + SYP.ID + " " + ClassName + " will attempt to fail in " + timeToFailure + " seconds");
 #if !DEBUG
-                    Debug.Log("[UPFM]: Chance of Failure was "+displayChance+"% (Generation "+ ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW));
+                    Debug.Log("[UPFM]: Chance of Failure was "+displayChance+"% (Generation "+ ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW)+")");
 #endif
                 }
             }
