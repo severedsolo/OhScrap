@@ -167,6 +167,7 @@ namespace Untitled_Part_Failure_Mod
                 return;
             }
             if (Planetarium.GetUniversalTime() < failureTime) return;
+            if(HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().stopOnFailure) TimeWarp.SetRate(0, true);
             hasFailed = true;
             if (UPFMUtils.instance != null)
             {
