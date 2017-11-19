@@ -69,6 +69,7 @@ namespace Untitled_Part_Failure_Mod
                     case 2:
                         failureType = "Fuel Line Leak";
                         Debug.Log("[UPFM]: attempted to perform Fuel Line Leak on " + SYP.ID);
+                        InvokeRepeating("LeakFuel", 10.0f, 10.0f);
                         break;
                     case 3:
                         failureType = "Underthrust";
@@ -139,10 +140,17 @@ namespace Untitled_Part_Failure_Mod
                 case "Gimbal Failure":
                     gimbal.gimbalLock = false;
                     break;
-
+                case "Fuel Line Leak":
+                    CancelInvoke("LeakFuel");
+                    break;
                 default:
                     return;
             }
+        }
+
+        void LeakFuel()
+        {
+            part.RequestResource("LiquidFuel", 0.01f);
         }
     }
 }
