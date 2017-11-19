@@ -69,7 +69,7 @@ namespace Untitled_Part_Failure_Mod
                     case 2:
                         failureType = "Fuel Line Leak";
                         Debug.Log("[UPFM]: attempted to perform Fuel Line Leak on " + SYP.ID);
-                        InvokeRepeating("LeakFuel", 6.0f, 6.0f);
+                        InvokeRepeating("LeakFuel", 2.0f, 2.0f);
                         break;
                     case 3:
                         failureType = "Underthrust";
@@ -99,7 +99,6 @@ namespace Untitled_Part_Failure_Mod
                     if (fuelLineCounter < 0) part.explode();
                     else fuelLineCounter--;
                     timeBetweenFailureEvents = Planetarium.GetUniversalTime() + 10;
-                    ScreenMessages.PostScreenMessage("Fuel Line Leaking!");
                     break;
                 case "Underthrust":
                     if (timeBetweenFailureEvents <= Planetarium.GetUniversalTime())
@@ -150,7 +149,8 @@ namespace Untitled_Part_Failure_Mod
 
         void LeakFuel()
         {
-            part.RequestResource("LiquidFuel", 0.01f);
+            part.RequestResource("LiquidFuel", 1.0f);
+            ScreenMessages.PostScreenMessage("Fuel Line Leaking!");
         }
     }
 }
