@@ -13,6 +13,7 @@ namespace Untitled_Part_Failure_Mod
         double timeBetweenFailureEvents = 0;
         [KSPField(isPersistant = true, guiActive = false)]
         float staticThrust;
+        int fuelLineCounter = 10;
         ModuleGimbal gimbal;
 
         protected override void Overrides()
@@ -41,11 +42,19 @@ namespace Untitled_Part_Failure_Mod
             gimbal = part.FindModuleImplementing<ModuleGimbal>();
             if(engine != null)
             {
-                if (engine.currentThrottle == 0) return;
+                if (engine.currentThrottle == 0)
+                {
+                    fuelLineCounter = 10;
+                    return;
+                }
             }
             else
             {
-                if (engineFX.currentThrottle == 0) return;
+                if (engine.currentThrottle == 0)
+                {
+                    fuelLineCounter = 10;
+                    return;
+                }
             }
             if(UPFM.highlight) UPFM.SetFailedHighlight();
             if (failureType == "none")
@@ -85,7 +94,11 @@ namespace Untitled_Part_Failure_Mod
                     engine.Shutdown();
                     break;
                 case "Fuel Line Leak":
-                    part.explode();
+                    if (timeBetweenFailureEvents > Planetarium.GetUniversalTime()) break;
+                    if (fuelLineCounter < 0) part.explode();
+                    else fuelLineCounter--;
+                    timeBetweenFailureEvents = Planetarium.GetUniversalTime() + 10;
+                    ScreenMessages.PostScreenMessage("Fuel Line Leaking " + fuelLineCounter + " seconds until critical overload");
                     break;
                 case "Underthrust":
                     if (timeBetweenFailureEvents <= Planetarium.GetUniversalTime())
