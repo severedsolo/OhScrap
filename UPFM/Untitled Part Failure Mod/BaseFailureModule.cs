@@ -190,10 +190,6 @@ namespace Untitled_Part_Failure_Mod
 #if DEBUG
             if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID +" "+ moduleName +" failing calculated to be " + chanceOfFailure * 100 + "%");
 #endif
-            float firstCheck = 1.0f;
-            try { firstCheck = 1.0f / ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW); }
-            catch { firstCheck = 1.0f; }
-            if (Randomiser.instance.NextDouble() > firstCheck) return false;
             if (Randomiser.instance.NextDouble() < chanceOfFailure) return true;
             return false;
         }
