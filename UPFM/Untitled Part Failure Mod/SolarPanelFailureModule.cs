@@ -11,6 +11,7 @@ namespace Untitled_Part_Failure_Mod
         ModuleDeployableSolarPanel panel;
         bool originallyRetractable;
         bool trackingFailure;
+        bool trackingSet = false;
 
         protected override void Overrides()
         {
@@ -27,10 +28,11 @@ namespace Untitled_Part_Failure_Mod
             panel = part.FindModuleImplementing<ModuleDeployableSolarPanel>();
             if (panel == null) return;
             if (!panel.isTracking) return;
-            if (!postMessage)
+            if (!postMessage && !trackingSet)
             {
                 if (Randomiser.instance.NextDouble() < 0.5) trackingFailure = true;
                 else trackingFailure = false;
+                trackingSet = true;
             }
             if (panel.isTracking && panel.retractable && panel.deployState == ModuleDeployablePart.DeployState.EXTENDED && !trackingFailure)
             {
