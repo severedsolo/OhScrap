@@ -31,19 +31,16 @@ namespace Untitled_Part_Failure_Mod
                 case 1:
                     if (shuffleBag1.Count() <20) PopulateShuffleBag(shuffleBag1, i);
                     d = shuffleBag1.ElementAt(RandomInteger(0, shuffleBag1.Count()));
-                    shuffleBag1.Remove(d);
                     remaining = shuffleBag1.Count();
                     break;
                 case 2:
                     if (shuffleBag2.Count() <20) PopulateShuffleBag(shuffleBag2, i);
                     d = shuffleBag2.ElementAt(RandomInteger(0, shuffleBag2.Count()));
-                    shuffleBag2.Remove(d);
                     remaining = shuffleBag2.Count();
                     break;
                 case 3:
                     if (shuffleBag3.Count() <20) PopulateShuffleBag(shuffleBag3, i);
                     d = shuffleBag3.ElementAt(RandomInteger(0, shuffleBag3.Count()));
-                    shuffleBag3.Remove(d);
                     remaining = shuffleBag3.Count();
                     break;
             }
@@ -55,7 +52,7 @@ namespace Untitled_Part_Failure_Mod
 
         private void PopulateShuffleBag(List<double> shuffleBag, int i)
         {
-            for (double d = 0; d < 1.0; d+=0.01f)
+            for (double d = 0.05f; d < 1.0; d+=0.01f)
             {
                 if (shuffleBag.Contains(d)) continue;
                 shuffleBag.Add(d);
