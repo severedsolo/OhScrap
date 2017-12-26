@@ -17,6 +17,8 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = true, guiActive = false)]
         public bool launched = false;
         [KSPField(isPersistant = true, guiActive = false)]
+        public bool endOfLife = false;
+        [KSPField(isPersistant = true, guiActive = false)]
         public bool hasFailed = false;
         [KSPField(isPersistant = true, guiActive = false)]
         public bool postMessage = true;
@@ -41,6 +43,7 @@ namespace Untitled_Part_Failure_Mod
         private void Start()
         {
             chanceOfFailure = baseChanceOfFailure;
+            if (expectedLifetime > 12) expectedLifetime = (expectedLifetime / 10)+2;
             Overrides();
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             ScrapYardEvents.OnSYInventoryAppliedToVessel.Add(OnSYInventoryAppliedToVessel);
@@ -179,19 +182,26 @@ namespace Untitled_Part_Failure_Mod
                 Debug.Log("[UPFM]: " + SYP.ID + "is too badly damaged to be salvaged");
             }
         }
-        
+
 
         public bool FailCheck(bool recalcChance)
         {
             if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure + randomisation;
-            else if (SYP.TimesRecovered < expectedLifetime) chanceOfFailure = (baseChanceOfFailure + randomisation) / (expectedLifetime * SYP.TimesRecovered);
-            else chanceOfFailure = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold;
+            else if (SYP.TimesRecovered < expectedLifetime) chanceOfFailure = (baseChanceOfFailure + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
+            else
+            {
+                if (!endOfLife) endOfLife = Randomiser.instance.NextDouble() < 0.25f;
+                if (endOfLife) chanceOfFailure = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
+                else chanceOfFailure = (baseChanceOfFailure + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
+            }
+            if (chanceOfFailure * 100 > HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) chanceOfFailure = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100;
 #if DEBUG
-            if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID +" "+ moduleName +" failing calculated to be " + chanceOfFailure * 100 + "%");
+            if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID + " " + moduleName + " failing calculated to be " + chanceOfFailure * 100 + "%");
 #endif
             if (Randomiser.instance.NextDouble() < chanceOfFailure) return true;
             return false;
         }
+        
 
         void PostFailureMessage()
         {
