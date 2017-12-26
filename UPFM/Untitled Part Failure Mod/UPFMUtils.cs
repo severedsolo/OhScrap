@@ -99,58 +99,6 @@ namespace Untitled_Part_Failure_Mod
             return f;
         }
 
-        public int GetExpectedLifetime(Part p, int expectedLifetime, string failureModule)
-        {
-            ModuleSYPartTracker SYP = p.FindModuleImplementing<ModuleSYPartTracker>();
-            if (SYP == null) return 0;
-            int i = 0;
-            float maxLifetime = expectedLifetime * 1.5f;
-            switch (failureModule)
-            {
-                case "BatteryFailureModule":
-                    if (batteryLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
-                    batteryLifetimes.Add(SYP.ID, i);
-                    break;
-                case "ControlSurfaceFailureModule":
-                    if (controlSurfaceLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
-                    controlSurfaceLifetimes.Add(SYP.ID, i);
-                    break;
-                case "EngineFailureModule":
-                    if (engineLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
-                    engineLifetimes.Add(SYP.ID, i);
-                    break;
-                case "ParachuteFailureModule":
-                    if (parachuteLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
-                    parachuteLifetimes.Add(SYP.ID, i);
-                    break;
-                case "ReactionWheelFailureModule":
-                    if (reactionWheelLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
-                    reactionWheelLifetimes.Add(SYP.ID, i);
-                    break;
-                case "SolarPanelFailureModule":
-                    if (solarPanelLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
-                    solarPanelLifetimes.Add(SYP.ID, i);
-                    break;
-                case "TankFailureModule":
-                    if (tankLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
-                    tankLifetimes.Add(SYP.ID, i);
-                    break;
-                case "RCSFailureModule":
-                    if (RCSLifetimes.TryGetValue(SYP.ID, out i)) return i;
-                    i = Randomiser.instance.RandomInteger(expectedLifetime / 2, (int)maxLifetime);
-                    RCSLifetimes.Add(SYP.ID, i);
-                    break;
-            }
-            return i;
-        }
-
         public void GUIReady()
         {
             if (HighLogic.LoadedSceneIsEditor) return;

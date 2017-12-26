@@ -26,7 +26,6 @@ namespace Untitled_Part_Failure_Mod
         public int expectedLifetime = 2;
         [KSPField(isPersistant = true, guiActive = false)]
         public int counter = 0;
-        public float actualLifetime;
         public ModuleSYPartTracker SYP;
         [KSPField(isPersistant = true, guiActive = false)]
         public float chanceOfFailure = 0.5f;
@@ -92,7 +91,6 @@ namespace Untitled_Part_Failure_Mod
             ready = SYP.ID != "";
             if (!ready) return;
             randomisation = UPFMUtils.instance.GetRandomisation(part);
-            actualLifetime = UPFMUtils.instance.GetExpectedLifetime(part, expectedLifetime, ClassName);
             if (hasFailed)
             {
                 UPFM.Events["RepairChecks"].active = true;
@@ -186,7 +184,8 @@ namespace Untitled_Part_Failure_Mod
         public bool FailCheck(bool recalcChance)
         {
             if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure + randomisation;
-            else chanceOfFailure = (SYP.TimesRecovered / actualLifetime)+randomisation;
+            else if (SYP.TimesRecovered < expectedLifetime) chanceOfFailure = (baseChanceOfFailure + randomisation) / (expectedLifetime * SYP.TimesRecovered);
+            else chanceOfFailure = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold;
 #if DEBUG
             if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID +" "+ moduleName +" failing calculated to be " + chanceOfFailure * 100 + "%");
 #endif
