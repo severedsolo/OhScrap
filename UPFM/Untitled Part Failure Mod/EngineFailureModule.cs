@@ -26,7 +26,7 @@ namespace Untitled_Part_Failure_Mod
             if (engine.atmosphereCurve.Evaluate(staticPressure) <= 100.0f)
             {
                 expectedLifetime = 5;
-                baseChanceOfFailure = 0.01f;
+                baseChanceOfFailure = 0.02f;
             }
         }
 

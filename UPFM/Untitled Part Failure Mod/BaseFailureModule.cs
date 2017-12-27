@@ -189,13 +189,14 @@ namespace Untitled_Part_Failure_Mod
         {
             if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure + randomisation;
             else if (SYP.TimesRecovered < expectedLifetime) chanceOfFailure = (baseChanceOfFailure + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
-            else
+            else chanceOfFailure = (baseChanceOfFailure + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
+            float endOfLifeMultiplier = (SYP.TimesRecovered - expectedLifetime)/5.0f;
+            if (endOfLifeMultiplier > 0)
             {
-                if (!endOfLife) endOfLife = Randomiser.instance.NextDouble() < 0.25f;
-                if (endOfLife) chanceOfFailure = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
-                else chanceOfFailure = (baseChanceOfFailure + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
+                if (!endOfLife) endOfLife = Randomiser.instance.NextDouble() < endOfLifeMultiplier;
+                if (endOfLife) chanceOfFailure = chanceOfFailure + endOfLifeMultiplier;
             }
-            if (chanceOfFailure * 100 > HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) chanceOfFailure = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100;
+            if (chanceOfFailure * 100 > HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) chanceOfFailure = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
 #if DEBUG
             if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID + " " + moduleName + " failing calculated to be " + chanceOfFailure * 100 + "%");
 #endif
