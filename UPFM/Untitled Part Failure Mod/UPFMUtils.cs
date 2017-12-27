@@ -79,9 +79,10 @@ namespace Untitled_Part_Failure_Mod
             int builds;
             if (HighLogic.LoadedSceneIsEditor) builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW) + 1;
             else builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW);
-            f = (Randomiser.instance.RandomInteger(1, 10)/100)/builds;
-            float threshold = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold/100.0f;
-            if (f > threshold) f = threshold-0.1f;
+            int randomFactor = 5 / builds;
+            if (randomFactor > 1) f = (Randomiser.instance.RandomInteger(1, randomFactor) / 100.0f);
+            float threshold = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
+            if (f > threshold) f = threshold-0.01f;
             if (!float.IsNaN(f))
             {
                 randomisation.Add(SYP.ID, f);

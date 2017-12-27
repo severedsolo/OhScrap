@@ -22,10 +22,11 @@ namespace Untitled_Part_Failure_Mod
             Fields["displayChance"].guiName = "Chance of Engine Failure";
             postMessage = false;
             engine = part.FindModuleImplementing<ModuleEngines>();
-            if(engine.maxThrust < 100.0f)
+            float staticPressure = (float)(FlightGlobals.GetHomeBody().GetPressure(0) * PhysicsGlobals.KpaToAtmospheres);
+            if (engine.atmosphereCurve.Evaluate(staticPressure) <= 100.0f)
             {
-                expectedLifetime = 6;
-                baseChanceOfFailure = 0.05f;
+                expectedLifetime = 5;
+                baseChanceOfFailure = 0.01f;
             }
         }
 

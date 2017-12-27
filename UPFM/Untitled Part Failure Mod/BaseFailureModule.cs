@@ -34,7 +34,7 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = true, guiActive = false)]
         public float baseChanceOfFailure = 0.01f;
         [KSPField(isPersistant = false, guiActive = true, guiName = "BaseFailure" ,guiActiveEditor = true, guiUnits = "%")]
-        public int displayChance = 0;
+        public int displayChance = 100;
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
         public ModuleUPFMEvents UPFM;
@@ -113,6 +113,7 @@ namespace Untitled_Part_Failure_Mod
                 }
             }
             displayChance = (int)(chanceOfFailure * 100);
+            if (chanceOfFailure == 0.01f) displayChance = 1;
             if (displayChance >= HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold && UPFMUtils.instance != null)
             {
                 if (UPFMUtils.instance.damagedParts.TryGetValue(part, out int i))
