@@ -20,6 +20,7 @@ namespace Untitled_Part_Failure_Mod
         {
             maxTimeToFailure = 120;
             Fields["displayChance"].guiName = "Chance of Engine Failure";
+            Fields["safetyRating"].guiName = "Engine Safety Rating";
             postMessage = false;
             engine = part.FindModuleImplementing<ModuleEngines>();
             float staticPressure = (float)(FlightGlobals.GetHomeBody().GetPressure(0) * PhysicsGlobals.KpaToAtmospheres);

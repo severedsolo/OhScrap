@@ -14,6 +14,7 @@ namespace Untitled_Part_Failure_Mod
         protected override void Overrides()
         {
             Fields["displayChance"].guiName = "Chance of Resource Tank Failure";
+            Fields["safetyRating"].guiName = "Tank Safety Rating";
         }
         protected override bool FailureAllowed()
         {

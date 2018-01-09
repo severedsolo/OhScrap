@@ -14,6 +14,7 @@ namespace Untitled_Part_Failure_Mod
         protected override void Overrides()
         {
             Fields["displayChance"].guiName = "Chance of Battery Failure";
+            Fields["safetyRating"].guiName = "Battery Safety Rating";
             failureType = "short circuit";
         }
         protected override void FailPart()

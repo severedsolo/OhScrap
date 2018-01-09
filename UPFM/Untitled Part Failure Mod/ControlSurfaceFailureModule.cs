@@ -15,6 +15,7 @@ namespace Untitled_Part_Failure_Mod
         protected override void Overrides()
         {
             Fields["displayChance"].guiName = "Chance of Control Surface Failure";
+            Fields["safetyRating"].guiName = "Control Surface Safety Rating";
             failureType = "stuck control surface";
         }
 

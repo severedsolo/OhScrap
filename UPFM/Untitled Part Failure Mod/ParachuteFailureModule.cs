@@ -20,6 +20,7 @@ namespace Untitled_Part_Failure_Mod
         {
             Fields["displayChance"].guiName = "Chance of Parachute Failure";
             failureType = "parachute failure";
+            Fields["safetyRating"].guiName = "Parachute Safety Rating";
             postMessage = false;
         }
 

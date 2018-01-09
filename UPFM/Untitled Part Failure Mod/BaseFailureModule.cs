@@ -33,8 +33,10 @@ namespace Untitled_Part_Failure_Mod
         public float chanceOfFailure = 0.5f;
         [KSPField(isPersistant = true, guiActive = false)]
         public float baseChanceOfFailure = 0.01f;
-        [KSPField(isPersistant = false, guiActive = true, guiName = "BaseFailure" ,guiActiveEditor = true, guiUnits = "%")]
+        [KSPField(isPersistant = false, guiActive = false, guiName = "BaseFailure" ,guiActiveEditor = false, guiUnits = "%")]
         public int displayChance = 100;
+        [KSPField(isPersistant = false, guiActive = false, guiName = "Base Safety Rating", guiActiveEditor = true)]
+        public int safetyRating;
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
         public ModuleUPFMEvents UPFM;
@@ -42,6 +44,11 @@ namespace Untitled_Part_Failure_Mod
 
         private void Start()
         {
+#if DEBUG
+            Fields["displayChance"].guiActive = true;
+            Fields["displayChance"].guiActiveEditor = true;
+            Fields["safetyRating"].guiActive = true;
+#endif
             chanceOfFailure = baseChanceOfFailure;
             if (expectedLifetime > 12) expectedLifetime = (expectedLifetime / 10)+2;
             Overrides();
@@ -57,7 +64,7 @@ namespace Untitled_Part_Failure_Mod
         {
 #if DEBUG
             Debug.Log("[UPFM]: ScrayYard Inventory Applied. Recalculating failure chance for "+SYP.ID+" "+ClassName);
-# endif
+#endif
             if(UPFMUtils.instance != null) UPFMUtils.instance.damagedParts.Remove(part);
             willFail = false;
             chanceOfFailure = baseChanceOfFailure;
@@ -113,6 +120,12 @@ namespace Untitled_Part_Failure_Mod
                 }
             }
             displayChance = (int)(chanceOfFailure * 100);
+            float safetyCalc = 1.0f - ((float)displayChance / HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold);
+            if (safetyCalc > 0.95) safetyRating = 5;
+            else if (safetyCalc > 0.9) safetyRating = 4;
+            else if (safetyCalc > 0.8) safetyRating = 3;
+            else if (safetyCalc > 0.7) safetyRating = 2;
+            else safetyRating = 1;
             if (chanceOfFailure == 0.01f) displayChance = 1;
             if (displayChance >= HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold && UPFMUtils.instance != null)
             {

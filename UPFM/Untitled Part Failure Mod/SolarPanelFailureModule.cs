@@ -16,6 +16,7 @@ namespace Untitled_Part_Failure_Mod
         protected override void Overrides()
         {
             Fields["displayChance"].guiName = "Chance of Solar Panel Failure";
+            Fields["safetyRating"].guiName = "Solar Panel Safety Rating";
             postMessage = false;
         }
         protected override bool FailureAllowed()
