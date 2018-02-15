@@ -50,6 +50,28 @@ namespace Untitled_Part_Failure_Mod
             GameEvents.onPartDie.Add(OnPartDie);
             GameEvents.onGUIApplicationLauncherReady.Add(GUIReady);
             GameEvents.onEditorShipModified.Add(onEditorShipModified);
+            GameEvents.OnFlightGlobalsReady.Add(OnFlightGlobalsReady);
+            if (!HighLogic.LoadedSceneIsEditor) display = true;
+        }
+
+        private void OnFlightGlobalsReady(bool data)
+        {
+            vesselSafetyRating = 5;
+            for (int i = 0; i < FlightGlobals.ActiveVessel.parts.Count(); i++)
+            {
+                Part p = FlightGlobals.ActiveVessel.parts.ElementAt(i);
+                List<BaseFailureModule> bfmList = p.FindModulesImplementing<BaseFailureModule>();
+                for (int b = 0; b < bfmList.Count(); b++)
+                {
+                    BaseFailureModule bfm = bfmList.ElementAt(b);
+                    if (bfm == null) continue;
+                    if (bfm.safetyRating < vesselSafetyRating)
+                    {
+                        vesselSafetyRating = bfm.safetyRating;
+                        worstPart = p;
+                    }
+                }
+            }
         }
 
         private void onEditorShipModified(ShipConstruct shipConstruct)
@@ -115,7 +137,7 @@ namespace Untitled_Part_Failure_Mod
 
         public void GUIReady()
         {
-            if (ToolbarButton == null)
+            if (ToolbarButton == null && HighLogic.LoadedSceneIsEditor)
             {
                 ToolbarButton = ApplicationLauncher.Instance.AddModApplication(GUISwitch, GUISwitch, null, null, null, null, ApplicationLauncher.AppScenes.ALWAYS, GameDatabase.Instance.GetTexture("UntitledFailures/Icon", false));
             }
