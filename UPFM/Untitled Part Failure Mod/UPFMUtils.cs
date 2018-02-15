@@ -15,14 +15,8 @@ namespace Untitled_Part_Failure_Mod
     {
 
     }
-    [KSPAddon(KSPAddon.Startup.Flight, false)]
-    class FlightWarnings : UPFMUtils
-    {
-        
-    }
     class UPFMUtils : MonoBehaviour
     {
-        public Dictionary<Part,int> damagedParts = new Dictionary<Part, int>();
         public Dictionary<Part, int> brokenParts = new Dictionary<Part, int>();
         public Dictionary<string, float> randomisation = new Dictionary<string, float>();
         public Dictionary<string, int> batteryLifetimes = new Dictionary<string, int>();
@@ -34,12 +28,12 @@ namespace Untitled_Part_Failure_Mod
         public Dictionary<string, int> tankLifetimes = new Dictionary<string, int>();
         public Dictionary<string, int> RCSLifetimes = new Dictionary<string, int>();
         public Dictionary<string, int> numberOfFailures = new Dictionary<string, int>();
-
+        int vesselSafetyRating = 5;
+        Part worstPart;
         public bool display = false;
         bool dontBother = false;
         public static UPFMUtils instance;
         Rect Window = new Rect(500, 100, 240, 50);
-        StringBuilder s = new StringBuilder();
         ApplicationLauncherButton ToolbarButton;
 
         private void Awake()
@@ -50,8 +44,27 @@ namespace Untitled_Part_Failure_Mod
         {
             GameEvents.onPartDie.Add(OnPartDie);
             GameEvents.onGUIApplicationLauncherReady.Add(GUIReady);
-            s.Append("WARNING: The following parts are above the safety threshold");
-            if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyRecover) s.Append(" and won't be recovered");
+            GameEvents.onEditorShipModified.Add(onEditorShipModified);
+        }
+
+        private void onEditorShipModified(ShipConstruct shipConstruct)
+        {
+            vesselSafetyRating = 5;
+            for(int i = 0; i< shipConstruct.parts.Count(); i++)
+            {
+                Part p = shipConstruct.parts.ElementAt(i);
+                List<BaseFailureModule> bfmList = p.FindModulesImplementing<BaseFailureModule>();
+                for (int b = 0; b < bfmList.Count(); b++)
+                {
+                    BaseFailureModule bfm = bfmList.ElementAt(b);
+                    if (bfm == null) continue;
+                    if (bfm.safetyRating < vesselSafetyRating)
+                    {
+                        vesselSafetyRating = bfm.safetyRating;
+                        worstPart = p;
+                    }
+                }
+            }
         }
 
         private void OnPartDie(Part part)
@@ -81,10 +94,10 @@ namespace Untitled_Part_Failure_Mod
             if (HighLogic.LoadedSceneIsEditor) builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW) + 1;
             else builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW);
             int randomFactor = 8;
-            if(builds >0) randomFactor = 8 / builds;
+            if (builds > 0) randomFactor = 8 / builds;
             if (randomFactor > 1) f = (Randomiser.instance.RandomInteger(1, randomFactor) / 100.0f);
             float threshold = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
-            if (f > threshold) f = threshold-0.01f;
+            if (f > threshold) f = threshold - 0.01f;
             if (!float.IsNaN(f))
             {
                 randomisation.Add(SYP.ID, f);
@@ -97,7 +110,6 @@ namespace Untitled_Part_Failure_Mod
 
         public void GUIReady()
         {
-            if (HighLogic.LoadedSceneIsEditor) return;
             if (ToolbarButton == null)
             {
                 ToolbarButton = ApplicationLauncher.Instance.AddModApplication(GUISwitch, GUISwitch, null, null, null, null, ApplicationLauncher.AppScenes.ALWAYS, GameDatabase.Instance.GetTexture("UntitledFailures/Icon", false));
@@ -118,8 +130,7 @@ namespace Untitled_Part_Failure_Mod
         {
             if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyWarning) return;
             if (dontBother) return;
-            if (!display) return;
-            if (damagedParts.Count == 0 && HighLogic.LoadedSceneIsEditor) return;
+            if (!display) return; ;
             if (FlightGlobals.ActiveVessel != null)
             {
                 if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) return;
@@ -128,63 +139,48 @@ namespace Untitled_Part_Failure_Mod
         }
         void GUIDisplay(int windowID)
         {
-            int counter = 0;
-            GUILayout.Label(s.ToString());
-            foreach (var v in damagedParts)
+            string s;
+            switch(vesselSafetyRating)
             {
-                if (v.Key == null) continue;
-                GUILayout.Label(v.Key.name + ": " + v.Value+"%");
-                counter++;
+                case 5:
+                    s = "(Excellent)";
+                    break;
+                case 4:
+                    s = "(Good)";
+                    break;
+                case 3:
+                    s = "(Average)";
+                    break;
+                case 2:
+                    s = "(Poor)";
+                    break;
+                case 1: s = "(Terrible)";
+                    break;
+                case 0:
+                    s = "(Failure Imminent)";
+                    break;
+                default:
+                    s = "(Something went wrong. Report to the UPFM thread on the forum with a log)";
+                    break;
             }
+            GUILayout.Label("Vessel Safety Rating: " + vesselSafetyRating+" "+s);
+            if(worstPart != null) GUILayout.Label("Worst Part: " + worstPart.name);
+            GUILayout.Label("");
             GUILayout.Label("Broken Parts:");
-            foreach(var v in brokenParts)
+            foreach (var v in brokenParts)
             {
                 int repairChance = 0;
                 if (v.Key == null) continue;
-                if (!v.Key.Modules.Contains("Broken")) repairChance = 100-v.Value;
+                if (!v.Key.Modules.Contains("Broken")) repairChance = 100 - v.Value;
                 GUILayout.Label(v.Key.name + ": Chance of Repair: " + (repairChance) + "%");
             }
-            if (HighLogic.LoadedSceneIsEditor)
+            if (GUILayout.Button("Close"))
             {
-                if (counter == 0) display = false;
-                if (GUILayout.Button("Replace unsafe parts"))
-                {
-                    List<Part> repairedList = new List<Part>();
-                    foreach (var v in damagedParts)
-                    {
-                        ModuleSYPartTracker SYP = v.Key.FindModuleImplementing<ModuleSYPartTracker>();
-                        SYP.MakeFresh();
-                        repairedList.Add(v.Key);
-                        ScrapYardWrapper.RemovePartFromInventory(v.Key);
-                    }
-                    damagedParts.Clear();
-                    if (repairedList.Count() == 0) return;
-                    for(int d = 0; d<repairedList.Count; d++)
-                    {
-                        Part p = repairedList.ElementAt(d);
-                        List<BaseFailureModule> failureModules = p.FindModulesImplementing<BaseFailureModule>();
-                        if (failureModules.Count() == 0) continue;
-                        for(int i = 0; i<failureModules.Count(); i++)
-                        {
-                            BaseFailureModule bfm = failureModules.ElementAt(i);
-                            if (bfm == null) continue;
-                            bfm.chanceOfFailure = bfm.baseChanceOfFailure;
-                            bfm.Initialise();
-                        }
-                    }
-                }
-                if (GUILayout.Button("Dismiss"))
-                {
-                    display = false;
-                }
-                if (GUILayout.Button("Stop Bothering Me"))
-                {
-                    display = false;
-                    dontBother = true;
-                }
+                display = false;
             }
             GUI.DragWindow();
         }
+
 
         private void OnDestroy()
         {

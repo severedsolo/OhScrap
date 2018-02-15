@@ -65,7 +65,6 @@ namespace Untitled_Part_Failure_Mod
 #if DEBUG
             Debug.Log("[UPFM]: ScrayYard Inventory Applied. Recalculating failure chance for "+SYP.ID+" "+ClassName);
 #endif
-            if(UPFMUtils.instance != null) UPFMUtils.instance.damagedParts.Remove(part);
             willFail = false;
             chanceOfFailure = baseChanceOfFailure;
             Initialise();
@@ -126,28 +125,11 @@ namespace Untitled_Part_Failure_Mod
             else if (safetyCalc > 0.8) safetyRating = 3;
             else if (safetyCalc > 0.7) safetyRating = 2;
             else safetyRating = 1;
+            if (displayChance > HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) safetyRating = 0;
             if (chanceOfFailure == 0.01f) displayChance = 1;
-            if (displayChance >= HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold && UPFMUtils.instance != null)
-            {
-                if (UPFMUtils.instance.damagedParts.TryGetValue(part, out int i))
-                {
-                    if (i < displayChance)
-                    {
-                        UPFMUtils.instance.damagedParts.Remove(part);
-                        UPFMUtils.instance.damagedParts.Add(part, displayChance);
-                        if (HighLogic.LoadedSceneIsEditor) UPFMUtils.instance.display = true;
-                    }
-                }
-                else
-                {
-                    UPFMUtils.instance.damagedParts.Add(part, displayChance);
-                    if(HighLogic.LoadedSceneIsEditor) UPFMUtils.instance.display = true;
-                }
-            }
             if (UPFMUtils.instance != null && hasFailed)
             {
                 if (!UPFMUtils.instance.brokenParts.ContainsKey(part)) UPFMUtils.instance.brokenParts.Add(part, displayChance);
-                UPFMUtils.instance.damagedParts.Remove(part);
             }
         }
         protected virtual void Overrides() { }
@@ -187,7 +169,6 @@ namespace Untitled_Part_Failure_Mod
             if (UPFMUtils.instance != null)
             {
                 if (!UPFMUtils.instance.brokenParts.ContainsKey(part)) UPFMUtils.instance.brokenParts.Add(part, displayChance);
-                UPFMUtils.instance.damagedParts.Remove(part);
             }
             UPFM.Events["RepairChecks"].active = true;
             if (FailCheck(false))
@@ -203,13 +184,13 @@ namespace Untitled_Part_Failure_Mod
             if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure + randomisation;
             else if (SYP.TimesRecovered < expectedLifetime) chanceOfFailure = (baseChanceOfFailure + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
             else chanceOfFailure = (baseChanceOfFailure + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
+            if (chanceOfFailure * 100 > HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) chanceOfFailure = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
             float endOfLifeMultiplier = (SYP.TimesRecovered - expectedLifetime)/5.0f;
             if (endOfLifeMultiplier > 0)
             {
                 if (!endOfLife) endOfLife = Randomiser.instance.NextDouble() < endOfLifeMultiplier;
                 if (endOfLife) chanceOfFailure = chanceOfFailure + endOfLifeMultiplier;
             }
-            if (chanceOfFailure * 100 > HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) chanceOfFailure = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
 #if DEBUG
             if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID + " " + moduleName + " failing calculated to be " + chanceOfFailure * 100 + "%");
 #endif

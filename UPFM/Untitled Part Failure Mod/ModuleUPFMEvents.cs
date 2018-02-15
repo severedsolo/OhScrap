@@ -33,6 +33,9 @@ namespace Untitled_Part_Failure_Mod
         public void TrashPart()
         {
             if (part.FindModuleImplementing<Broken>() == null) part.AddModule("Broken");
+#if DEBUG
+            Debug.Log("[UPFM]: Broken Module Added: " + part.FindModuleImplementing<Broken>() != null);
+#endif
             ScreenMessages.PostScreenMessage(part.name + " will not be recovered");
             Debug.Log("[UPFM]: TrashPart " + SYP.ID);
         }
