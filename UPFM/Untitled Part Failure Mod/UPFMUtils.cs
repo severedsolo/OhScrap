@@ -15,6 +15,11 @@ namespace Untitled_Part_Failure_Mod
     {
 
     }
+    [KSPAddon(KSPAddon.Startup.Flight, false)]
+    class FlightWarnings : UPFMUtils
+    {
+
+    }
     class UPFMUtils : MonoBehaviour
     {
         public Dictionary<Part, int> brokenParts = new Dictionary<Part, int>();
