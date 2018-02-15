@@ -33,6 +33,7 @@ namespace Untitled_Part_Failure_Mod
         public Dictionary<string, int> solarPanelLifetimes = new Dictionary<string, int>();
         public Dictionary<string, int> tankLifetimes = new Dictionary<string, int>();
         public Dictionary<string, int> RCSLifetimes = new Dictionary<string, int>();
+        public Dictionary<string, int> numberOfFailures = new Dictionary<string, int>();
 
         public bool display = false;
         bool dontBother = false;
@@ -79,7 +80,8 @@ namespace Untitled_Part_Failure_Mod
             int builds;
             if (HighLogic.LoadedSceneIsEditor) builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW) + 1;
             else builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW);
-            int randomFactor = 8 / builds;
+            int randomFactor = 8;
+            if(builds >0) randomFactor = 8 / builds;
             if (randomFactor > 1) f = (Randomiser.instance.RandomInteger(1, randomFactor) / 100.0f);
             float threshold = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
             if (f > threshold) f = threshold-0.01f;
@@ -118,7 +120,7 @@ namespace Untitled_Part_Failure_Mod
             if (dontBother) return;
             if (!display) return;
             if (damagedParts.Count == 0 && HighLogic.LoadedSceneIsEditor) return;
-            if (!HighLogic.LoadedSceneIsEditor)
+            if (FlightGlobals.ActiveVessel != null)
             {
                 if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) return;
             }
