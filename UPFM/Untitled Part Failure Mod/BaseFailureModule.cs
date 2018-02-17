@@ -33,7 +33,9 @@ namespace Untitled_Part_Failure_Mod
         public float chanceOfFailure = 0.5f;
         [KSPField(isPersistant = true, guiActive = false)]
         public float baseChanceOfFailure = 0.01f;
-        [KSPField(isPersistant = false, guiActive = false, guiName = "BaseFailure" ,guiActiveEditor = false, guiUnits = "%")]
+        [KSPField(isPersistant = true, guiActive = false)]
+        public int numberOfRepairs = 0;
+        [KSPField(isPersistant = false, guiActive = false, guiName = "BaseFailure", guiActiveEditor = false, guiUnits = "%")]
         public int displayChance = 100;
         [KSPField(isPersistant = false, guiActive = false, guiName = "Base Safety Rating", guiActiveEditor = true)]
         public int safetyRating = 6;
@@ -192,6 +194,8 @@ namespace Untitled_Part_Failure_Mod
                 if (!endOfLife) endOfLife = Randomiser.instance.NextDouble() < endOfLifeMultiplier;
                 if (endOfLife) chanceOfFailure = chanceOfFailure + endOfLifeMultiplier;
             }
+            if (numberOfRepairs > 0) chanceOfFailure = chanceOfFailure * numberOfRepairs;
+            displayChance = (int)chanceOfFailure * 100;
 #if DEBUG
             if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID + " " + moduleName + " failing calculated to be " + chanceOfFailure * 100 + "%");
 #endif

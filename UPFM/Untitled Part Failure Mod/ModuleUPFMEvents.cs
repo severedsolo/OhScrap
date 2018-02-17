@@ -66,7 +66,8 @@ namespace Untitled_Part_Failure_Mod
         {
             Debug.Log("[UPFM]: Attempting repairs");
             bool repairAllowed = true;
-            if(FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() == null)
+            List<BaseFailureModule> bfm = part.FindModulesImplementing<BaseFailureModule>();
+            if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() == null)
             {
                 Debug.Log("[UPFM]: Attempting Remote Repair");
                 if(!FlightGlobals.ActiveVessel.Connection.IsConnectedHome)
@@ -75,7 +76,6 @@ namespace Untitled_Part_Failure_Mod
                     Debug.Log("[UPFM]: Remote Repair aborted. Vessel not connected home");
                     return;
                 }
-                List<BaseFailureModule> bfm = part.FindModulesImplementing<BaseFailureModule>();
                 for(int i = 0; i<bfm.Count(); i++)
                 {
                     BaseFailureModule b = bfm.ElementAt(i);
@@ -104,12 +104,18 @@ namespace Untitled_Part_Failure_Mod
                 }
                 repair.hasFailed = false;
                 repair.willFail = false;
+                repair.numberOfRepairs++;
                 ScreenMessages.PostScreenMessage("The part should be ok to use now");
                 Events["RepairChecks"].active = false;
                 repair.RepairPart();
                 Debug.Log("[UPFM]: " + SYP.ID+" " + moduleName + " was successfully repaired");
                 part.highlightType = Part.HighlightType.OnMouseOver;
                 UPFMUtils.instance.brokenParts.Remove(part);
+            }
+            for(int i = 0; i<bfm.Count; i++)
+            {
+                BaseFailureModule bf = bfm.ElementAt(i);
+                bf.Initialise();
             }
         }
 

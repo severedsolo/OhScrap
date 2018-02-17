@@ -32,7 +32,6 @@ namespace Untitled_Part_Failure_Mod
         public Dictionary<string, int> solarPanelLifetimes = new Dictionary<string, int>();
         public Dictionary<string, int> tankLifetimes = new Dictionary<string, int>();
         public Dictionary<string, int> RCSLifetimes = new Dictionary<string, int>();
-        public Dictionary<string, int> numberOfFailures = new Dictionary<string, int>();
         int vesselSafetyRating = 6;
         Part worstPart;
         public bool display = false;
