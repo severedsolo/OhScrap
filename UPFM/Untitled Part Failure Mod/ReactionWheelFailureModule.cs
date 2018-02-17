@@ -16,6 +16,7 @@ namespace Untitled_Part_Failure_Mod
             Fields["displayChance"].guiName = "Chance of Reaction Wheel Failure";
             Fields["safetyRating"].guiName = "Reaction Wheel Safety Rating";
             failureType = "reaction wheel failure";
+            remoteRepairable = true;
         }
 
         protected override bool FailureAllowed()

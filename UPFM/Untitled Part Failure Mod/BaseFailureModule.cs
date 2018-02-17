@@ -40,6 +40,7 @@ namespace Untitled_Part_Failure_Mod
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
         public ModuleUPFMEvents UPFM;
+        public bool remoteRepairable = false;
 
 
         private void Start()
