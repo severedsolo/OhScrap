@@ -17,6 +17,7 @@ namespace Untitled_Part_Failure_Mod
             Fields["displayChance"].guiName = "Chance of Control Surface Failure";
             Fields["safetyRating"].guiName = "Control Surface Safety Rating";
             failureType = "stuck control surface";
+            remoteRepairable = true;
         }
 
         protected override bool FailureAllowed()

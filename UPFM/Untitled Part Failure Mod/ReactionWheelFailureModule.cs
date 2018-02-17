@@ -26,6 +26,7 @@ namespace Untitled_Part_Failure_Mod
         protected override void FailPart()
         {
             rw = part.FindModuleImplementing<ModuleReactionWheel>();
+            if (!rw.isEnabled && rw.wheelState != ModuleReactionWheel.WheelState.Active) return;
             rw.isEnabled = false;
             rw.wheelState = ModuleReactionWheel.WheelState.Broken;
             if(UPFM.highlight)UPFM.SetFailedHighlight();

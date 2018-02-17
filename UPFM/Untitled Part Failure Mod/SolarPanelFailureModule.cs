@@ -18,6 +18,7 @@ namespace Untitled_Part_Failure_Mod
             Fields["displayChance"].guiName = "Chance of Solar Panel Failure";
             Fields["safetyRating"].guiName = "Solar Panel Safety Rating";
             postMessage = false;
+            remoteRepairable = true;
         }
         protected override bool FailureAllowed()
         {

@@ -15,6 +15,8 @@ namespace Untitled_Part_Failure_Mod
         float staticThrust;
         int fuelLineCounter = 10;
         ModuleGimbal gimbal;
+        [KSPField(isPersistant = true, guiActive = false)]
+        float originalThrust;
 
         protected override void Overrides()
         {
@@ -75,6 +77,7 @@ namespace Untitled_Part_Failure_Mod
                         break;
                     case 3:
                         failureType = "Underthrust";
+                        originalThrust = engine.thrustPercentage;
                         Debug.Log("[UPFM]: attempted to perform Underthrust on " + SYP.ID);
                         break;
                     case 4:
@@ -100,7 +103,7 @@ namespace Untitled_Part_Failure_Mod
                     if (timeBetweenFailureEvents > Planetarium.GetUniversalTime()) break;
                     if (fuelLineCounter < 0) part.explode();
                     else fuelLineCounter--;
-                    timeBetweenFailureEvents = Planetarium.GetUniversalTime() + 10;
+                    timeBetweenFailureEvents = Planetarium.GetUniversalTime() + Randomiser.instance.RandomInteger(1,10);
                     break;
                 case "Underthrust":
                     if (timeBetweenFailureEvents <= Planetarium.GetUniversalTime())
@@ -134,8 +137,8 @@ namespace Untitled_Part_Failure_Mod
                     Debug.Log("[UPFM]: Re-activated " + SYP.ID);
                     break;
                 case "Underthrust":
-                    if (engine != null) engine.thrustPercentage = 100;
-                    else engineFX.thrustPercentage = 100;
+                    if (engine != null) engine.thrustPercentage = originalThrust;
+                    else engineFX.thrustPercentage = originalThrust;
                     Debug.Log("[UPFM]: Reset Thrust on " + SYP.ID);
                     break;
                 case "Gimbal Failure":

@@ -61,10 +61,38 @@ namespace Untitled_Part_Failure_Mod
             part.SetHighlight(true, false);
         }
 
-        [KSPEvent(active = false, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = true, guiName = "Repair ")]
+        [KSPEvent(active = false, guiActive = true, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = false, guiName = "Repair ")]
         public void RepairChecks()
         {
-            Debug.Log("[UPFM]: Attempting EVA repairs");
+            Debug.Log("[UPFM]: Attempting repairs");
+            bool repairAllowed = true;
+            if(FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() == null)
+            {
+                Debug.Log("[UPFM]: Attempting Remote Repair");
+                if(!FlightGlobals.ActiveVessel.Connection.IsConnectedHome)
+                {
+                    ScreenMessages.PostScreenMessage("Vessel must be connected home before remote repair can be tried");
+                    Debug.Log("[UPFM]: Remote Repair aborted. Vessel not connected home");
+                    return;
+                }
+                List<BaseFailureModule> bfm = part.FindModulesImplementing<BaseFailureModule>();
+                for(int i = 0; i<bfm.Count(); i++)
+                {
+                    BaseFailureModule b = bfm.ElementAt(i);
+                    if (b.hasFailed)
+                    {
+                        if (!b.remoteRepairable)
+                        {
+                            ScreenMessages.PostScreenMessage(part.name + "cannot be repaired remotely");
+                            repairAllowed = false;
+                            Debug.Log("[UPFM]: Remote Repair not allowed on " + SYP.ID + " " + b.ClassName);
+                            continue;
+                        }
+                    }
+                    else continue;
+                }
+            }
+            if (!repairAllowed) return;
             while (!Repaired())
             {
                 if (repair.FailCheck(false) || part.Modules.Contains("Broken"))
