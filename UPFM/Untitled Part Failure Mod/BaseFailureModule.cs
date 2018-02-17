@@ -36,7 +36,7 @@ namespace Untitled_Part_Failure_Mod
         [KSPField(isPersistant = false, guiActive = false, guiName = "BaseFailure" ,guiActiveEditor = false, guiUnits = "%")]
         public int displayChance = 100;
         [KSPField(isPersistant = false, guiActive = false, guiName = "Base Safety Rating", guiActiveEditor = true)]
-        public int safetyRating;
+        public int safetyRating = 6;
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
         public ModuleUPFMEvents UPFM;

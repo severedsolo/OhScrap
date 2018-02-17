@@ -71,7 +71,7 @@ namespace Untitled_Part_Failure_Mod
                 Debug.Log("[UPFM]: Attempting Remote Repair");
                 if(!FlightGlobals.ActiveVessel.Connection.IsConnectedHome)
                 {
-                    ScreenMessages.PostScreenMessage("Vessel must be connected home before remote repair can be tried");
+                    ScreenMessages.PostScreenMessage("Vessel must be connected home before remote repair can be attempted");
                     Debug.Log("[UPFM]: Remote Repair aborted. Vessel not connected home");
                     return;
                 }

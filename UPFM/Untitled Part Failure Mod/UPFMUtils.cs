@@ -33,13 +33,14 @@ namespace Untitled_Part_Failure_Mod
         public Dictionary<string, int> tankLifetimes = new Dictionary<string, int>();
         public Dictionary<string, int> RCSLifetimes = new Dictionary<string, int>();
         public Dictionary<string, int> numberOfFailures = new Dictionary<string, int>();
-        int vesselSafetyRating = 5;
+        int vesselSafetyRating = 6;
         Part worstPart;
         public bool display = false;
         bool dontBother = false;
         public static UPFMUtils instance;
         Rect Window = new Rect(500, 100, 240, 50);
         ApplicationLauncherButton ToolbarButton;
+        ShipConstruct editorConstruct;
 
         private void Awake()
         {
@@ -56,10 +57,16 @@ namespace Untitled_Part_Failure_Mod
 
         private void OnFlightGlobalsReady(bool data)
         {
-            vesselSafetyRating = 5;
-            for (int i = 0; i < FlightGlobals.ActiveVessel.parts.Count(); i++)
+            vesselSafetyRating = 6;
+        }
+
+        private void onEditorShipModified(ShipConstruct shipConstruct)
+        {
+            vesselSafetyRating = 6;
+            editorConstruct = shipConstruct;
+            for(int i = 0; i< shipConstruct.parts.Count(); i++)
             {
-                Part p = FlightGlobals.ActiveVessel.parts.ElementAt(i);
+                Part p = shipConstruct.parts.ElementAt(i);
                 List<BaseFailureModule> bfmList = p.FindModulesImplementing<BaseFailureModule>();
                 for (int b = 0; b < bfmList.Count(); b++)
                 {
@@ -74,21 +81,42 @@ namespace Untitled_Part_Failure_Mod
             }
         }
 
-        private void onEditorShipModified(ShipConstruct shipConstruct)
+        void Update()
         {
-            vesselSafetyRating = 5;
-            for(int i = 0; i< shipConstruct.parts.Count(); i++)
+            if (vesselSafetyRating != 6) return;
+            if (!HighLogic.LoadedSceneIsEditor && FlightGlobals.ready)
             {
-                Part p = shipConstruct.parts.ElementAt(i);
-                List<BaseFailureModule> bfmList = p.FindModulesImplementing<BaseFailureModule>();
-                for (int b = 0; b < bfmList.Count(); b++)
+                for (int i = 0; i < FlightGlobals.ActiveVessel.parts.Count(); i++)
                 {
-                    BaseFailureModule bfm = bfmList.ElementAt(b);
-                    if (bfm == null) continue;
-                    if (bfm.safetyRating < vesselSafetyRating)
+                    Part p = FlightGlobals.ActiveVessel.parts.ElementAt(i);
+                    List<BaseFailureModule> bfmList = p.FindModulesImplementing<BaseFailureModule>();
+                    for (int b = 0; b < bfmList.Count(); b++)
                     {
-                        vesselSafetyRating = bfm.safetyRating;
-                        worstPart = p;
+                        BaseFailureModule bfm = bfmList.ElementAt(b);
+                        if (bfm == null) continue;
+                        if (bfm.safetyRating < vesselSafetyRating)
+                        {
+                            vesselSafetyRating = bfm.safetyRating;
+                            worstPart = p;
+                        }
+                    }
+                }
+            }
+            if (HighLogic.LoadedSceneIsEditor && editorConstruct != null)
+            {
+                for (int i = 0; i < editorConstruct.parts.Count(); i++)
+                {
+                    Part p = editorConstruct.parts.ElementAt(i);
+                    List<BaseFailureModule> bfmList = p.FindModulesImplementing<BaseFailureModule>();
+                    for (int b = 0; b < bfmList.Count(); b++)
+                    {
+                        BaseFailureModule bfm = bfmList.ElementAt(b);
+                        if (bfm == null) continue;
+                        if (bfm.safetyRating < vesselSafetyRating)
+                        {
+                            vesselSafetyRating = bfm.safetyRating;
+                            worstPart = p;
+                        }
                     }
                 }
             }
@@ -214,6 +242,7 @@ namespace Untitled_Part_Failure_Mod
             display = false;
             GameEvents.onGUIApplicationLauncherReady.Remove(GUIReady);
             GameEvents.onPartDie.Remove(OnPartDie);
+            GameEvents.OnFlightGlobalsReady.Remove(OnFlightGlobalsReady);
             if (ToolbarButton == null) return;
             ApplicationLauncher.Instance.RemoveModApplication(ToolbarButton);
         }
