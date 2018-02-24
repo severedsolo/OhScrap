@@ -111,6 +111,7 @@ namespace Untitled_Part_Failure_Mod
                 Debug.Log("[UPFM]: " + SYP.ID+" " + moduleName + " was successfully repaired");
                 part.highlightType = Part.HighlightType.OnMouseOver;
                 UPFMUtils.instance.brokenParts.Remove(part);
+                repair.postMessage = true;
             }
             for(int i = 0; i<bfm.Count; i++)
             {

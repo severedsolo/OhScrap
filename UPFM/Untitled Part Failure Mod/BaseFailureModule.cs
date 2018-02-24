@@ -195,7 +195,7 @@ namespace Untitled_Part_Failure_Mod
                 if (endOfLife) chanceOfFailure = chanceOfFailure + endOfLifeMultiplier;
             }
             if (numberOfRepairs > 0) chanceOfFailure = chanceOfFailure * numberOfRepairs;
-            displayChance = (int)chanceOfFailure * 100;
+            displayChance = (int)(chanceOfFailure * 100);
 #if DEBUG
             if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID + " " + moduleName + " failing calculated to be " + chanceOfFailure * 100 + "%");
 #endif

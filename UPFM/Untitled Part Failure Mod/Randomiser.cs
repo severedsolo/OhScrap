@@ -60,7 +60,9 @@ namespace Untitled_Part_Failure_Mod
                 if (shuffleBag.Contains(d)) continue;
                 shuffleBag.Add(d);
             }
+#if DEBUG
             Debug.Log("[UPFM]: Refilled shufflebag " + i);
+#endif
         }
 
         public int RandomInteger(int min, int max)
