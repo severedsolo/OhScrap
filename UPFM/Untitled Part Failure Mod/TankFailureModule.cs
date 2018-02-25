@@ -15,7 +15,30 @@ namespace Untitled_Part_Failure_Mod
         {
             Fields["displayChance"].guiName = "Chance of Resource Tank Failure";
             Fields["safetyRating"].guiName = "Tank Safety Rating";
-        }
+            List<PartResource> potentialLeakCache = part.Resources.ToList();
+            List<PartResource> potentialLeaks = part.Resources.ToList();
+            if (potentialLeaks.Count == 0)
+            {
+                Fields["safetyRating"].guiActiveEditor = false;
+            }
+            ConfigNode[] blackListNode = GameDatabase.Instance.GetConfigNodes("OHSCRAP_RESOURCE_BLACKLIST");
+            if (blackListNode.Count() > 0)
+            {
+                for (int i = 0; i < blackListNode.Count(); i++)
+                {
+                    ConfigNode node = blackListNode.ElementAt(i);
+#if DEBUG
+
+                        Debug.Log("[UPFM]: Checking " + node.GetValue("name") + " for blacklist");
+#endif
+                    for (int p = 0; p < potentialLeakCache.Count(); p++)
+                    {
+                        PartResource pr = potentialLeakCache.ElementAt(p);
+                        if (pr.resourceName == node.GetValue("name")) potentialLeaks.Remove(pr);
+                    }
+                }
+                if (potentialLeaks.Count == 0) Fields["safetyRating"].guiActiveEditor = false;
+            }
         protected override bool FailureAllowed()
         {
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().TankFailureModuleAllowed;
