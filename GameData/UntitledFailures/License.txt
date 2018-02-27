@@ -1,0 +1,17 @@
+Copyright 2018 Martin Joy (aka severedsolo)
+
+Definitions:
+An "authorised person" is defined as: A person who has purchased a copy of Kerbal Space Program from any of the official sources, excluding employees of Take-Two Interactive.
+
+An "employee of Take-Two Interactive" is defined as any person who has a direct or indirect commercial relationship with Take-Two Interactive or any subsidary thereof, including third parties who do work on Take-Two Interactives behalf.
+
+Permission is hereby granted, free of charge, to any authorised person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software including without limitation the rights to use, copy, modify, merge, publish, distribute, and sublicense the software subject to the conditions defined in "Conditions" below.
+
+Employees of Take Two Interactive are hereby granted permission to use the the Software without limitation subject to the conditions defined below, but none of the other rights granted to authorised persons will be granted.
+
+Conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+If the software is copied, modified, merged, published, distributed, or sublicensed by an authorised person, that person must not have accepted the Terms of Service of the Kerbal Space Program Online Services that come into affect on 6 March 2018 (or a later variant of those terms).

@@ -20,6 +20,7 @@ namespace Untitled_Part_Failure_Mod
             if (potentialLeaks.Count == 0)
             {
                 Fields["safetyRating"].guiActiveEditor = false;
+                excluded = true;
             }
             ConfigNode[] blackListNode = GameDatabase.Instance.GetConfigNodes("OHSCRAP_RESOURCE_BLACKLIST");
             if (blackListNode.Count() > 0)
@@ -27,18 +28,19 @@ namespace Untitled_Part_Failure_Mod
                 for (int i = 0; i < blackListNode.Count(); i++)
                 {
                     ConfigNode node = blackListNode.ElementAt(i);
-#if DEBUG
-
-                        Debug.Log("[UPFM]: Checking " + node.GetValue("name") + " for blacklist");
-#endif
                     for (int p = 0; p < potentialLeakCache.Count(); p++)
                     {
                         PartResource pr = potentialLeakCache.ElementAt(p);
                         if (pr.resourceName == node.GetValue("name")) potentialLeaks.Remove(pr);
                     }
                 }
-                if (potentialLeaks.Count == 0) Fields["safetyRating"].guiActiveEditor = false;
+                if (potentialLeaks.Count == 0)
+                {
+                    Fields["safetyRating"].guiActiveEditor = false;
+                    excluded = true;
+                }
             }
+        }
         protected override bool FailureAllowed()
         {
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().TankFailureModuleAllowed;
