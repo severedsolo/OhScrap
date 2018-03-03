@@ -160,6 +160,7 @@ namespace Untitled_Part_Failure_Mod
                     postMessage = false;
                     UPFM.Events["ToggleHighlight"].active = true;
                     UPFM.highlight = true;
+                    Debug.Log("[UPFM]: Chance of Failure was " + displayChance + "% (Generation " + ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW) + ")");
                 }
                 return;
             }

@@ -108,8 +108,9 @@ namespace Untitled_Part_Failure_Mod
                 Events["RepairChecks"].active = false;
                 repair.RepairPart();
                 repair.numberOfRepairs++;
-                Debug.Log("[UPFM]: " + SYP.ID+" " + moduleName + " was successfully repaired");
+                Debug.Log("[UPFM]: " + SYP.ID+" " + repair.moduleName + " was successfully repaired");
                 part.highlightType = Part.HighlightType.OnMouseOver;
+                part.SetHighlight(false, false);
                 UPFMUtils.instance.brokenParts.Remove(part);
                 repair.postMessage = true;
             }

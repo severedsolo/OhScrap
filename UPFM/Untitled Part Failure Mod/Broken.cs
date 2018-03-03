@@ -9,7 +9,7 @@ namespace Untitled_Part_Failure_Mod
     {
         public override void OnSave(ConfigNode node)
         {
-            node.AddValue("MM_DYNAMIC", true);
+            node.AddValue("MM_DYNAMIC", "true");
         }
     }
 }

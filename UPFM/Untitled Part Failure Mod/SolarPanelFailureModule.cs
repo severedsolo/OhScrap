@@ -67,6 +67,7 @@ namespace Untitled_Part_Failure_Mod
         {
             panel = part.FindModuleImplementing<ModuleDeployableSolarPanel>();
             if (originallyRetractable) panel.retractable = true;
+            panel.isTracking = true;
         }
     }
 }
