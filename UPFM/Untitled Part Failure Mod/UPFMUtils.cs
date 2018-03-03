@@ -214,7 +214,7 @@ namespace Untitled_Part_Failure_Mod
                     s = "(Failure Imminent)";
                     break;
                 default:
-                    s = "(Something went wrong. Report to the UPFM thread on the forum with a log)";
+                    s = "(Invalid)";
                     break;
             }
             GUILayout.Label("Vessel Safety Rating: " + vesselSafetyRating+" "+s);
