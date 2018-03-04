@@ -218,7 +218,7 @@ namespace Untitled_Part_Failure_Mod
                     break;
             }
             GUILayout.Label("Vessel Safety Rating: " + vesselSafetyRating+" "+s);
-            if(worstPart != null) GUILayout.Label("Worst Part: " + worstPart.name);
+            if(worstPart != null) GUILayout.Label("Worst Part: " + worstPart.partInfo.title);
             GUILayout.Label("");
             GUILayout.Label("Broken Parts:");
             foreach (var v in brokenParts)
