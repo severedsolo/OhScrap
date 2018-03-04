@@ -14,13 +14,16 @@ namespace Untitled_Part_Failure_Mod
         BaseFailureModule repair;
         ModuleSYPartTracker SYP;
         public bool refreshed = false;
-        
+        [KSPField(isPersistant = true, guiActive = false)]
+        public bool broken = false;
+
         private void Start()
         {
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
 #if DEBUG
             Debug.Log("[UPFM]: UPFMEvents.Start"+SYP.ID);
 #endif
+            if (broken && part.FindModuleImplementing<Broken>() == null) MarkBroken();
         }
         public void RefreshPart()
         {
@@ -32,14 +35,21 @@ namespace Untitled_Part_Failure_Mod
         [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false, guiName = "Trash Part")]
         public void TrashPart()
         {
-            if (part.FindModuleImplementing<Broken>() == null) part.AddModule("Broken");
+            if (part.FindModuleImplementing<Broken>() == null)
+            {
+                MarkBroken();
+            }
 #if DEBUG
             Debug.Log("[UPFM]: Broken Module Added: " + part.FindModuleImplementing<Broken>() != null);
 #endif
             ScreenMessages.PostScreenMessage(part.name + " will not be recovered");
             Debug.Log("[UPFM]: TrashPart " + SYP.ID);
         }
-
+        public void MarkBroken()
+        {
+            if(part.FindModuleImplementing<Broken>() == null)part.AddModule("Broken");
+            broken = true;
+        }
         [KSPEvent(active = false, guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false, guiName = "Toggle Failure Highlight")]
         public void ToggleHighlight()
         {
@@ -98,7 +108,7 @@ namespace Untitled_Part_Failure_Mod
                 if (repair.FailCheck(false) || part.Modules.Contains("Broken"))
                 {
                     ScreenMessages.PostScreenMessage("This part is beyond repair");
-                    if (!part.Modules.Contains("Broken")) part.AddModule("Broken");
+                    if (!part.Modules.Contains("Broken")) MarkBroken();
                     Debug.Log("[UPFM]: " + SYP.ID + " is too badly damaged to be fixed");
                     return;
                 }

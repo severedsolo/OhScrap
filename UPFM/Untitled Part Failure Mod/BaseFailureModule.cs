@@ -45,7 +45,6 @@ namespace Untitled_Part_Failure_Mod
         public bool remoteRepairable = false;
         public bool excluded = false;
 
-
         private void Start()
         {
 #if DEBUG
@@ -60,6 +59,7 @@ namespace Untitled_Part_Failure_Mod
             ScrapYardEvents.OnSYInventoryAppliedToVessel.Add(OnSYInventoryAppliedToVessel);
             UPFM = part.FindModuleImplementing<ModuleUPFMEvents>();
             UPFM.RefreshPart();
+            if (UPFM.broken) UPFM.MarkBroken();
             if (launched || HighLogic.LoadedSceneIsEditor) Initialise();
             GameEvents.onLaunch.Add(OnLaunch);
         }
@@ -178,11 +178,10 @@ namespace Untitled_Part_Failure_Mod
             UPFM.Events["RepairChecks"].active = true;
             if (FailCheck(false))
             {
-                part.AddModule("Broken");
+                UPFM.MarkBroken();
                 Debug.Log("[UPFM]: " + SYP.ID + "is too badly damaged to be salvaged");
             }
         }
-
 
         public bool FailCheck(bool recalcChance)
         {
