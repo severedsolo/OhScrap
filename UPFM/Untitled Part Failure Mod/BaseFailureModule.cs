@@ -59,7 +59,6 @@ namespace Untitled_Part_Failure_Mod
             ScrapYardEvents.OnSYInventoryAppliedToVessel.Add(OnSYInventoryAppliedToVessel);
             UPFM = part.FindModuleImplementing<ModuleUPFMEvents>();
             UPFM.RefreshPart();
-            if (UPFM.broken) UPFM.MarkBroken();
             if (launched || HighLogic.LoadedSceneIsEditor) Initialise();
             GameEvents.onLaunch.Add(OnLaunch);
         }
@@ -79,9 +78,7 @@ namespace Untitled_Part_Failure_Mod
             launched = true;
             Initialise();
             if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyRecover && displayChance < HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) return;
-            PartModule dontRecover = part.FindModuleImplementing<DontRecoverMe>();
-            if (dontRecover == null) return;
-            part.RemoveModule(dontRecover);
+            if(!hasFailed)UPFM.doNotRecover = false;
 #if DEBUG
             Debug.Log("[UPFM]: " + SYP.ID + "marked as recoverable");
 #endif
@@ -212,7 +209,7 @@ namespace Untitled_Part_Failure_Mod
             msg.AppendLine("");
             msg.AppendLine(part.name + " has suffered a " + failureType);
             msg.AppendLine("");
-            if (part.FindModuleImplementing<Broken>() != null) msg.AppendLine("The part is damaged beyond repair");
+            if (UPFM.doNotRecover) msg.AppendLine("The part is damaged beyond repair");
             else msg.AppendLine("Chance of a successful repair is " + (100 - displayChance)+"%");
             MessageSystem.Message m = new MessageSystem.Message("UPFM", msg.ToString(), MessageSystemButton.MessageButtonColor.ORANGE,MessageSystemButton.ButtonIcons.ALERT);
             MessageSystem.Instance.AddMessage(m);

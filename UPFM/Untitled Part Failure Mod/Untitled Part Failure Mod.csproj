@@ -56,9 +56,7 @@
   <ItemGroup>
     <Compile Include="BaseFailureModule.cs" />
     <Compile Include="BatteryFailureModule.cs" />
-    <Compile Include="Broken.cs" />
     <Compile Include="ControlSurfaceFailureModule.cs" />
-    <Compile Include="DontRecoverMe.cs" />
     <Compile Include="KRASHWrapper.cs" />
     <Compile Include="Randomiser.cs" />
     <Compile Include="RCSFailureModule.cs" />
