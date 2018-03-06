@@ -92,7 +92,7 @@ namespace Untitled_Part_Failure_Mod
             willFail = false;
             chanceOfFailure = baseChanceOfFailure;
             Initialise();
-            part.AddModule("DontRecoverMe");
+            UPFM.doNotRecover = true;
         }
 
         public void Initialise()
