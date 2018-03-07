@@ -98,7 +98,7 @@ namespace Untitled_Part_Failure_Mod
         public void Initialise()
         {
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
-            ready = SYP.ID != "";
+            ready = SYP.ID != 0;
             if (!ready) return;
             randomisation = UPFMUtils.instance.GetRandomisation(part);
             if (hasFailed)

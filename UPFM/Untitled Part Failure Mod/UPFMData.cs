@@ -22,8 +22,7 @@ namespace Untitled_Part_Failure_Mod
             if (UPFMUtils.instance.randomisation.Count() == 0) return;
             foreach (var v in UPFMUtils.instance.randomisation)
             {
-                if (v.Key == null) continue;
-                if (v.Key == "") continue;
+                if (v.Key == 0) continue;
                 ConfigNode cn = new ConfigNode("PART");
                 cn.SetValue("ID", v.Key, true);
                 cn.SetValue("RandomFactor", v.Value, true);
@@ -59,16 +58,17 @@ namespace Untitled_Part_Failure_Mod
             {
                 ConfigNode cn = nodes.ElementAt(i);
                 string s = cn.GetValue("ID");
+                uint.TryParse(s, out uint u);
                 int dict;
-                if (float.TryParse(cn.GetValue("RandomFactor"),out float f)) UPFMUtils.instance.randomisation.Add(s, f);
-                if (int.TryParse(cn.GetValue("ControlSurfaceLifetime"), out dict)) UPFMUtils.instance.controlSurfaceLifetimes.Add(s, dict);
-                if (int.TryParse(cn.GetValue("EngineLifetime"), out dict)) UPFMUtils.instance.engineLifetimes.Add(s, dict);
-                if (int.TryParse(cn.GetValue("ParachuteLifetime"), out dict)) UPFMUtils.instance.parachuteLifetimes.Add(s, dict);
-                if (int.TryParse(cn.GetValue("ReactionWheelLifetime"), out dict)) UPFMUtils.instance.reactionWheelLifetimes.Add(s, dict);
-                if (int.TryParse(cn.GetValue("SolarPanelLifetime"), out dict)) UPFMUtils.instance.solarPanelLifetimes.Add(s, dict);
-                if (int.TryParse(cn.GetValue("TankLifetime"), out dict)) UPFMUtils.instance.tankLifetimes.Add(s, dict);
-                if (int.TryParse(cn.GetValue("BatteryLifetime"), out dict)) UPFMUtils.instance.batteryLifetimes.Add(s, dict);
-                if (int.TryParse(cn.GetValue("RCSLifetime"), out dict)) UPFMUtils.instance.RCSLifetimes.Add(s, dict);
+                if (float.TryParse(cn.GetValue("RandomFactor"),out float f)) UPFMUtils.instance.randomisation.Add(u, f);
+                if (int.TryParse(cn.GetValue("ControlSurfaceLifetime"), out dict)) UPFMUtils.instance.controlSurfaceLifetimes.Add(u, dict);
+                if (int.TryParse(cn.GetValue("EngineLifetime"), out dict)) UPFMUtils.instance.engineLifetimes.Add(u, dict);
+                if (int.TryParse(cn.GetValue("ParachuteLifetime"), out dict)) UPFMUtils.instance.parachuteLifetimes.Add(u, dict);
+                if (int.TryParse(cn.GetValue("ReactionWheelLifetime"), out dict)) UPFMUtils.instance.reactionWheelLifetimes.Add(u, dict);
+                if (int.TryParse(cn.GetValue("SolarPanelLifetime"), out dict)) UPFMUtils.instance.solarPanelLifetimes.Add(u, dict);
+                if (int.TryParse(cn.GetValue("TankLifetime"), out dict)) UPFMUtils.instance.tankLifetimes.Add(u, dict);
+                if (int.TryParse(cn.GetValue("BatteryLifetime"), out dict)) UPFMUtils.instance.batteryLifetimes.Add(u, dict);
+                if (int.TryParse(cn.GetValue("RCSLifetime"), out dict)) UPFMUtils.instance.RCSLifetimes.Add(u, dict);
             }
             Debug.Log("[UPFM]: Loaded");
         }

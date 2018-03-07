@@ -23,15 +23,15 @@ namespace Untitled_Part_Failure_Mod
     class UPFMUtils : MonoBehaviour
     {
         public Dictionary<Part, int> brokenParts = new Dictionary<Part, int>();
-        public Dictionary<string, float> randomisation = new Dictionary<string, float>();
-        public Dictionary<string, int> batteryLifetimes = new Dictionary<string, int>();
-        public Dictionary<string, int> controlSurfaceLifetimes = new Dictionary<string, int>();
-        public Dictionary<string, int> engineLifetimes = new Dictionary<string, int>();
-        public Dictionary<string, int> parachuteLifetimes = new Dictionary<string, int>();
-        public Dictionary<string, int> reactionWheelLifetimes = new Dictionary<string, int>();
-        public Dictionary<string, int> solarPanelLifetimes = new Dictionary<string, int>();
-        public Dictionary<string, int> tankLifetimes = new Dictionary<string, int>();
-        public Dictionary<string, int> RCSLifetimes = new Dictionary<string, int>();
+        public Dictionary<uint, float> randomisation = new Dictionary<uint, float>();
+        public Dictionary<uint, int> batteryLifetimes = new Dictionary<uint, int>();
+        public Dictionary<uint, int> controlSurfaceLifetimes = new Dictionary<uint, int>();
+        public Dictionary<uint, int> engineLifetimes = new Dictionary<uint, int>();
+        public Dictionary<uint, int> parachuteLifetimes = new Dictionary<uint, int>();
+        public Dictionary<uint, int> reactionWheelLifetimes = new Dictionary<uint, int>();
+        public Dictionary<uint, int> solarPanelLifetimes = new Dictionary<uint, int>();
+        public Dictionary<uint, int> tankLifetimes = new Dictionary<uint, int>();
+        public Dictionary<uint, int> RCSLifetimes = new Dictionary<uint, int>();
         int vesselSafetyRating = 6;
         Part worstPart;
         public bool display = false;
