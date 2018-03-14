@@ -6,6 +6,7 @@ using System.Text;
 using System.Collections.Generic;
 using KSP.UI.Screens;
 using System.Collections;
+using Expansions.Missions;
 
 namespace Untitled_Part_Failure_Mod
 {
@@ -61,6 +62,7 @@ namespace Untitled_Part_Failure_Mod
             UPFM.RefreshPart();
             if (launched || HighLogic.LoadedSceneIsEditor) Initialise();
             GameEvents.onLaunch.Add(OnLaunch);
+            
         }
 
         private void OnSYInventoryAppliedToVessel()
@@ -146,6 +148,7 @@ namespace Untitled_Part_Failure_Mod
             if (!ready) Initialise();
             if (HighLogic.LoadedSceneIsEditor) return;
             if (KRASHWrapper.simulationActive()) return;
+            if (HighLogic.CurrentGame.Mode == Game.Modes.MISSION) return;
             if (!FailureAllowed()) return;
             if (hasFailed)
             {
