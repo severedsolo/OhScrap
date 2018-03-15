@@ -40,7 +40,7 @@
     </Reference>
     <Reference Include="ScrapYard, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program\GameData\ScrapYard\ScrapYard.dll</HintPath>
+      <HintPath>F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - Making History Modded\GameData\ScrapYard\ScrapYard.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
