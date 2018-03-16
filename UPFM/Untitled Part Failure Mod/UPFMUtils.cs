@@ -32,6 +32,8 @@ namespace Untitled_Part_Failure_Mod
         public Dictionary<uint, int> solarPanelLifetimes = new Dictionary<uint, int>();
         public Dictionary<uint, int> tankLifetimes = new Dictionary<uint, int>();
         public Dictionary<uint, int> RCSLifetimes = new Dictionary<uint, int>();
+        public Dictionary<string, int> numberOfFailures = new Dictionary<string, int>();
+
         int vesselSafetyRating = 6;
         Part worstPart;
         public bool display = false;
@@ -148,8 +150,15 @@ namespace Untitled_Part_Failure_Mod
             if (HighLogic.LoadedSceneIsEditor) builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW) + 1;
             else builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW);
             int randomFactor = 8;
-            if (builds > 0) randomFactor = 8 / builds;
+            if (builds > 0) randomFactor = 10 / builds;
             if (randomFactor > 1) f = (Randomiser.instance.RandomInteger(1, randomFactor) / 100.0f);
+            if (numberOfFailures.TryGetValue(p.name, out int i))
+            {
+#if DEBUG
+                Debug.Log("[UPFM]: " + p.name + " failure bonus of " + i + " applied");
+#endif
+                f = f / i;
+            }
             float threshold = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
             if (f > threshold) f = threshold - 0.01f;
             if (!float.IsNaN(f))
@@ -183,8 +192,9 @@ namespace Untitled_Part_Failure_Mod
         private void OnGUI()
         {
             if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyWarning) return;
+            if (HighLogic.CurrentGame.Mode == Game.Modes.MISSION) return;
             if (dontBother) return;
-            if (!display) return; ;
+            if (!display) return;
             if (FlightGlobals.ActiveVessel != null)
             {
                 if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) return;

@@ -67,7 +67,11 @@ namespace Untitled_Part_Failure_Mod
 
         public int RandomInteger(int min, int max)
         {
-            return r.Next(min, max);
+            int i = r.Next(min, max);
+#if DEBUG
+            Debug.Log("[UPFM]: RandomInteger returned " + i);
+#endif 
+            return i;
         }
     }
 }

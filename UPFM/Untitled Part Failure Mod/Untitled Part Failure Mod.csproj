@@ -74,8 +74,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"D:\OneDrive\Documents\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"
-xcopy /Y "$(TargetPath)" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - Making History ModDev\GameData\UntitledFailures"
-xcopy /Y "$(TargetDir)$(TargetName).pdb" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - Making History ModDev\GameData\UntitledFailures"
-xcopy /Y "$(TargetDir)$(TargetName).dll.mdb" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - Making History ModDev\GameData\UntitledFailures"</PostBuildEvent>
+xcopy /Y "$(TargetPath)" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\UntitledFailures"
+xcopy /Y "$(TargetDir)$(TargetName).pdb" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\UntitledFailures"
+xcopy /Y "$(TargetDir)$(TargetName).dll.mdb" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\UntitledFailures"</PostBuildEvent>
   </PropertyGroup>
 </Project>

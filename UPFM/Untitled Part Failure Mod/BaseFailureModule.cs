@@ -40,6 +40,10 @@ namespace Untitled_Part_Failure_Mod
         public int displayChance = 100;
         [KSPField(isPersistant = false, guiActive = false, guiName = "Base Safety Rating", guiActiveEditor = true)]
         public int safetyRating = 6;
+#if DEBUG
+        [KSPField(isPersistant = true, guiActive = true, guiName = "Generation", guiActiveEditor = true)]
+#endif
+        public int generation = 0;
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
         public ModuleUPFMEvents UPFM;
@@ -102,6 +106,7 @@ namespace Untitled_Part_Failure_Mod
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
             ready = SYP.ID != 0;
             if (!ready) return;
+            generation = ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW);
             randomisation = UPFMUtils.instance.GetRandomisation(part);
             if (hasFailed)
             {
@@ -200,7 +205,17 @@ namespace Untitled_Part_Failure_Mod
 #if DEBUG
             if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID + " " + moduleName + " failing calculated to be " + chanceOfFailure * 100 + "%");
 #endif
-            if (Randomiser.instance.NextDouble() < chanceOfFailure) return true;
+            if (Randomiser.instance.NextDouble() < chanceOfFailure)
+            {
+                UPFMUtils.instance.numberOfFailures.TryGetValue(part.name, out int i);
+                UPFMUtils.instance.numberOfFailures.Remove(part.name);
+                i++;
+                UPFMUtils.instance.numberOfFailures.Add(part.name, i);
+#if DEBUG
+                Debug.Log("[UPFM]: " + part.name + " has now failed " + i + " times");
+#endif
+                return true;
+            }
             return false;
         }
         
