@@ -28,8 +28,8 @@ namespace Untitled_Part_Failure_Mod
             float staticPressure = (float)(FlightGlobals.GetHomeBody().GetPressure(0) * PhysicsGlobals.KpaToAtmospheres);
             if (engine.atmosphereCurve.Evaluate(staticPressure) <= 100.0f)
             {
-                expectedLifetime = 5;
-                baseChanceOfFailure = 0.02f;
+                expectedLifetime = 3;
+                baseChanceOfFailure = 0.05f;
             }
         }
 
