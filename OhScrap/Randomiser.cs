@@ -55,7 +55,7 @@ namespace OhScrap
 
         private void PopulateShuffleBag(List<double> shuffleBag, int i)
         {
-            for (double d = 0.01f; d < 1.0; d += 0.01f)
+            for (double d = 0.001f; d < 1.0; d += 0.001f)
             {
                 if (shuffleBag.Contains(d)) continue;
                 shuffleBag.Add(d);
