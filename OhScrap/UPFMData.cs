@@ -6,7 +6,7 @@ using UnityEngine;
 using ScrapYard.Modules;
 using ScrapYard;
 
-namespace Untitled_Part_Failure_Mod
+namespace OhScrap
 {
     [KSPScenario(ScenarioCreationOptions.AddToAllGames, GameScenes.FLIGHT, GameScenes.EDITOR)]
     public class UPFMData : ScenarioModule
@@ -37,7 +37,7 @@ namespace Untitled_Part_Failure_Mod
                 if (UPFMUtils.instance.RCSLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("RCSLifetime", i, true);
                 temp.AddNode(cn);
             }
-            foreach(var v in UPFMUtils.instance.numberOfFailures)
+            foreach (var v in UPFMUtils.instance.numberOfFailures)
             {
                 ConfigNode cn = new ConfigNode("FAILURE");
                 cn.SetValue("Name", v.Key, true);

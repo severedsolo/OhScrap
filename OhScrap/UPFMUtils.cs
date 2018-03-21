@@ -8,7 +8,7 @@ using KSP.UI.Screens;
 using ScrapYard;
 using ScrapYard.Modules;
 
-namespace Untitled_Part_Failure_Mod
+namespace OhScrap
 {
     [KSPAddon(KSPAddon.Startup.EditorAny, false)]
     class EditorAnyWarnings : UPFMUtils
@@ -65,7 +65,7 @@ namespace Untitled_Part_Failure_Mod
         {
             vesselSafetyRating = 6;
             editorConstruct = shipConstruct;
-            for(int i = 0; i< shipConstruct.parts.Count(); i++)
+            for (int i = 0; i < shipConstruct.parts.Count(); i++)
             {
                 Part p = shipConstruct.parts.ElementAt(i);
                 List<BaseFailureModule> bfmList = p.FindModulesImplementing<BaseFailureModule>();
@@ -204,7 +204,7 @@ namespace Untitled_Part_Failure_Mod
         void GUIDisplay(int windowID)
         {
             string s;
-            switch(vesselSafetyRating)
+            switch (vesselSafetyRating)
             {
                 case 5:
                     s = "(Excellent)";
@@ -218,7 +218,8 @@ namespace Untitled_Part_Failure_Mod
                 case 2:
                     s = "(Poor)";
                     break;
-                case 1: s = "(Terrible)";
+                case 1:
+                    s = "(Terrible)";
                     break;
                 case 0:
                     s = "(Failure Imminent)";
@@ -227,8 +228,8 @@ namespace Untitled_Part_Failure_Mod
                     s = "(Invalid)";
                     break;
             }
-            GUILayout.Label("Vessel Safety Rating: " + vesselSafetyRating+" "+s);
-            if(worstPart != null) GUILayout.Label("Worst Part: " + worstPart.partInfo.title);
+            GUILayout.Label("Vessel Safety Rating: " + vesselSafetyRating + " " + s);
+            if (worstPart != null) GUILayout.Label("Worst Part: " + worstPart.partInfo.title);
             GUILayout.Label("");
             GUILayout.Label("Broken Parts:");
             foreach (var v in brokenParts)
@@ -236,7 +237,7 @@ namespace Untitled_Part_Failure_Mod
                 int repairChance = 0;
                 if (v.Key == null) continue;
 
-                if(!v.Key.FindModuleImplementing<ModuleUPFMEvents>().doNotRecover) repairChance = 100 - v.Value;
+                if (!v.Key.FindModuleImplementing<ModuleUPFMEvents>().doNotRecover) repairChance = 100 - v.Value;
                 GUILayout.Label(v.Key.name + ": Chance of Repair: " + (repairChance) + "%");
             }
             if (GUILayout.Button("Close"))

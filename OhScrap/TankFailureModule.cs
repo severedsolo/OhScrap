@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace Untitled_Part_Failure_Mod
+namespace OhScrap
 {
     class TankFailureModule : BaseFailureModule
     {
@@ -53,7 +53,7 @@ namespace Untitled_Part_Failure_Mod
                 if (leakingName != "None")
                 {
                     leaking = part.Resources[leakingName];
-                    failureType = leaking.resourceName +" leak";
+                    failureType = leaking.resourceName + " leak";
                     return;
                 }
                 List<PartResource> potentialLeakCache = part.Resources.ToList();
@@ -90,13 +90,10 @@ namespace Untitled_Part_Failure_Mod
                 leakingName = leaking.resourceName;
                 Debug.Log("[UPFM]: " + leaking.resourceName + " started leaking from " + SYP.ID);
                 ScreenMessages.PostScreenMessage("A tank of " + leaking.resourceName + " started to leak!");
-                failureType = leaking.resourceName+" leak";
+                failureType = leaking.resourceName + " leak";
             }
             leaking.amount = leaking.amount * 0.999f;
-            if(UPFM.highlight)UPFM.SetFailedHighlight();
+            if (UPFM.highlight) UPFM.SetFailedHighlight();
         }
     }
 }
-    
- 
-

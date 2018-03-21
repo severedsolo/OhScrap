@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace Untitled_Part_Failure_Mod
+namespace OhScrap
 {
     class ReactionWheelFailureModule : BaseFailureModule
     {
@@ -30,7 +30,7 @@ namespace Untitled_Part_Failure_Mod
             if (!rw.isEnabled && rw.wheelState != ModuleReactionWheel.WheelState.Active) return;
             rw.isEnabled = false;
             rw.wheelState = ModuleReactionWheel.WheelState.Broken;
-            if(UPFM.highlight)UPFM.SetFailedHighlight();
+            if (UPFM.highlight) UPFM.SetFailedHighlight();
             if (message) return;
             message = true;
             if (rw.wheelState != ModuleReactionWheel.WheelState.Broken) Debug.Log("[UPFM]: " + SYP.ID + "'s reaction wheels have failed");

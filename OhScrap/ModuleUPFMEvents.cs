@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using ScrapYard.Modules;
 
-namespace Untitled_Part_Failure_Mod
+namespace OhScrap
 {
     class ModuleUPFMEvents : PartModule
     {
@@ -21,14 +21,14 @@ namespace Untitled_Part_Failure_Mod
         {
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
 #if DEBUG
-            Debug.Log("[UPFM]: UPFMEvents.Start"+SYP.ID);
+            Debug.Log("[UPFM]: UPFMEvents.Start" + SYP.ID);
 #endif
         }
         public void RefreshPart()
         {
             if (!HighLogic.LoadedSceneIsEditor || refreshed) return;
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
-            if(SYP.TimesRecovered == 0) SYP.MakeFresh();
+            if (SYP.TimesRecovered == 0) SYP.MakeFresh();
             refreshed = true;
         }
         [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false, guiName = "Trash Part")]
@@ -72,13 +72,13 @@ namespace Untitled_Part_Failure_Mod
             if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() == null)
             {
                 Debug.Log("[UPFM]: Attempting Remote Repair");
-                if(!FlightGlobals.ActiveVessel.Connection.IsConnectedHome)
+                if (!FlightGlobals.ActiveVessel.Connection.IsConnectedHome)
                 {
                     ScreenMessages.PostScreenMessage("Vessel must be connected to Homeworld before remote repair can be attempted");
                     Debug.Log("[UPFM]: Remote Repair aborted. Vessel not connected home");
                     return;
                 }
-                for(int i = 0; i<bfm.Count(); i++)
+                for (int i = 0; i < bfm.Count(); i++)
                 {
                     BaseFailureModule b = bfm.ElementAt(i);
                     if (b.hasFailed)
@@ -110,13 +110,13 @@ namespace Untitled_Part_Failure_Mod
                 Events["RepairChecks"].active = false;
                 repair.RepairPart();
                 repair.numberOfRepairs++;
-                Debug.Log("[UPFM]: " + SYP.ID+" " + repair.moduleName + " was successfully repaired");
+                Debug.Log("[UPFM]: " + SYP.ID + " " + repair.moduleName + " was successfully repaired");
                 part.highlightType = Part.HighlightType.OnMouseOver;
                 part.SetHighlight(false, false);
                 UPFMUtils.instance.brokenParts.Remove(part);
                 repair.postMessage = true;
             }
-            for(int i = 0; i<bfm.Count; i++)
+            for (int i = 0; i < bfm.Count; i++)
             {
                 BaseFailureModule bf = bfm.ElementAt(i);
                 bf.Initialise();
@@ -127,7 +127,7 @@ namespace Untitled_Part_Failure_Mod
         {
             List<BaseFailureModule> failedList = part.FindModulesImplementing<BaseFailureModule>();
             if (failedList.Count() == 0) return true;
-            for(int i = 0; i <failedList.Count(); i++)
+            for (int i = 0; i < failedList.Count(); i++)
             {
                 BaseFailureModule bfm = failedList.ElementAt(i);
                 if (bfm == null) continue;

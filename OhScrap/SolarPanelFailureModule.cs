@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace Untitled_Part_Failure_Mod
+namespace OhScrap
 {
     class SolarPanelFailureModule : BaseFailureModule
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace Untitled_Part_Failure_Mod
+namespace OhScrap
 {
     class BatteryFailureModule : BaseFailureModule
     {
@@ -22,7 +22,7 @@ namespace Untitled_Part_Failure_Mod
             battery = part.Resources["ElectricCharge"];
             battery.amount = 0;
             battery.flowState = false;
-            if(UPFM.highlight)UPFM.SetFailedHighlight();
+            if (UPFM.highlight) UPFM.SetFailedHighlight();
             if (message) return;
             ScreenMessages.PostScreenMessage("Battery short circuited!");
             Debug.Log("[UPFM]: " + SYP.ID + " has suffered a short circuit failure");

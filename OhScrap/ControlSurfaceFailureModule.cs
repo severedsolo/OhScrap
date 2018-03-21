@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace Untitled_Part_Failure_Mod
+namespace OhScrap
 {
     class ControlSurfaceFailureModule : BaseFailureModule
     {
@@ -32,7 +32,7 @@ namespace Untitled_Part_Failure_Mod
             controlSurface.ignorePitch = true;
             controlSurface.ignoreRoll = true;
             controlSurface.ignoreYaw = true;
-            if(UPFM.highlight)UPFM.SetFailedHighlight();
+            if (UPFM.highlight) UPFM.SetFailedHighlight();
             if (message) return;
             ScreenMessages.PostScreenMessage("Control Surface Failure!");
             Debug.Log("[UPFM]: " + SYP.ID + " has suffered a control surface failure");

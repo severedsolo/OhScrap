@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace Untitled_Part_Failure_Mod
+namespace OhScrap
 {
     class EngineFailureModule : BaseFailureModule
     {
@@ -44,7 +44,7 @@ namespace Untitled_Part_Failure_Mod
             engine = part.FindModuleImplementing<ModuleEngines>();
             if (engine == null) engineFX = part.FindModuleImplementing<ModuleEnginesFX>();
             gimbal = part.FindModuleImplementing<ModuleGimbal>();
-            if(engine != null)
+            if (engine != null)
             {
                 if (engine.currentThrottle == 0)
                 {
@@ -60,7 +60,7 @@ namespace Untitled_Part_Failure_Mod
                     return;
                 }
             }
-            if(UPFM.highlight) UPFM.SetFailedHighlight();
+            if (UPFM.highlight) UPFM.SetFailedHighlight();
             if (failureType == "none")
             {
                 int i = Randomiser.instance.RandomInteger(1, 5);
@@ -87,7 +87,7 @@ namespace Untitled_Part_Failure_Mod
                         break;
                     default:
                         failureType = "none";
-                        Debug.Log("[UPFM]: "+SYP.ID+" decided not to fail after all");
+                        Debug.Log("[UPFM]: " + SYP.ID + " decided not to fail after all");
                         break;
                 }
                 ScreenMessages.PostScreenMessage(failureType + " detected on " + part.name);
@@ -103,14 +103,14 @@ namespace Untitled_Part_Failure_Mod
                     if (timeBetweenFailureEvents > Planetarium.GetUniversalTime()) break;
                     if (fuelLineCounter < 0) part.explode();
                     else fuelLineCounter--;
-                    timeBetweenFailureEvents = Planetarium.GetUniversalTime() + Randomiser.instance.RandomInteger(1,10);
+                    timeBetweenFailureEvents = Planetarium.GetUniversalTime() + Randomiser.instance.RandomInteger(1, 10);
                     break;
                 case "Underthrust":
                     if (timeBetweenFailureEvents <= Planetarium.GetUniversalTime())
                     {
                         if (engine != null) engine.thrustPercentage = engine.thrustPercentage * 0.9f;
                         else engineFX.thrustPercentage = engine.thrustPercentage * 0.9f;
-                        timeBetweenFailureEvents = Planetarium.GetUniversalTime() + Randomiser.instance.RandomInteger(10,30);
+                        timeBetweenFailureEvents = Planetarium.GetUniversalTime() + Randomiser.instance.RandomInteger(10, 30);
                         if (engine != null) staticThrust = engine.thrustPercentage;
                         else staticThrust = engineFX.thrustPercentage;
                     }

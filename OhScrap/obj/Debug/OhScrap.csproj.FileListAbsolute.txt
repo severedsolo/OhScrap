@@ -1,0 +1,8 @@
+C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\OhScrap.dll
+C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\OhScrap.pdb
+C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\Assembly-CSharp-firstpass.dll
+C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\ScrapYard.dll
+C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\UnityEngine.dll
+C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Debug\OhScrap.csproj.CoreCompileInputs.cache
+C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Debug\OhScrap.dll
+C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Debug\OhScrap.pdb

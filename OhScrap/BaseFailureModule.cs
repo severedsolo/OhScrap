@@ -1,14 +1,14 @@
-﻿using ScrapYard.Modules;
-using ScrapYard;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using System.Text;
 using System.Collections.Generic;
 using KSP.UI.Screens;
 using System.Collections;
 using Expansions.Missions;
+using ScrapYard;
+using ScrapYard.Modules;
 
-namespace Untitled_Part_Failure_Mod
+namespace OhScrap
 {
     class BaseFailureModule : PartModule
     {
@@ -43,6 +43,9 @@ namespace Untitled_Part_Failure_Mod
 #if DEBUG
         [KSPField(isPersistant = true, guiActive = true, guiName = "Generation", guiActiveEditor = true)]
 #endif
+#if !DEBUG
+        [KSPField(isPersistant = true, guiActive = false, guiName = "Generation", guiActiveEditor = false)]
+#endif
         public int generation = 0;
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
@@ -57,8 +60,9 @@ namespace Untitled_Part_Failure_Mod
             Fields["displayChance"].guiActiveEditor = true;
             Fields["safetyRating"].guiActive = true;
 #endif
+            SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
             chanceOfFailure = baseChanceOfFailure;
-            if (expectedLifetime > 12) expectedLifetime = (expectedLifetime / 10)+2;
+            if (expectedLifetime > 12) expectedLifetime = (expectedLifetime / 10) + 2;
             Overrides();
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             ScrapYardEvents.OnSYInventoryAppliedToVessel.Add(OnSYInventoryAppliedToVessel);
@@ -66,13 +70,13 @@ namespace Untitled_Part_Failure_Mod
             UPFM.RefreshPart();
             if (launched || HighLogic.LoadedSceneIsEditor) Initialise();
             GameEvents.onLaunch.Add(OnLaunch);
-            
+
         }
 
         private void OnSYInventoryAppliedToVessel()
         {
 #if DEBUG
-            Debug.Log("[UPFM]: ScrayYard Inventory Applied. Recalculating failure chance for "+SYP.ID+" "+ClassName);
+            Debug.Log("[UPFM]: ScrayYard Inventory Applied. Recalculating failure chance for " + SYP.ID + " " + ClassName);
 #endif
             willFail = false;
             chanceOfFailure = baseChanceOfFailure;
@@ -84,7 +88,7 @@ namespace Untitled_Part_Failure_Mod
             launched = true;
             Initialise();
             if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyRecover && displayChance < HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) return;
-            if(!hasFailed)UPFM.doNotRecover = false;
+            if (!hasFailed) UPFM.doNotRecover = false;
 #if DEBUG
             Debug.Log("[UPFM]: " + SYP.ID + "marked as recoverable");
 #endif
@@ -93,7 +97,7 @@ namespace Untitled_Part_Failure_Mod
         private void OnSYTrackerUpdated(IEnumerable<InventoryPart> data)
         {
 #if DEBUG
-            Debug.Log("[UPFM]: ScrayYard Tracker updated. Recalculating failure chance for "+SYP.ID+" "+ClassName);
+            Debug.Log("[UPFM]: ScrayYard Tracker updated. Recalculating failure chance for " + SYP.ID + " " + ClassName);
 #endif
             willFail = false;
             chanceOfFailure = baseChanceOfFailure;
@@ -103,10 +107,10 @@ namespace Untitled_Part_Failure_Mod
 
         public void Initialise()
         {
-            SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
             ready = SYP.ID != 0;
             if (!ready) return;
-            generation = ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW);
+            if (HighLogic.LoadedSceneIsEditor) generation = ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW) + 1;
+            else generation = ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW);
             randomisation = UPFMUtils.instance.GetRandomisation(part);
             if (hasFailed)
             {
@@ -174,7 +178,7 @@ namespace Untitled_Part_Failure_Mod
                 return;
             }
             if (Planetarium.GetUniversalTime() < failureTime) return;
-            if(HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().stopOnFailure) TimeWarp.SetRate(0, true);
+            if (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().stopOnFailure) TimeWarp.SetRate(0, true);
             hasFailed = true;
             if (UPFMUtils.instance != null)
             {
@@ -190,11 +194,11 @@ namespace Untitled_Part_Failure_Mod
 
         public bool FailCheck(bool recalcChance)
         {
-            if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure + randomisation;
+            if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure/generation + randomisation;
             else if (SYP.TimesRecovered < expectedLifetime) chanceOfFailure = (baseChanceOfFailure + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
             else chanceOfFailure = (baseChanceOfFailure + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
             if (chanceOfFailure * 100 > HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) chanceOfFailure = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
-            float endOfLifeMultiplier = (SYP.TimesRecovered - expectedLifetime)/5.0f;
+            float endOfLifeMultiplier = (SYP.TimesRecovered - expectedLifetime) / 5.0f;
             if (endOfLifeMultiplier > 0)
             {
                 if (!endOfLife) endOfLife = Randomiser.instance.NextDouble() < endOfLifeMultiplier;
@@ -218,7 +222,7 @@ namespace Untitled_Part_Failure_Mod
             }
             return false;
         }
-        
+
 
         void PostFailureMessage()
         {
@@ -228,8 +232,8 @@ namespace Untitled_Part_Failure_Mod
             msg.AppendLine(part.name + " has suffered a " + failureType);
             msg.AppendLine("");
             if (UPFM.doNotRecover) msg.AppendLine("The part is damaged beyond repair");
-            else msg.AppendLine("Chance of a successful repair is " + (100 - displayChance)+"%");
-            MessageSystem.Message m = new MessageSystem.Message("UPFM", msg.ToString(), MessageSystemButton.MessageButtonColor.ORANGE,MessageSystemButton.ButtonIcons.ALERT);
+            else msg.AppendLine("Chance of a successful repair is " + (100 - displayChance) + "%");
+            MessageSystem.Message m = new MessageSystem.Message("UPFM", msg.ToString(), MessageSystemButton.MessageButtonColor.ORANGE, MessageSystemButton.ButtonIcons.ALERT);
             MessageSystem.Instance.AddMessage(m);
         }
 
