@@ -38,15 +38,8 @@ namespace OhScrap
         public int numberOfRepairs = 0;
         [KSPField(isPersistant = false, guiActive = false, guiName = "BaseFailure", guiActiveEditor = false, guiUnits = "%")]
         public int displayChance = 100;
-        [KSPField(isPersistant = false, guiActive = false, guiName = "Base Safety Rating", guiActiveEditor = true)]
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Base Safety Rating", guiActiveEditor = true)]
         public int safetyRating = 6;
-#if DEBUG
-        [KSPField(isPersistant = true, guiActive = true, guiName = "Generation", guiActiveEditor = true)]
-#endif
-#if !DEBUG
-        [KSPField(isPersistant = true, guiActive = false, guiName = "Generation", guiActiveEditor = true)]
-#endif
-        public int generation = 0;
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
         public ModuleUPFMEvents OhScrap;
@@ -80,7 +73,6 @@ namespace OhScrap
 #endif
             willFail = false;
             chanceOfFailure = baseChanceOfFailure;
-            generation = 0;
             Initialise();
         }
 
@@ -110,12 +102,8 @@ namespace OhScrap
         {
             ready = SYP.ID != 0;
             if (!ready) return;
-            if (generation == 0)
-            {
-                if (HighLogic.LoadedSceneIsEditor) generation = (ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW) + 1) - SYP.TimesRecovered;
-                else generation = ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW) - SYP.TimesRecovered;
-            }
-            randomisation = UPFMUtils.instance.GetRandomisation(part);
+            OhScrap.generation = UPFMUtils.instance.GetGeneration(SYP.ID, part);
+            randomisation = UPFMUtils.instance.GetRandomisation(part, OhScrap.generation);
             if (hasFailed)
             {
                 OhScrap.Events["RepairChecks"].active = true;
@@ -130,7 +118,7 @@ namespace OhScrap
                     willFail = true;
                     Debug.Log("[OhScrap]: " + SYP.ID + " " + ClassName + " will attempt to fail in " + timeToFailure + " seconds");
 #if !DEBUG
-                    Debug.Log("[OhScrap]: Chance of Failure was "+displayChance+"% (Generation "+ ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW)+", "+SYP.TimesRecovered+ "recoveries)");
+                    Debug.Log("[OhScrap]: Chance of Failure was "+displayChance+"% (Generation "+OhScrap.generation+", "+SYP.TimesRecovered+ "recoveries)");
 #endif
                 }
             }
@@ -173,7 +161,7 @@ namespace OhScrap
                     postMessage = false;
                     OhScrap.Events["ToggleHighlight"].active = true;
                     OhScrap.highlight = true;
-                    Debug.Log("[OhScrap]: Chance of Failure was " + displayChance + "% (Generation " + ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW) + ")");
+                    Debug.Log("[OhScrap]: Chance of Failure was " + displayChance + "% (Generation "+OhScrap.generation+", "+SYP.TimesRecovered+" recoveries)");
                 }
                 return;
             }
@@ -198,8 +186,8 @@ namespace OhScrap
 
         public bool FailCheck(bool recalcChance)
         {
-            if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure/generation + randomisation;
-            else if (SYP.TimesRecovered < expectedLifetime) chanceOfFailure = (baseChanceOfFailure + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
+            if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure/OhScrap.generation + randomisation;
+            else if (SYP.TimesRecovered < expectedLifetime) chanceOfFailure = (baseChanceOfFailure/OhScrap.generation + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
             else chanceOfFailure = (baseChanceOfFailure + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
             if (chanceOfFailure * 100 > HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) chanceOfFailure = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
             float endOfLifeMultiplier = (SYP.TimesRecovered - expectedLifetime) / 5.0f;

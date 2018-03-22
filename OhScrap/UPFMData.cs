@@ -35,6 +35,7 @@ namespace OhScrap
                 if (UPFMUtils.instance.reactionWheelLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("ReactionWheelLifetime", i, true);
                 if (UPFMUtils.instance.tankLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("TankLifetime", i, true);
                 if (UPFMUtils.instance.RCSLifetimes.TryGetValue(v.Key, out i)) cn.SetValue("RCSLifetime", i, true);
+                if (UPFMUtils.instance.generations.TryGetValue(v.Key, out i)) cn.SetValue("Generation", i, true);
                 temp.AddNode(cn);
             }
             foreach (var v in UPFMUtils.instance.numberOfFailures)
@@ -62,6 +63,7 @@ namespace OhScrap
             UPFMUtils.instance.solarPanelLifetimes.Clear();
             UPFMUtils.instance.tankLifetimes.Clear();
             UPFMUtils.instance.numberOfFailures.Clear();
+            UPFMUtils.instance.generations.Clear();
             bool.TryParse(temp.GetValue("FlightWindow"), out UPFMUtils.instance.flightWindow);
             bool.TryParse(temp.GetValue("EditorWindow"), out UPFMUtils.instance.editorWindow);
             ConfigNode[] nodes = temp.GetNodes("PART");
@@ -81,6 +83,7 @@ namespace OhScrap
                 if (int.TryParse(cn.GetValue("TankLifetime"), out dict)) UPFMUtils.instance.tankLifetimes.Add(u, dict);
                 if (int.TryParse(cn.GetValue("BatteryLifetime"), out dict)) UPFMUtils.instance.batteryLifetimes.Add(u, dict);
                 if (int.TryParse(cn.GetValue("RCSLifetime"), out dict)) UPFMUtils.instance.RCSLifetimes.Add(u, dict);
+                if (int.TryParse(cn.GetValue("Generation"), out int g)) UPFMUtils.instance.generations.Add(u, g);
             }
             nodes = temp.GetNodes("FAILURE");
             if (nodes.Count() == 0) return;

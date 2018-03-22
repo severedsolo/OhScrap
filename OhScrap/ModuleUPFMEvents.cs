@@ -16,6 +16,8 @@ namespace OhScrap
         public bool refreshed = false;
         [KSPField(isPersistant = true, guiActive = false)]
         public bool doNotRecover = true;
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Generation", guiActiveEditor = true)]
+        public int generation = 0;
 
         private void Start()
         {

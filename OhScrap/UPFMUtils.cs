@@ -33,13 +33,14 @@ namespace OhScrap
         public Dictionary<uint, int> tankLifetimes = new Dictionary<uint, int>();
         public Dictionary<uint, int> RCSLifetimes = new Dictionary<uint, int>();
         public Dictionary<string, int> numberOfFailures = new Dictionary<string, int>();
+        public Dictionary<uint, int> generations = new Dictionary<uint, int>();
 
         int vesselSafetyRating = 6;
         Part worstPart;
         public bool display = false;
         bool dontBother = false;
         public static UPFMUtils instance;
-        Rect Window = new Rect(500, 100, 240, 50);
+        Rect Window = new Rect(500, 100, 480, 50);
         ApplicationLauncherButton ToolbarButton;
         ShipConstruct editorConstruct;
         public bool editorWindow = false;
@@ -57,19 +58,26 @@ namespace OhScrap
             GameEvents.OnFlightGlobalsReady.Add(OnFlightGlobalsReady);
             if (!HighLogic.LoadedSceneIsEditor)
             {
-                if (flightWindow) display = true;
-                else display = false;
+                display = flightWindow;
             }
-            if(HighLogic.LoadedSceneIsEditor)
+            else
             {
-                if (editorWindow) display = true;
-                else display = false;
+                display = editorWindow;
             }
         }
 
         private void OnFlightGlobalsReady(bool data)
         {
             vesselSafetyRating = 6;
+        }
+
+        public int GetGeneration(uint id, Part p)
+        {
+            if (generations.TryGetValue(id, out int i)) return i;
+            if (HighLogic.LoadedSceneIsEditor) i = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW) + 1;
+            else i = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW);
+            generations.Add(id, i);
+            return i;
         }
 
         private void onEditorShipModified(ShipConstruct shipConstruct)
@@ -151,15 +159,12 @@ namespace OhScrap
 #endif
         }
 
-        public float GetRandomisation(Part p)
+        public float GetRandomisation(Part p, int builds)
         {
             ModuleSYPartTracker SYP = p.FindModuleImplementing<ModuleSYPartTracker>();
             if (SYP == null) return 0;
             float f = 0;
             if (randomisation.TryGetValue(SYP.ID, out f)) return f;
-            int builds;
-            if (HighLogic.LoadedSceneIsEditor) builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW) + 1;
-            else builds = ScrapYardWrapper.GetBuildCount(p, ScrapYardWrapper.TrackType.NEW);
             int randomFactor = 8;
             if (builds > 0) randomFactor = 10 / builds;
             if (randomFactor > 1) f = (Randomiser.instance.RandomInteger(1, randomFactor) / 100.0f);
@@ -191,10 +196,12 @@ namespace OhScrap
             if (display)
             {
                 display = false;
+                ToggleWindow();
             }
             else
             {
                 display = true;
+                ToggleWindow();
             }
         }
         private void OnGUI()
@@ -207,7 +214,7 @@ namespace OhScrap
             {
                 if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) return;
             }
-            Window = GUILayout.Window(98399854, Window, GUIDisplay, "OhScrap", GUILayout.Width(200));
+            Window = GUILayout.Window(98399854, Window, GUIDisplay, "OhScrap", GUILayout.Width(300));
         }
         void GUIDisplay(int windowID)
         {
@@ -236,6 +243,11 @@ namespace OhScrap
                     s = "(Invalid)";
                     break;
             }
+            if(vesselSafetyRating == 6)
+            {
+                GUILayout.Label("No parts detected. Place or right click on a part");
+                return;
+            }
             GUILayout.Label("Vessel Safety Rating: " + vesselSafetyRating + " " + s);
             if (worstPart != null) GUILayout.Label("Worst Part: " + worstPart.partInfo.title);
             GUILayout.Label("");
@@ -251,10 +263,16 @@ namespace OhScrap
             if (GUILayout.Button("Close"))
             {
                 display = false;
+                ToggleWindow();
             }
             GUI.DragWindow();
         }
 
+        void ToggleWindow()
+        {
+            if (HighLogic.LoadedSceneIsEditor) editorWindow = display;
+            else flightWindow = display;
+        }
 
         private void OnDestroy()
         {
