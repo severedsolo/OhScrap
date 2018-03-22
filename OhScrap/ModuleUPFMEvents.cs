@@ -34,9 +34,28 @@ namespace OhScrap
         [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false, guiName = "Trash Part")]
         public void TrashPart()
         {
-            doNotRecover = true;
-            ScreenMessages.PostScreenMessage(part.name + " will not be recovered");
-            Debug.Log("[UPFM]: TrashPart " + SYP.ID);
+            if (!doNotRecover)
+            {
+                doNotRecover = true;
+                ScreenMessages.PostScreenMessage(part.name + " will not be recovered");
+            }
+            else
+            {
+                List<BaseFailureModule> modules = part.FindModulesImplementing<BaseFailureModule>();
+                if (modules.Count == 0) return;
+                for(int i = 0; i<modules.Count; i++)
+                {
+                    BaseFailureModule bfm = modules.ElementAt(i);
+                    if(bfm.hasFailed)
+                    {
+                        ScreenMessages.PostScreenMessage(part.name + " cannot be saved");
+                        return;
+                    }
+                }
+                doNotRecover = false;
+                ScreenMessages.PostScreenMessage(part.name + " will be recovered");
+            }
+            Debug.Log("[OhScrap]: TrashPart " + SYP.ID+" "+doNotRecover);
         }
         public void MarkBroken()
         {
@@ -66,16 +85,16 @@ namespace OhScrap
         [KSPEvent(active = false, guiActive = true, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = false, guiName = "Repair ")]
         public void RepairChecks()
         {
-            Debug.Log("[UPFM]: Attempting repairs");
+            Debug.Log("[OhScrap]: Attempting repairs");
             bool repairAllowed = true;
             List<BaseFailureModule> bfm = part.FindModulesImplementing<BaseFailureModule>();
             if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() == null)
             {
-                Debug.Log("[UPFM]: Attempting Remote Repair");
+                Debug.Log("[OhScrap]: Attempting Remote Repair");
                 if (!FlightGlobals.ActiveVessel.Connection.IsConnectedHome)
                 {
                     ScreenMessages.PostScreenMessage("Vessel must be connected to Homeworld before remote repair can be attempted");
-                    Debug.Log("[UPFM]: Remote Repair aborted. Vessel not connected home");
+                    Debug.Log("[OhScrap]: Remote Repair aborted. Vessel not connected home");
                     return;
                 }
                 for (int i = 0; i < bfm.Count(); i++)
@@ -87,7 +106,7 @@ namespace OhScrap
                         {
                             ScreenMessages.PostScreenMessage(part.name + "cannot be repaired remotely");
                             repairAllowed = false;
-                            Debug.Log("[UPFM]: Remote Repair not allowed on " + SYP.ID + " " + b.ClassName);
+                            Debug.Log("[OhScrap]: Remote Repair not allowed on " + SYP.ID + " " + b.ClassName);
                             continue;
                         }
                     }
@@ -101,7 +120,7 @@ namespace OhScrap
                 {
                     ScreenMessages.PostScreenMessage("This part is beyond repair");
                     doNotRecover = true;
-                    Debug.Log("[UPFM]: " + SYP.ID + " is too badly damaged to be fixed");
+                    Debug.Log("[OhScrap]: " + SYP.ID + " is too badly damaged to be fixed");
                     return;
                 }
                 repair.hasFailed = false;
@@ -110,7 +129,7 @@ namespace OhScrap
                 Events["RepairChecks"].active = false;
                 repair.RepairPart();
                 repair.numberOfRepairs++;
-                Debug.Log("[UPFM]: " + SYP.ID + " " + repair.moduleName + " was successfully repaired");
+                Debug.Log("[OhScrap]: " + SYP.ID + " " + repair.moduleName + " was successfully repaired");
                 part.highlightType = Part.HighlightType.OnMouseOver;
                 part.SetHighlight(false, false);
                 UPFMUtils.instance.brokenParts.Remove(part);

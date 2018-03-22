@@ -44,12 +44,12 @@ namespace OhScrap
         [KSPField(isPersistant = true, guiActive = true, guiName = "Generation", guiActiveEditor = true)]
 #endif
 #if !DEBUG
-        [KSPField(isPersistant = true, guiActive = false, guiName = "Generation", guiActiveEditor = false)]
+        [KSPField(isPersistant = true, guiActive = false, guiName = "Generation", guiActiveEditor = true)]
 #endif
         public int generation = 0;
         double failureTime = 0;
         public double maxTimeToFailure = 1800;
-        public ModuleUPFMEvents UPFM;
+        public ModuleUPFMEvents OhScrap;
         public bool remoteRepairable = false;
         public bool excluded = false;
 
@@ -66,8 +66,8 @@ namespace OhScrap
             Overrides();
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             ScrapYardEvents.OnSYInventoryAppliedToVessel.Add(OnSYInventoryAppliedToVessel);
-            UPFM = part.FindModuleImplementing<ModuleUPFMEvents>();
-            UPFM.RefreshPart();
+            OhScrap = part.FindModuleImplementing<ModuleUPFMEvents>();
+            OhScrap.RefreshPart();
             if (launched || HighLogic.LoadedSceneIsEditor) Initialise();
             GameEvents.onLaunch.Add(OnLaunch);
 
@@ -80,6 +80,7 @@ namespace OhScrap
 #endif
             willFail = false;
             chanceOfFailure = baseChanceOfFailure;
+            generation = 0;
             Initialise();
         }
 
@@ -88,7 +89,7 @@ namespace OhScrap
             launched = true;
             Initialise();
             if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyRecover && displayChance < HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) return;
-            if (!hasFailed) UPFM.doNotRecover = false;
+            if (!hasFailed) OhScrap.doNotRecover = false;
 #if DEBUG
             Debug.Log("[UPFM]: " + SYP.ID + "marked as recoverable");
 #endif
@@ -102,20 +103,23 @@ namespace OhScrap
             willFail = false;
             chanceOfFailure = baseChanceOfFailure;
             Initialise();
-            UPFM.doNotRecover = true;
+            OhScrap.doNotRecover = true;
         }
 
         public void Initialise()
         {
             ready = SYP.ID != 0;
             if (!ready) return;
-            if (HighLogic.LoadedSceneIsEditor) generation = ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW) + 1;
-            else generation = ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW);
+            if (generation == 0)
+            {
+                if (HighLogic.LoadedSceneIsEditor) generation = (ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW) + 1) - SYP.TimesRecovered;
+                else generation = ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW) - SYP.TimesRecovered;
+            }
             randomisation = UPFMUtils.instance.GetRandomisation(part);
             if (hasFailed)
             {
-                UPFM.Events["RepairChecks"].active = true;
-                UPFM.Events["ToggleHighlight"].active = true;
+                OhScrap.Events["RepairChecks"].active = true;
+                OhScrap.Events["ToggleHighlight"].active = true;
             }
             else
             {
@@ -124,9 +128,9 @@ namespace OhScrap
                     double timeToFailure = (maxTimeToFailure * (1 - chanceOfFailure)) * Randomiser.instance.NextDouble();
                     failureTime = Planetarium.GetUniversalTime() + timeToFailure;
                     willFail = true;
-                    Debug.Log("[UPFM]: " + SYP.ID + " " + ClassName + " will attempt to fail in " + timeToFailure + " seconds");
+                    Debug.Log("[OhScrap]: " + SYP.ID + " " + ClassName + " will attempt to fail in " + timeToFailure + " seconds");
 #if !DEBUG
-                    Debug.Log("[UPFM]: Chance of Failure was "+displayChance+"% (Generation "+ ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW)+", "+SYP.TimesRecovered+ "recoveries)");
+                    Debug.Log("[OhScrap]: Chance of Failure was "+displayChance+"% (Generation "+ ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW)+", "+SYP.TimesRecovered+ "recoveries)");
 #endif
                 }
             }
@@ -162,14 +166,14 @@ namespace OhScrap
             if (hasFailed)
             {
                 FailPart();
-                UPFM.SetFailedHighlight();
+                OhScrap.SetFailedHighlight();
                 if (postMessage)
                 {
                     PostFailureMessage();
                     postMessage = false;
-                    UPFM.Events["ToggleHighlight"].active = true;
-                    UPFM.highlight = true;
-                    Debug.Log("[UPFM]: Chance of Failure was " + displayChance + "% (Generation " + ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW) + ")");
+                    OhScrap.Events["ToggleHighlight"].active = true;
+                    OhScrap.highlight = true;
+                    Debug.Log("[OhScrap]: Chance of Failure was " + displayChance + "% (Generation " + ScrapYardWrapper.GetBuildCount(part, ScrapYardWrapper.TrackType.NEW) + ")");
                 }
                 return;
             }
@@ -184,11 +188,11 @@ namespace OhScrap
             {
                 if (!UPFMUtils.instance.brokenParts.ContainsKey(part)) UPFMUtils.instance.brokenParts.Add(part, displayChance);
             }
-            UPFM.Events["RepairChecks"].active = true;
+            OhScrap.Events["RepairChecks"].active = true;
             if (FailCheck(false))
             {
-                UPFM.MarkBroken();
-                Debug.Log("[UPFM]: " + SYP.ID + "is too badly damaged to be salvaged");
+                OhScrap.MarkBroken();
+                Debug.Log("[OhScrap]: " + SYP.ID + "is too badly damaged to be salvaged");
             }
         }
 
@@ -231,9 +235,9 @@ namespace OhScrap
             msg.AppendLine("");
             msg.AppendLine(part.name + " has suffered a " + failureType);
             msg.AppendLine("");
-            if (UPFM.doNotRecover) msg.AppendLine("The part is damaged beyond repair");
+            if (OhScrap.doNotRecover) msg.AppendLine("The part is damaged beyond repair");
             else msg.AppendLine("Chance of a successful repair is " + (100 - displayChance) + "%");
-            MessageSystem.Message m = new MessageSystem.Message("UPFM", msg.ToString(), MessageSystemButton.MessageButtonColor.ORANGE, MessageSystemButton.ButtonIcons.ALERT);
+            MessageSystem.Message m = new MessageSystem.Message("OhScrap", msg.ToString(), MessageSystemButton.MessageButtonColor.ORANGE, MessageSystemButton.ButtonIcons.ALERT);
             MessageSystem.Instance.AddMessage(m);
         }
 

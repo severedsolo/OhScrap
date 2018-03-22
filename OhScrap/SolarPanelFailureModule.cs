@@ -44,10 +44,10 @@ namespace OhScrap
                 {
                     failureType = "retraction error";
                     ScreenMessages.PostScreenMessage(part.name + " retraction mechanism jammed");
-                    Debug.Log("[UPFM]: " + SYP.ID + " retraction mechanism has jammed");
+                    Debug.Log("[OhScrap]: " + SYP.ID + " retraction mechanism has jammed");
                     postMessage = true;
                 }
-                if (UPFM.highlight) UPFM.SetFailedHighlight();
+                if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             }
             else if (panel.isTracking && panel.deployState == ModuleDeployablePart.DeployState.EXTENDED && !originallyRetractable)
             {
@@ -56,10 +56,10 @@ namespace OhScrap
                 {
                     failureType = "sun tracking error";
                     ScreenMessages.PostScreenMessage(part.name + " sun tracking mechanism jammed");
-                    Debug.Log("[UPFM]: " + SYP.ID + " sun tracking mechanism has jammed");
+                    Debug.Log("[OhScrap]: " + SYP.ID + " sun tracking mechanism has jammed");
                     postMessage = true;
                 }
-                if (UPFM.highlight) UPFM.SetFailedHighlight();
+                if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             }
         }
 

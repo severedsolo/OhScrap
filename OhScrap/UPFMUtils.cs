@@ -42,6 +42,8 @@ namespace OhScrap
         Rect Window = new Rect(500, 100, 240, 50);
         ApplicationLauncherButton ToolbarButton;
         ShipConstruct editorConstruct;
+        public bool editorWindow = false;
+        public bool flightWindow = true;
 
         private void Awake()
         {
@@ -53,7 +55,16 @@ namespace OhScrap
             GameEvents.onGUIApplicationLauncherReady.Add(GUIReady);
             GameEvents.onEditorShipModified.Add(onEditorShipModified);
             GameEvents.OnFlightGlobalsReady.Add(OnFlightGlobalsReady);
-            if (!HighLogic.LoadedSceneIsEditor) display = true;
+            if (!HighLogic.LoadedSceneIsEditor)
+            {
+                if (flightWindow) display = true;
+                else display = false;
+            }
+            if(HighLogic.LoadedSceneIsEditor)
+            {
+                if (editorWindow) display = true;
+                else display = false;
+            }
         }
 
         private void OnFlightGlobalsReady(bool data)
@@ -173,10 +184,7 @@ namespace OhScrap
 
         public void GUIReady()
         {
-            if (ToolbarButton == null && HighLogic.LoadedSceneIsEditor)
-            {
-                ToolbarButton = ApplicationLauncher.Instance.AddModApplication(GUISwitch, GUISwitch, null, null, null, null, ApplicationLauncher.AppScenes.ALWAYS, GameDatabase.Instance.GetTexture("UntitledFailures/Icon", false));
-            }
+            ToolbarButton = ApplicationLauncher.Instance.AddModApplication(GUISwitch, GUISwitch, null, null, null, null, ApplicationLauncher.AppScenes.ALWAYS, GameDatabase.Instance.GetTexture("Severedsolo/OhScrap/Icon", false));
         }
         public void GUISwitch()
         {
@@ -199,7 +207,7 @@ namespace OhScrap
             {
                 if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) return;
             }
-            Window = GUILayout.Window(98399854, Window, GUIDisplay, "UPFM", GUILayout.Width(200));
+            Window = GUILayout.Window(98399854, Window, GUIDisplay, "OhScrap", GUILayout.Width(200));
         }
         void GUIDisplay(int windowID)
         {

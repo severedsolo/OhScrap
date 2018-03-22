@@ -60,7 +60,7 @@ namespace OhScrap
                     return;
                 }
             }
-            if (UPFM.highlight) UPFM.SetFailedHighlight();
+            if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             if (failureType == "none")
             {
                 int i = Randomiser.instance.RandomInteger(1, 5);
@@ -68,26 +68,26 @@ namespace OhScrap
                 {
                     case 1:
                         failureType = "Fuel Flow Failure";
-                        Debug.Log("[UPFM]: attempted to perform Fuel Flow Failure on " + SYP.ID);
+                        Debug.Log("[OhScrap]: attempted to perform Fuel Flow Failure on " + SYP.ID);
                         break;
                     case 2:
                         failureType = "Fuel Line Leak";
-                        Debug.Log("[UPFM]: attempted to perform Fuel Line Leak on " + SYP.ID);
+                        Debug.Log("[OhScrap]: attempted to perform Fuel Line Leak on " + SYP.ID);
                         InvokeRepeating("LeakFuel", 2.0f, 2.0f);
                         break;
                     case 3:
                         failureType = "Underthrust";
                         originalThrust = engine.thrustPercentage;
-                        Debug.Log("[UPFM]: attempted to perform Underthrust on " + SYP.ID);
+                        Debug.Log("[OhScrap]: attempted to perform Underthrust on " + SYP.ID);
                         break;
                     case 4:
                         if (gimbal == null) return;
                         failureType = "Gimbal Failure";
-                        Debug.Log("[UPFM]: attempted to lock gimbal on" + SYP.ID);
+                        Debug.Log("[OhScrap]: attempted to lock gimbal on" + SYP.ID);
                         break;
                     default:
                         failureType = "none";
-                        Debug.Log("[UPFM]: " + SYP.ID + " decided not to fail after all");
+                        Debug.Log("[OhScrap]: " + SYP.ID + " decided not to fail after all");
                         break;
                 }
                 ScreenMessages.PostScreenMessage(failureType + " detected on " + part.name);
@@ -134,12 +134,12 @@ namespace OhScrap
                 case "Fuel Flow Failure":
                     if (engine != null) engine.Activate();
                     else engineFX.Activate();
-                    Debug.Log("[UPFM]: Re-activated " + SYP.ID);
+                    Debug.Log("[OhScrap]: Re-activated " + SYP.ID);
                     break;
                 case "Underthrust":
                     if (engine != null) engine.thrustPercentage = originalThrust;
                     else engineFX.thrustPercentage = originalThrust;
-                    Debug.Log("[UPFM]: Reset Thrust on " + SYP.ID);
+                    Debug.Log("[OhScrap]: Reset Thrust on " + SYP.ID);
                     break;
                 case "Gimbal Failure":
                     gimbal.gimbalLock = false;

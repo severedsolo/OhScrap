@@ -30,12 +30,12 @@ namespace OhScrap
             if (rcs == null) return;
             if (rcs.vessel != FlightGlobals.ActiveVessel) return;
             rcs.rcsEnabled = false;
-            if (UPFM.highlight) UPFM.SetFailedHighlight();
+            if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             if (message) return;
             message = true;
             postMessage = true;
             ScreenMessages.PostScreenMessage("RCS Failure!");
-            Debug.Log("[UPFM]: " + SYP.ID + " RCS has failed");
+            Debug.Log("[OhScrap]: " + SYP.ID + " RCS has failed");
         }
     }
 }

@@ -82,18 +82,18 @@ namespace OhScrap
                         hasFailed = false;
                         willFail = false;
                         postMessage = false;
-                        Debug.Log("[UPFM]: " + SYP.ID + "has no resources that could fail. Failure aborted");
+                        Debug.Log("[OhScrap]: " + SYP.ID + "has no resources that could fail. Failure aborted");
                         return;
                     }
                 }
                 leaking = potentialLeaks.ElementAt(Randomiser.instance.RandomInteger(0, potentialLeaks.Count()));
                 leakingName = leaking.resourceName;
-                Debug.Log("[UPFM]: " + leaking.resourceName + " started leaking from " + SYP.ID);
+                Debug.Log("[OhScrap]: " + leaking.resourceName + " started leaking from " + SYP.ID);
                 ScreenMessages.PostScreenMessage("A tank of " + leaking.resourceName + " started to leak!");
                 failureType = leaking.resourceName + " leak";
             }
             leaking.amount = leaking.amount * 0.999f;
-            if (UPFM.highlight) UPFM.SetFailedHighlight();
+            if (OhScrap.highlight) OhScrap.SetFailedHighlight();
         }
     }
 }

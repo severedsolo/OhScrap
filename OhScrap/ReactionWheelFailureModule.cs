@@ -30,10 +30,10 @@ namespace OhScrap
             if (!rw.isEnabled && rw.wheelState != ModuleReactionWheel.WheelState.Active) return;
             rw.isEnabled = false;
             rw.wheelState = ModuleReactionWheel.WheelState.Broken;
-            if (UPFM.highlight) UPFM.SetFailedHighlight();
+            if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             if (message) return;
             message = true;
-            if (rw.wheelState != ModuleReactionWheel.WheelState.Broken) Debug.Log("[UPFM]: " + SYP.ID + "'s reaction wheels have failed");
+            if (rw.wheelState != ModuleReactionWheel.WheelState.Broken) Debug.Log("[OhScrap]: " + SYP.ID + "'s reaction wheels have failed");
             ScreenMessages.PostScreenMessage("A reaction wheel has failed");
         }
 

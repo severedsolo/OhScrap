@@ -32,10 +32,10 @@ namespace OhScrap
             controlSurface.ignorePitch = true;
             controlSurface.ignoreRoll = true;
             controlSurface.ignoreYaw = true;
-            if (UPFM.highlight) UPFM.SetFailedHighlight();
+            if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             if (message) return;
             ScreenMessages.PostScreenMessage("Control Surface Failure!");
-            Debug.Log("[UPFM]: " + SYP.ID + " has suffered a control surface failure");
+            Debug.Log("[OhScrap]: " + SYP.ID + " has suffered a control surface failure");
             message = true;
         }
 

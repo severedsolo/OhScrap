@@ -22,10 +22,10 @@ namespace OhScrap
             battery = part.Resources["ElectricCharge"];
             battery.amount = 0;
             battery.flowState = false;
-            if (UPFM.highlight) UPFM.SetFailedHighlight();
+            if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             if (message) return;
             ScreenMessages.PostScreenMessage("Battery short circuited!");
-            Debug.Log("[UPFM]: " + SYP.ID + " has suffered a short circuit failure");
+            Debug.Log("[OhScrap]: " + SYP.ID + " has suffered a short circuit failure");
             message = true;
         }
 

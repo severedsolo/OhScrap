@@ -8,7 +8,7 @@ namespace OhScrap
 {
     class UPFMSettings : GameParameters.CustomParameterNode
     {
-        public override string Title { get { return "UPFM Options"; } }
+        public override string Title { get { return "OhScrap Options"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override string Section { get { return "Allowed Failures"; } }
         public override string DisplaySection { get { return Section; } }
@@ -24,7 +24,7 @@ namespace OhScrap
         public bool highlightFailures = true;
         [GameParameters.CustomParameterUI("Stop Timewarp on Failure?")]
         public bool stopOnFailure = true;
-        [GameParameters.CustomIntParameterUI("Safety Threshold", toolTip = "At what failure threshold should UPFM display a warning?")]
+        [GameParameters.CustomIntParameterUI("Safety Threshold", toolTip = "At what failure threshold should OhScrap display a warning?")]
         public int safetyThreshold = 25;
         [GameParameters.CustomParameterUI("Battery")]
         public bool BatteryFailureModuleAllowed = true;

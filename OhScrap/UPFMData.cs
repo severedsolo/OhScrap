@@ -44,7 +44,9 @@ namespace OhScrap
                 cn.SetValue("Failures", v.Value, true);
                 temp.AddNode(cn);
             }
-            Debug.Log("[UPFM]: Saved");
+            temp.SetValue("FlightWindow", UPFMUtils.instance.flightWindow, true);
+            temp.SetValue("EditorWindow", UPFMUtils.instance.editorWindow, true);
+            Debug.Log("[OhScrap]: Saved");
         }
 
         public override void OnLoad(ConfigNode node)
@@ -60,6 +62,8 @@ namespace OhScrap
             UPFMUtils.instance.solarPanelLifetimes.Clear();
             UPFMUtils.instance.tankLifetimes.Clear();
             UPFMUtils.instance.numberOfFailures.Clear();
+            bool.TryParse(temp.GetValue("FlightWindow"), out UPFMUtils.instance.flightWindow);
+            bool.TryParse(temp.GetValue("EditorWindow"), out UPFMUtils.instance.editorWindow);
             ConfigNode[] nodes = temp.GetNodes("PART");
             if (nodes.Count() == 0) return;
             for (int i = 0; i < nodes.Count(); i++)
@@ -86,7 +90,7 @@ namespace OhScrap
                 string s = cn.GetValue("Name");
                 if (int.TryParse(cn.GetValue("Failures"), out int failures)) UPFMUtils.instance.numberOfFailures.Add(s, failures);
             }
-            Debug.Log("[UPFM]: Loaded");
+            Debug.Log("[OhScrap]: Loaded");
         }
     }
 }
