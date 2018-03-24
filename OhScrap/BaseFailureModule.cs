@@ -187,7 +187,7 @@ namespace OhScrap
         public bool FailCheck(bool recalcChance)
         {
             if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure/OhScrap.generation + randomisation;
-            else if (SYP.TimesRecovered < expectedLifetime) chanceOfFailure = (baseChanceOfFailure/OhScrap.generation + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
+            else if (SYP.TimesRecovered < expectedLifetime) chanceOfFailure = ((baseChanceOfFailure/OhScrap.generation) + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
             else chanceOfFailure = (baseChanceOfFailure + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
             if (chanceOfFailure * 100 > HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) chanceOfFailure = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
             float endOfLifeMultiplier = (SYP.TimesRecovered - expectedLifetime) / 5.0f;
