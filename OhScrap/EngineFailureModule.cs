@@ -9,7 +9,6 @@ namespace OhScrap
     class EngineFailureModule : BaseFailureModule
     {
         ModuleEngines engine;
-        ModuleEnginesFX engineFX;
         double timeBetweenFailureEvents = 0;
         [KSPField(isPersistant = true, guiActive = false)]
         float staticThrust;
@@ -31,7 +30,7 @@ namespace OhScrap
                 expectedLifetime = 3;
                 baseChanceOfFailure = 0.1f;
             }
-        }
+        }   
 
         protected override bool FailureAllowed()
         {
@@ -40,9 +39,7 @@ namespace OhScrap
 
         protected override void FailPart()
         {
-            if (part.Resources.Contains("SolidFuel")) return;
             engine = part.FindModuleImplementing<ModuleEngines>();
-            if (engine == null) engineFX = part.FindModuleImplementing<ModuleEnginesFX>();
             gimbal = part.FindModuleImplementing<ModuleGimbal>();
             if (engine != null)
             {
@@ -90,7 +87,7 @@ namespace OhScrap
                         Debug.Log("[OhScrap]: " + SYP.ID + " decided not to fail after all");
                         break;
                 }
-                ScreenMessages.PostScreenMessage(failureType + " detected on " + part.name);
+                ScreenMessages.PostScreenMessage(failureType + " detected on " + part.partInfo.title);
                 postMessage = true;
                 return;
             }
@@ -108,14 +105,11 @@ namespace OhScrap
                 case "Underthrust":
                     if (timeBetweenFailureEvents <= Planetarium.GetUniversalTime())
                     {
-                        if (engine != null) engine.thrustPercentage = engine.thrustPercentage * 0.9f;
-                        else engineFX.thrustPercentage = engine.thrustPercentage * 0.9f;
+                        engine.thrustPercentage = engine.thrustPercentage * 0.9f;
                         timeBetweenFailureEvents = Planetarium.GetUniversalTime() + Randomiser.instance.RandomInteger(10, 30);
-                        if (engine != null) staticThrust = engine.thrustPercentage;
-                        else staticThrust = engineFX.thrustPercentage;
+                        staticThrust = engine.thrustPercentage;
                     }
-                    if (engine != null) engine.thrustPercentage = staticThrust;
-                    else engineFX.thrustPercentage = staticThrust;
+                    engine.thrustPercentage = staticThrust;
                     break;
                 case "Gimbal Failure":
                     gimbal.gimbalLock = true;
@@ -128,17 +122,14 @@ namespace OhScrap
         public override void RepairPart()
         {
             engine = part.FindModuleImplementing<ModuleEngines>();
-            if (engine == null) engineFX = part.FindModuleImplementing<ModuleEnginesFX>();
             switch (failureType)
             {
                 case "Fuel Flow Failure":
-                    if (engine != null) engine.Activate();
-                    else engineFX.Activate();
+                    engine.Activate();
                     Debug.Log("[OhScrap]: Re-activated " + SYP.ID);
                     break;
                 case "Underthrust":
-                    if (engine != null) engine.thrustPercentage = originalThrust;
-                    else engineFX.thrustPercentage = originalThrust;
+                    engine.thrustPercentage = originalThrust;
                     Debug.Log("[OhScrap]: Reset Thrust on " + SYP.ID);
                     break;
                 case "Gimbal Failure":

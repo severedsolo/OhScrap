@@ -43,7 +43,7 @@ namespace OhScrap
                 if (!postMessage)
                 {
                     failureType = "retraction error";
-                    ScreenMessages.PostScreenMessage(part.name + " retraction mechanism jammed");
+                    ScreenMessages.PostScreenMessage(part.partInfo.title + " retraction mechanism jammed");
                     Debug.Log("[OhScrap]: " + SYP.ID + " retraction mechanism has jammed");
                     postMessage = true;
                 }
@@ -55,7 +55,7 @@ namespace OhScrap
                 if (!postMessage)
                 {
                     failureType = "sun tracking error";
-                    ScreenMessages.PostScreenMessage(part.name + " sun tracking mechanism jammed");
+                    ScreenMessages.PostScreenMessage(part.partInfo.title + " sun tracking mechanism jammed");
                     Debug.Log("[OhScrap]: " + SYP.ID + " sun tracking mechanism has jammed");
                     postMessage = true;
                 }

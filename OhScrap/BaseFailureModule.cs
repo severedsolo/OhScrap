@@ -45,6 +45,7 @@ namespace OhScrap
         public ModuleUPFMEvents OhScrap;
         public bool remoteRepairable = false;
         public bool excluded = false;
+        public bool suppressFailure = false;
 
         private void Start()
         {
@@ -142,7 +143,7 @@ namespace OhScrap
 
         public virtual void RepairPart() { }
 
-        protected virtual bool FailureAllowed() { return false; }
+        protected virtual bool FailureAllowed() { return true; }
 
         private void FixedUpdate()
         {
@@ -154,14 +155,17 @@ namespace OhScrap
             if (hasFailed)
             {
                 FailPart();
-                OhScrap.SetFailedHighlight();
-                if (postMessage)
+                if (!suppressFailure)
                 {
-                    PostFailureMessage();
-                    postMessage = false;
-                    OhScrap.Events["ToggleHighlight"].active = true;
-                    OhScrap.highlight = true;
-                    Debug.Log("[OhScrap]: Chance of Failure was " + displayChance + "% (Generation "+OhScrap.generation+", "+SYP.TimesRecovered+" recoveries)");
+                    OhScrap.SetFailedHighlight();
+                    if (postMessage)
+                    {
+                        PostFailureMessage();
+                        postMessage = false;
+                        OhScrap.Events["ToggleHighlight"].active = true;
+                        OhScrap.highlight = true;
+                        Debug.Log("[OhScrap]: Chance of Failure was " + displayChance + "% (Generation " + OhScrap.generation + ", " + SYP.TimesRecovered + " recoveries)");
+                    }
                 }
                 return;
             }

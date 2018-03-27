@@ -69,6 +69,7 @@
     <Compile Include="RCSFailureModule.cs" />
     <Compile Include="ReactionWheelFailureModule.cs" />
     <Compile Include="SolarPanelFailureModule.cs" />
+    <Compile Include="SRBFailureModule.cs" />
     <Compile Include="TankFailureModule.cs" />
     <Compile Include="UPFMData.cs" />
     <Compile Include="UPFMSettings.cs" />

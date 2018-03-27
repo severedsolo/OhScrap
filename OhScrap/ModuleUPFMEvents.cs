@@ -18,6 +18,7 @@ namespace OhScrap
         public bool doNotRecover = true;
         [KSPField(isPersistant = false, guiActive = true, guiName = "Generation", guiActiveEditor = true)]
         public int generation = 0;
+        public bool srb = false;
 
         private void Start()
         {
@@ -39,7 +40,7 @@ namespace OhScrap
             if (!doNotRecover)
             {
                 doNotRecover = true;
-                ScreenMessages.PostScreenMessage(part.name + " will not be recovered");
+                ScreenMessages.PostScreenMessage(part.partInfo.title + " will not be recovered");
             }
             else
             {
@@ -50,12 +51,12 @@ namespace OhScrap
                     BaseFailureModule bfm = modules.ElementAt(i);
                     if(bfm.hasFailed)
                     {
-                        ScreenMessages.PostScreenMessage(part.name + " cannot be saved");
+                        ScreenMessages.PostScreenMessage(part.partInfo.title + " cannot be saved");
                         return;
                     }
                 }
                 doNotRecover = false;
-                ScreenMessages.PostScreenMessage(part.name + " will be recovered");
+                ScreenMessages.PostScreenMessage(part.partInfo.title + " will be recovered");
             }
             Debug.Log("[OhScrap]: TrashPart " + SYP.ID+" "+doNotRecover);
         }
@@ -106,7 +107,7 @@ namespace OhScrap
                     {
                         if (!b.remoteRepairable)
                         {
-                            ScreenMessages.PostScreenMessage(part.name + "cannot be repaired remotely");
+                            ScreenMessages.PostScreenMessage(part.partInfo.title + "cannot be repaired remotely");
                             repairAllowed = false;
                             Debug.Log("[OhScrap]: Remote Repair not allowed on " + SYP.ID + " " + b.ClassName);
                             continue;
@@ -127,9 +128,9 @@ namespace OhScrap
                 }
                 repair.hasFailed = false;
                 repair.willFail = false;
-                ScreenMessages.PostScreenMessage("The part should be ok to use now");
                 Events["RepairChecks"].active = false;
                 repair.RepairPart();
+                if (!srb) ScreenMessages.PostScreenMessage("The part should be ok to use now");
                 repair.numberOfRepairs++;
                 Debug.Log("[OhScrap]: " + SYP.ID + " " + repair.moduleName + " was successfully repaired");
                 part.highlightType = Part.HighlightType.OnMouseOver;

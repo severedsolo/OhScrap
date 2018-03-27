@@ -34,13 +34,15 @@ namespace OhScrap
         public bool EngineFailureModuleAllowed = true;
         [GameParameters.CustomParameterUI("Parachutes")]
         public bool ParachuteFailureModuleAllowed = true;
+        [GameParameters.CustomParameterUI("RCS")]
+        public bool RCSFailureModuleAllowed = true;
         [GameParameters.CustomParameterUI("Reaction Wheels")]
         public bool ReactionWheelFailureModuleAllowed = true;
         [GameParameters.CustomParameterUI("Resource Tanks")]
         public bool TankFailureModuleAllowed = true;
         [GameParameters.CustomParameterUI("Solar Panels")]
         public bool SolarPanelFailureModuleAllowed = true;
-        [GameParameters.CustomParameterUI("RCS")]
-        public bool RCSFailureModuleAllowed = true;
+        [GameParameters.CustomParameterUI("SRB")]
+        public bool SRBFailureModuleAllowed = true;
     }
 }
