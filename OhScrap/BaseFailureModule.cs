@@ -47,6 +47,13 @@ namespace OhScrap
         public bool excluded = false;
         public bool suppressFailure = false;
 
+#if DEBUG
+        [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = false, guiName = "Force Failure (DEBUG)")]
+        public void ForceFailure()
+        {
+            FailPart();
+        }
+#endif
         private void Start()
         {
 #if DEBUG
@@ -225,7 +232,7 @@ namespace OhScrap
             StringBuilder msg = new StringBuilder();
             msg.AppendLine(part.vessel.vesselName);
             msg.AppendLine("");
-            msg.AppendLine(part.name + " has suffered a " + failureType);
+            msg.AppendLine(part.partInfo.title + " has suffered a " + failureType);
             msg.AppendLine("");
             if (OhScrap.doNotRecover) msg.AppendLine("The part is damaged beyond repair");
             else msg.AppendLine("Chance of a successful repair is " + (100 - displayChance) + "%");

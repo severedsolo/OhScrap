@@ -18,7 +18,7 @@ namespace OhScrap
         public bool doNotRecover = true;
         [KSPField(isPersistant = false, guiActive = true, guiName = "Generation", guiActiveEditor = true)]
         public int generation = 0;
-        public bool srb = false;
+        public bool customFailureEvent = false;
 
         private void Start()
         {
@@ -130,7 +130,7 @@ namespace OhScrap
                 repair.willFail = false;
                 Events["RepairChecks"].active = false;
                 repair.RepairPart();
-                if (!srb) ScreenMessages.PostScreenMessage("The part should be ok to use now");
+                if (!customFailureEvent) ScreenMessages.PostScreenMessage("The part should be ok to use now");
                 repair.numberOfRepairs++;
                 Debug.Log("[OhScrap]: " + SYP.ID + " " + repair.moduleName + " was successfully repaired");
                 part.highlightType = Part.HighlightType.OnMouseOver;

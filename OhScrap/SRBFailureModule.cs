@@ -29,7 +29,6 @@ namespace OhScrap
 
         protected override void FailPart()
         {
-            Debug.Log("[OhScrap]: Attempting to kill SRB");
             if (engine.currentThrottle == 0) return;
             engine.allowShutdown = true;
             engine.allowRestart = false;
@@ -48,7 +47,7 @@ namespace OhScrap
         {
             ScreenMessages.PostScreenMessage("Igniting an SRB manually doesn't seem like a good idea");
             ModuleUPFMEvents UPFM = part.FindModuleImplementing<ModuleUPFMEvents>();
-            UPFM.srb = true;
+            UPFM.customFailureEvent = true;
             return;
         }
     }
