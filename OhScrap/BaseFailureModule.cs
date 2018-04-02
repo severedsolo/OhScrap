@@ -231,18 +231,22 @@ namespace OhScrap
         {
             if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure/OhScrap.generation + randomisation;
             else chanceOfFailure = ((baseChanceOfFailure/OhScrap.generation) + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
+            //Chance of Failure can never exceed the safety threshold unless the part has reached "end of life"
             if (chanceOfFailure * 100 > HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) chanceOfFailure = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
+            //If the part has reached it's "end of life" the failure rate will quickly deteriorate.
             float endOfLifeMultiplier = (SYP.TimesRecovered - expectedLifetime) / 5.0f;
             if (endOfLifeMultiplier > 0)
             {
                 if (!endOfLife) endOfLife = Randomiser.instance.NextDouble() < endOfLifeMultiplier;
                 if (endOfLife) chanceOfFailure = chanceOfFailure + endOfLifeMultiplier;
             }
+            // more repairs = more failure events.
             if (numberOfRepairs > 0) chanceOfFailure = chanceOfFailure * numberOfRepairs;
             displayChance = (int)(chanceOfFailure * 100);
 #if DEBUG
             if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID + " " + moduleName + " failing calculated to be " + chanceOfFailure * 100 + "%");
 #endif
+            //every time a part fails the check, we increment the failure Check multiplier
             if (Randomiser.instance.NextDouble() < chanceOfFailure)
             {
                 UPFMUtils.instance.numberOfFailures.TryGetValue(part.name, out int i);
@@ -257,7 +261,7 @@ namespace OhScrap
             return false;
         }
 
-
+        //Adds the message saying the part has failed to the stock messaging app
         void PostFailureMessage()
         {
             StringBuilder msg = new StringBuilder();

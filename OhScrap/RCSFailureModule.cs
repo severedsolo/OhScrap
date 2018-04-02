@@ -38,7 +38,7 @@ namespace OhScrap
             ScreenMessages.PostScreenMessage("RCS Failure!");
             Debug.Log("[OhScrap]: " + SYP.ID + " RCS has failed");
         }
-
+        //turns it back on again
         public override void RepairPart()
         {
             rcs = part.FindModuleImplementing<ModuleRCS>();

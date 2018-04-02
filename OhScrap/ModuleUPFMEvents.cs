@@ -7,6 +7,8 @@ using ScrapYard.Modules;
 
 namespace OhScrap
 {
+    //This handles all events that need to be in a PartModule but if we put it in the main BaseFailureModule would appear multiple times on a part.
+    // This module is attached to any part that has at least one other Failure Module
     class ModuleUPFMEvents : PartModule
     {
         [KSPField(isPersistant = true, guiActive = false)]
@@ -27,6 +29,7 @@ namespace OhScrap
             Debug.Log("[UPFM]: UPFMEvents.Start" + SYP.ID);
 #endif
         }
+        //forces ScrapYard to refresh the part if it's needed.
         public void RefreshPart()
         {
             if (!HighLogic.LoadedSceneIsEditor || refreshed) return;
@@ -34,6 +37,8 @@ namespace OhScrap
             if (SYP.TimesRecovered == 0) SYP.MakeFresh();
             refreshed = true;
         }
+        
+        //This allows the player to not recover the part to the SY Inventory
         [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false, guiName = "Trash Part")]
         public void TrashPart()
         {
@@ -60,10 +65,13 @@ namespace OhScrap
             }
             Debug.Log("[OhScrap]: TrashPart " + SYP.ID+" "+doNotRecover);
         }
+        //This marks the part as not recoverable to ScrapYard
         public void MarkBroken()
         {
             doNotRecover = true;
         }
+
+        //This toggles the part failure highlight on and off (player initiated)
         [KSPEvent(active = false, guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false, guiName = "Toggle Failure Highlight")]
         public void ToggleHighlight()
         {
@@ -76,6 +84,7 @@ namespace OhScrap
             else highlight = true;
         }
 
+        //This sets the initial highlighting when a part fails (mod initiated)
         public void SetFailedHighlight()
         {
             if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().highlightFailures) return;
@@ -85,21 +94,25 @@ namespace OhScrap
             part.SetHighlight(true, false);
         }
 
+        //This loops through every failure module on this part and runs the "Repair Part" method.
         [KSPEvent(active = false, guiActive = true, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = false, guiName = "Repair ")]
         public void RepairChecks()
         {
             Debug.Log("[OhScrap]: Attempting repairs");
             bool repairAllowed = true;
             List<BaseFailureModule> bfm = part.FindModulesImplementing<BaseFailureModule>();
+            //If no kerbal on EVA we can assume this is a remote repair.
             if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() == null)
             {
                 Debug.Log("[OhScrap]: Attempting Remote Repair");
+                //If CommNet is enabled check if vessel is connected (can't upload a software fix with no connection)
                 if (CommNet.CommNetScenario.CommNetEnabled && !FlightGlobals.ActiveVessel.Connection.IsConnectedHome)
                 {
                     ScreenMessages.PostScreenMessage("Vessel must be connected to Homeworld before remote repair can be attempted");
                     Debug.Log("[OhScrap]: Remote Repair aborted. Vessel not connected home");
                     return;
                 }
+                //Check if the part is actually remote repairable. This will fail if any of the failed modules are not remote repairable.
                 for (int i = 0; i < bfm.Count(); i++)
                 {
                     BaseFailureModule b = bfm.ElementAt(i);
@@ -117,8 +130,12 @@ namespace OhScrap
                 }
             }
             if (!repairAllowed) return;
+            //Repaired loops through all modules and checks them for the hasFailed == true flag
+            //If it finds it, it will return false and the repair checks will continue.
+            //This will carry on until either a module cant be repaired, or all modules are repaired.
             while (!Repaired())
             {
+                //If the module fails the check or it's already been marked as irrepairable will stop trying.
                 if (RepairFailCheck() || doNotRecover)
                 {
                     ScreenMessages.PostScreenMessage("This part is beyond repair");
@@ -126,6 +143,7 @@ namespace OhScrap
                     Debug.Log("[OhScrap]: " + SYP.ID + " is too badly damaged to be fixed");
                     return;
                 }
+                //reset the failure status on the module and disables the highlight.
                 repair.hasFailed = false;
                 repair.willFail = false;
                 Events["RepairChecks"].active = false;
@@ -138,6 +156,7 @@ namespace OhScrap
                 UPFMUtils.instance.brokenParts.Remove(part);
                 repair.postMessage = true;
             }
+            //Once the part has been repaired run the Initialise Event again (possibly another fail)
             for (int i = 0; i < bfm.Count; i++)
             {
                 BaseFailureModule bf = bfm.ElementAt(i);
@@ -145,14 +164,18 @@ namespace OhScrap
             }
         }
 
+        //Determines whether a repair will be successful
         private bool RepairFailCheck()
         {
+            //base success chance is 50%
             float repairChance = 0.5f;
             if(FlightGlobals.ActiveVessel.GetCrewCount() >0)
             {
+                //if repair is done by EVA success is 75%
                 if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) repairChance = 0.75f;
                 for(int i = 0; i<FlightGlobals.ActiveVessel.GetVesselCrew().Count(); i++)
                 {
+                    //Engineers give a one time 10% bonus to repair rates
                     ProtoCrewMember p = FlightGlobals.ActiveVessel.GetVesselCrew().ElementAt(i);
                     if(p.trait == "Engineer")
                     {
@@ -168,6 +191,7 @@ namespace OhScrap
         {
             List<BaseFailureModule> failedList = part.FindModulesImplementing<BaseFailureModule>();
             if (failedList.Count() == 0) return true;
+            //Loop through everything that inherits BaseFailureModule on this part and check the hasFailed flag. If true, return false, otherwise return true.
             for (int i = 0; i < failedList.Count(); i++)
             {
                 BaseFailureModule bfm = failedList.ElementAt(i);

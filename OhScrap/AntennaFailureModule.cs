@@ -15,7 +15,6 @@ namespace OhScrap
         double originalPower;
         bool message;
 
-        // Overrides mostly turn generic labels into meaningful ones, and find the Stock Part Module we are going to fail.
         protected override void Overrides()
         {
             Fields["displayChance"].guiName = "Chance of Antenna Failure";
@@ -23,13 +22,10 @@ namespace OhScrap
             failureType = "communication failure";
             antenna = part.FindModuleImplementing<ModuleDataTransmitter>();
         }
-        //Checks if the player has the failures turned on in the menu
         protected override bool FailureAllowed()
         {
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().AntennaFailureModuleAllowed;
         }
-
-        //performs the actual failure.
         protected override void FailPart()
         {
             //if the antenna isn't turned on, don't bother.

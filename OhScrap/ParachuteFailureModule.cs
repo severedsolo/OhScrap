@@ -24,6 +24,7 @@ namespace OhScrap
             postMessage = false;
         }
 
+        //Cuts the chute if it's deployed
         protected override void FailPart()
         {
             chute = part.FindModuleImplementing<ModuleParachute>();
