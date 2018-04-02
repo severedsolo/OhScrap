@@ -6,4 +6,3 @@ C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Release\OhScrap.dll
 C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Release\OhScrap.pdb
 C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Release\OhScrap.dll
 C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Release\OhScrap.pdb
-C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Release\OhScrap.csprojResolveAssemblyReference.cache

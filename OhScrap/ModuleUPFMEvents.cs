@@ -119,7 +119,7 @@ namespace OhScrap
             if (!repairAllowed) return;
             while (!Repaired())
             {
-                if (repair.FailCheck(false) || doNotRecover)
+                if (RepairFailCheck() || doNotRecover)
                 {
                     ScreenMessages.PostScreenMessage("This part is beyond repair");
                     doNotRecover = true;
@@ -143,6 +143,25 @@ namespace OhScrap
                 BaseFailureModule bf = bfm.ElementAt(i);
                 bf.Initialise();
             }
+        }
+
+        private bool RepairFailCheck()
+        {
+            float repairChance = 0.5f;
+            if(FlightGlobals.ActiveVessel.GetCrewCount() >0)
+            {
+                if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) repairChance = 0.75f;
+                for(int i = 0; i<FlightGlobals.ActiveVessel.GetVesselCrew().Count(); i++)
+                {
+                    ProtoCrewMember p = FlightGlobals.ActiveVessel.GetVesselCrew().ElementAt(i);
+                    if(p.trait == "Engineer")
+                    {
+                        repairChance += 0.1f;
+                        break;
+                    }
+                }
+            }
+            return Randomiser.instance.NextDouble() > repairChance;
         }
 
         bool Repaired()
