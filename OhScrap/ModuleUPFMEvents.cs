@@ -94,7 +94,7 @@ namespace OhScrap
             if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() == null)
             {
                 Debug.Log("[OhScrap]: Attempting Remote Repair");
-                if (!FlightGlobals.ActiveVessel.Connection.IsConnectedHome)
+                if (CommNet.CommNetScenario.CommNetEnabled && !FlightGlobals.ActiveVessel.Connection.IsConnectedHome)
                 {
                     ScreenMessages.PostScreenMessage("Vessel must be connected to Homeworld before remote repair can be attempted");
                     Debug.Log("[OhScrap]: Remote Repair aborted. Vessel not connected home");
