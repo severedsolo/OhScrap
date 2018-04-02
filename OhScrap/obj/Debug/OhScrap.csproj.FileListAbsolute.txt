@@ -6,3 +6,4 @@ C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\UnityEngine.dll
 C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Debug\OhScrap.csproj.CoreCompileInputs.cache
 C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Debug\OhScrap.dll
 C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Debug\OhScrap.pdb
+C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Debug\OhScrap.csprojResolveAssemblyReference.cache

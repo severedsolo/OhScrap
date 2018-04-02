@@ -24,6 +24,7 @@ namespace OhScrap
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ReactionWheelFailureModuleAllowed;
         }
 
+        // Reaction wheel stops working
         protected override void FailPart()
         {
             rw = part.FindModuleImplementing<ModuleReactionWheel>();
@@ -36,7 +37,7 @@ namespace OhScrap
             if (rw.wheelState != ModuleReactionWheel.WheelState.Broken) Debug.Log("[OhScrap]: " + SYP.ID + "'s reaction wheels have failed");
             ScreenMessages.PostScreenMessage("A reaction wheel has failed");
         }
-
+        //Turns it back on again,
         public override void RepairPart()
         {
             rw = part.FindModuleImplementing<ModuleReactionWheel>();

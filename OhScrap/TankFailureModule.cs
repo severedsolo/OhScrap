@@ -17,6 +17,7 @@ namespace OhScrap
             Fields["safetyRating"].guiName = "Tank Safety Rating";
             List<PartResource> potentialLeakCache = part.Resources.ToList();
             List<PartResource> potentialLeaks = part.Resources.ToList();
+            //Check if we have any parts that can leak (not on the blacklist)
             if (potentialLeaks.Count == 0)
             {
                 Fields["safetyRating"].guiActiveEditor = false;
@@ -34,6 +35,7 @@ namespace OhScrap
                         if (pr.resourceName == node.GetValue("name")) potentialLeaks.Remove(pr);
                     }
                 }
+                //if not then turn the module off in the GUI because it will never fail
                 if (potentialLeaks.Count == 0)
                 {
                     Fields["safetyRating"].guiActiveEditor = false;
@@ -45,7 +47,7 @@ namespace OhScrap
         {
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().TankFailureModuleAllowed;
         }
-
+        //Assuming that part has a resource that is not on the blacklist, it will leak.
         protected override void FailPart()
         {
             if (leaking == null)

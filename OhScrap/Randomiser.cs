@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace OhScrap
 {
+    //This class handles all random number generations. 
+    //NextDouble is a custom random number generator, but RandomInteger just using Random.Next()
     [KSPAddon(KSPAddon.Startup.SpaceCentre, true)]
     public class Randomiser : MonoBehaviour
     {
@@ -15,12 +17,17 @@ namespace OhScrap
         List<double> shuffleBag2 = new List<double>();
         List<double> shuffleBag3 = new List<double>();
 
+        //One instance to stop the seed from being reset.
         private void Awake()
         {
             instance = this;
             DontDestroyOnLoad(this);
         }
 
+        //Pick a "shuffle bag" at random and try to draw a number from it. 
+        //This is better than the standard Random.NextDouble because it removes results that have already been rolled.
+        //From a players point of view, while failing 5 tests in a row may be truly random, it won't feel it.
+        //We use 3 shuffle bags to stop the results being too skewed if one of the bags has a run of high/low results.
         public double NextDouble()
         {
             int i = RandomInteger(1, 4);
@@ -52,7 +59,8 @@ namespace OhScrap
 #endif
             return d;
         }
-
+        //This refills the shufflebag if it's empty. We can modify this to skew the results if we need to
+        //At the moment though it's evenly distributed.
         private void PopulateShuffleBag(List<double> shuffleBag, int i)
         {
             for (double d = 0.001f; d < 1.0; d += 0.001f)
@@ -64,7 +72,7 @@ namespace OhScrap
             Debug.Log("[UPFM]: Refilled shufflebag " + i);
 #endif
         }
-
+        //This just returns Random.Next but I'm leaving it as it's own method in case I decide I want to implement my own integer generator later.
         public int RandomInteger(int min, int max)
         {
             int i = r.Next(min, max);

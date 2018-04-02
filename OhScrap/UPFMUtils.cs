@@ -10,6 +10,7 @@ using ScrapYard.Modules;
 
 namespace OhScrap
 {
+    //This is a KSPAddon that does everything that PartModules don't need to. Mostly handles the UI
     [KSPAddon(KSPAddon.Startup.EditorAny, false)]
     class EditorAnyWarnings : UPFMUtils
     {
@@ -22,6 +23,7 @@ namespace OhScrap
     }
     class UPFMUtils : MonoBehaviour
     {
+        //These hold all "stats" for parts that have already been generated (to stop them getting different results each time)
         public Dictionary<Part, int> brokenParts = new Dictionary<Part, int>();
         public Dictionary<uint, float> randomisation = new Dictionary<uint, float>();
         public Dictionary<uint, int> batteryLifetimes = new Dictionary<uint, int>();
@@ -56,6 +58,7 @@ namespace OhScrap
             GameEvents.onGUIApplicationLauncherReady.Add(GUIReady);
             GameEvents.onEditorShipModified.Add(onEditorShipModified);
             GameEvents.OnFlightGlobalsReady.Add(OnFlightGlobalsReady);
+            //Remembers if the player had the windows opened for closed last time they loaded this scene.
             if (!HighLogic.LoadedSceneIsEditor)
             {
                 display = flightWindow;
@@ -65,12 +68,14 @@ namespace OhScrap
                 display = editorWindow;
             }
         }
-
+        //Resets the safety rating to 6 so when we loop through the vessel we don't get garbage data.
         private void OnFlightGlobalsReady(bool data)
         {
             vesselSafetyRating = 6;
         }
-
+        //This keeps track of which generation the part is.
+        //If its been seen before it will be in the dictionary, so we can just return that (rather than having to guess by builds and times recovered)
+        //Otherwise we can assume it's a new part and the "current" build count should be correct.
         public int GetGeneration(uint id, Part p)
         {
             if (generations.TryGetValue(id, out int i)) return i;
@@ -79,7 +84,7 @@ namespace OhScrap
             generations.Add(id, i);
             return i;
         }
-
+        //When the Editor Vessel is modified check the safety ratings and update the UI
         private void onEditorShipModified(ShipConstruct shipConstruct)
         {
             vesselSafetyRating = 6;
@@ -100,7 +105,7 @@ namespace OhScrap
                 }
             }
         }
-
+        //This is mostly for use in the flight scene, will only run once assuming everything goes ok.
         void Update()
         {
             if (vesselSafetyRating != 6) return;
@@ -141,7 +146,7 @@ namespace OhScrap
                 }
             }
         }
-
+        //Removes the parts from the trackers when they die.
         private void OnPartDie(Part part)
         {
             ModuleSYPartTracker SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
@@ -159,6 +164,7 @@ namespace OhScrap
 #endif
         }
 
+        //Like Generations this checks if we've already generated a random factor, and if not generates one.
         public float GetRandomisation(Part p, int builds)
         {
             ModuleSYPartTracker SYP = p.FindModuleImplementing<ModuleSYPartTracker>();
@@ -186,30 +192,26 @@ namespace OhScrap
             }
             return f;
         }
-
+        //Add the toolbar button to the GUI
         public void GUIReady()
         {
             ToolbarButton = ApplicationLauncher.Instance.AddModApplication(GUISwitch, GUISwitch, null, null, null, null, ApplicationLauncher.AppScenes.ALWAYS, GameDatabase.Instance.GetTexture("Severedsolo/OhScrap/Icon", false));
         }
+        //switch the UI on/off
         public void GUISwitch()
         {
-            if (display)
-            {
-                display = false;
-                ToggleWindow();
-            }
-            else
-            {
-                display = true;
-                ToggleWindow();
-            }
+            display = !display;
+            ToggleWindow();
         }
+        
+        //shouldn't really be using OnGUI but I'm too lazy to learn PopUpDialog
         private void OnGUI()
         {
             if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyWarning) return;
             if (HighLogic.CurrentGame.Mode == Game.Modes.MISSION) return;
             if (dontBother) return;
             if (!display) return;
+            //Display goes away if EVA Kerbal
             if (FlightGlobals.ActiveVessel != null)
             {
                 if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) return;
@@ -218,6 +220,7 @@ namespace OhScrap
         }
         void GUIDisplay(int windowID)
         {
+            //Grabs the vessels safety rating and shows the string associated with it.
             string s;
             switch (vesselSafetyRating)
             {
@@ -250,16 +253,6 @@ namespace OhScrap
             }
             GUILayout.Label("Vessel Safety Rating: " + vesselSafetyRating + " " + s);
             if (worstPart != null) GUILayout.Label("Worst Part: " + worstPart.partInfo.title);
-            GUILayout.Label("");
-            GUILayout.Label("Broken Parts:");
-            foreach (var v in brokenParts)
-            {
-                int repairChance = 0;
-                if (v.Key == null) continue;
-
-                if (!v.Key.FindModuleImplementing<ModuleUPFMEvents>().doNotRecover) repairChance = 100 - v.Value;
-                GUILayout.Label(v.Key.name + ": Chance of Repair: " + (repairChance) + "%");
-            }
             if (GUILayout.Button("Close"))
             {
                 display = false;
@@ -267,7 +260,7 @@ namespace OhScrap
             }
             GUI.DragWindow();
         }
-
+        
         void ToggleWindow()
         {
             if (HighLogic.LoadedSceneIsEditor) editorWindow = display;

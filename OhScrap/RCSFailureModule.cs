@@ -24,6 +24,7 @@ namespace OhScrap
             postMessage = false;
         }
 
+        //turns the RCS off.
         protected override void FailPart()
         {
             rcs = part.FindModuleImplementing<ModuleRCS>();
@@ -36,6 +37,12 @@ namespace OhScrap
             postMessage = true;
             ScreenMessages.PostScreenMessage("RCS Failure!");
             Debug.Log("[OhScrap]: " + SYP.ID + " RCS has failed");
+        }
+
+        public override void RepairPart()
+        {
+            rcs = part.FindModuleImplementing<ModuleRCS>();
+            rcs.rcsEnabled = true;
         }
     }
 }

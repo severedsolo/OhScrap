@@ -26,7 +26,7 @@ namespace OhScrap
         }
         protected override void FailPart()
         {
-
+            //If the part can't retract will always get a sun tracking error, otherwise it will get a retraction or sun tracking at random.
             panel = part.FindModuleImplementing<ModuleDeployableSolarPanel>();
             if (panel == null) return;
             if (!panel.isTracking) return;
@@ -62,7 +62,7 @@ namespace OhScrap
                 if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             }
         }
-
+        //returns to original state.
         public override void RepairPart()
         {
             panel = part.FindModuleImplementing<ModuleDeployableSolarPanel>();

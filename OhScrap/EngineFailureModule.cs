@@ -12,7 +12,7 @@ namespace OhScrap
         double timeBetweenFailureEvents = 0;
         [KSPField(isPersistant = true, guiActive = false)]
         float staticThrust;
-        int fuelLineCounter = 10;
+        int fuelLineCounter = 5;
         ModuleGimbal gimbal;
         [KSPField(isPersistant = true, guiActive = false)]
         float originalThrust;
@@ -24,6 +24,7 @@ namespace OhScrap
             Fields["safetyRating"].guiName = "Engine Safety Rating";
             postMessage = false;
             engine = part.FindModuleImplementing<ModuleEngines>();
+            //If the ISP at sea level suggests this is a space engine, change the lifetime and failure rates accordingly
             float staticPressure = (float)(FlightGlobals.GetHomeBody().GetPressure(0) * PhysicsGlobals.KpaToAtmospheres);
             if (engine.atmosphereCurve.Evaluate(staticPressure) <= 100.0f)
             {
@@ -43,21 +44,15 @@ namespace OhScrap
             gimbal = part.FindModuleImplementing<ModuleGimbal>();
             if (engine != null)
             {
+                //In the event of a fuel line leak, the chance of explosion will be reset if the engine is shut down.
                 if (engine.currentThrottle == 0)
                 {
-                    fuelLineCounter = 10;
-                    return;
-                }
-            }
-            else
-            {
-                if (engine.currentThrottle == 0)
-                {
-                    fuelLineCounter = 10;
+                    fuelLineCounter = 5;
                     return;
                 }
             }
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
+            //Randomly pick which failure we will give the player
             if (failureType == "none")
             {
                 int i = Randomiser.instance.RandomInteger(1, 5);
@@ -93,15 +88,18 @@ namespace OhScrap
             }
             switch (failureType)
             {
+                //Engine shutdown
                 case "Fuel Flow Failure":
                     engine.Shutdown();
                     break;
+                 //Fuel line leaks will explode the engine after anywhere between 5 and 50 seconds.
                 case "Fuel Line Leak":
                     if (timeBetweenFailureEvents > Planetarium.GetUniversalTime()) break;
                     if (fuelLineCounter < 0) part.explode();
                     else fuelLineCounter--;
                     timeBetweenFailureEvents = Planetarium.GetUniversalTime() + Randomiser.instance.RandomInteger(1, 10);
                     break;
+                //Engine will constantly lose thrust
                 case "Underthrust":
                     if (timeBetweenFailureEvents <= Planetarium.GetUniversalTime())
                     {
@@ -111,6 +109,7 @@ namespace OhScrap
                     }
                     engine.thrustPercentage = staticThrust;
                     break;
+                 //lock gimbal
                 case "Gimbal Failure":
                     gimbal.gimbalLock = true;
                     break;

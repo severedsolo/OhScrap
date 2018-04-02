@@ -17,6 +17,7 @@ namespace OhScrap
             Fields["displayChance"].guiName = "Chance of Control Surface Failure";
             Fields["safetyRating"].guiName = "Control Surface Safety Rating";
             failureType = "stuck control surface";
+            //Part is mechanical so can be repaired remotely.
             remoteRepairable = true;
         }
 
@@ -24,7 +25,7 @@ namespace OhScrap
         {
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ControlSurfaceFailureModuleAllowed;
         }
-
+        //control surface will stick and not respond to input
         protected override void FailPart()
         {
             if (part.vessel.atmDensity == 0) return;
@@ -38,7 +39,7 @@ namespace OhScrap
             Debug.Log("[OhScrap]: " + SYP.ID + " has suffered a control surface failure");
             message = true;
         }
-
+        //restores control to the control surface
         public override void RepairPart()
         {
             controlSurface = part.FindModuleImplementing<ModuleControlSurface>();

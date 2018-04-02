@@ -11,6 +11,8 @@ namespace OhScrap
         ModuleEngines engine;
         bool message;
 
+        //SRBs can fail straight away, and will override the "launched" bool because we need them to fail before the player launches.
+        //They will however suppress the messages until the player tries to launch.
         protected override void Overrides()
         {
             maxTimeToFailure = 0;
@@ -26,7 +28,7 @@ namespace OhScrap
         {
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().SRBFailureModuleAllowed;
         }
-
+        //Part will just shutdown and not be restartable.
         protected override void FailPart()
         {
             if (engine.currentThrottle == 0) return;
@@ -42,7 +44,7 @@ namespace OhScrap
                 message = true;
             }
         }
-
+        //SRBs cant be reoaired.
         public override void RepairPart()
         {
             ScreenMessages.PostScreenMessage("Igniting an SRB manually doesn't seem like a good idea");
