@@ -15,12 +15,14 @@ namespace OhScrap
         double originalPower;
         bool message;
 
+
         protected override void Overrides()
         {
             Fields["displayChance"].guiName = "Chance of Antenna Failure";
             Fields["safetyRating"].guiName = "Antenna Safety Rating";
             failureType = "communication failure";
             antenna = part.FindModuleImplementing<ModuleDataTransmitter>();
+            remoteRepairable = true;
         }
         protected override bool FailureAllowed()
         {
