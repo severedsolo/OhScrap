@@ -147,17 +147,20 @@ namespace OhScrap
                     }
                 }
             }
-            if (highlightWorstPart && worstPart.highlightType == Part.HighlightType.OnMouseOver)
+            if (worstPart != null)
             {
-                worstPart.SetHighlightColor(Color.yellow);
-                worstPart.SetHighlightType(Part.HighlightType.AlwaysOn);
-                worstPart.SetHighlight(true, true);
-            }
-            else if (!highlightWorstPart && worstPart.highlightType == Part.HighlightType.AlwaysOn)
-            {
-                worstPart.SetHighlightType(Part.HighlightType.OnMouseOver);
-                worstPart.SetHighlightColor(Color.green);
-                worstPart.SetHighlight(false, false);
+                if (highlightWorstPart && worstPart.highlightType == Part.HighlightType.OnMouseOver)
+                {
+                    worstPart.SetHighlightColor(Color.yellow);
+                    worstPart.SetHighlightType(Part.HighlightType.AlwaysOn);
+                    worstPart.SetHighlight(true, true);
+                }
+                else if (!highlightWorstPart && worstPart.highlightType == Part.HighlightType.AlwaysOn)
+                {
+                    worstPart.SetHighlightType(Part.HighlightType.OnMouseOver);
+                    worstPart.SetHighlightColor(Color.green);
+                    worstPart.SetHighlight(false, false);
+                }
             }
         }
 
