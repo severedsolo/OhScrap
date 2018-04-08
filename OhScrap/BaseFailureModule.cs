@@ -180,8 +180,6 @@ namespace OhScrap
             if (HighLogic.LoadedSceneIsEditor) return;
             //We don't want to interfere with MH Missions - they can have their own failures if the author wants.
             if (HighLogic.CurrentGame.Mode == Game.Modes.MISSION) return;
-            //No Failures if this is a KRASH simulation
-            if (KRASHWrapper.simulationActive()) return;
             if (!FailureAllowed()) return;
             //fails the part and posts the message if needed
             if (hasFailed)
@@ -237,6 +235,8 @@ namespace OhScrap
 #if DEBUG
             if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID + " " + moduleName + " failing calculated to be " + chanceOfFailure * 100 + "%");
 #endif
+            //No Failures if this is a KRASH simulation
+            if (KRASHWrapper.simulationActive()) return false;
             //every time a part fails the check, we increment the failure Check multiplier
             if (Randomiser.instance.NextDouble() < chanceOfFailure)
             {
