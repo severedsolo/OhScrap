@@ -119,7 +119,7 @@ namespace OhScrap
                     {
                         BaseFailureModule bfm = bfmList.ElementAt(b);
                         if (bfm == null) continue;
-                        if (bfm.safetyRating < vesselSafetyRating)
+                        if (bfm.safetyRating < vesselSafetyRating && !bfm.excluded)
                         {
                             vesselSafetyRating = bfm.safetyRating;
                             worstPart = p;
