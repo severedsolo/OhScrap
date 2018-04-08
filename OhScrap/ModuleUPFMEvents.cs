@@ -152,8 +152,8 @@ namespace OhScrap
                 repair.numberOfRepairs++;
                 Debug.Log("[OhScrap]: " + SYP.ID + " " + repair.moduleName + " was successfully repaired");
                 part.highlightType = Part.HighlightType.OnMouseOver;
+                part.SetHighlightColor(Color.green);
                 part.SetHighlight(false, false);
-                UPFMUtils.instance.brokenParts.Remove(part);
                 repair.postMessage = true;
             }
             //Once the part has been repaired run the Initialise Event again (possibly another fail)

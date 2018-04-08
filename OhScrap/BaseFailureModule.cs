@@ -159,11 +159,6 @@ namespace OhScrap
             if (displayChance > HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) safetyRating = 0;
             //shows a 1% failure rate as a fallback in case it rounds the float to 0
             if (chanceOfFailure == 0.01f) displayChance = 1;
-            //deprecated and will be removed soon.
-            if (UPFMUtils.instance != null && hasFailed)
-            {
-                if (!UPFMUtils.instance.brokenParts.ContainsKey(part)) UPFMUtils.instance.brokenParts.Add(part, displayChance);
-            }
         }
         //These methods all are overriden by the failure modules
         
@@ -214,10 +209,6 @@ namespace OhScrap
             //Everything below this line only happens when the part first fails. Once "hasFailed" is true this code will not run again
             if (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().stopOnFailure) TimeWarp.SetRate(0, true);
             hasFailed = true;
-            if (UPFMUtils.instance != null)
-            {
-                if (!UPFMUtils.instance.brokenParts.ContainsKey(part)) UPFMUtils.instance.brokenParts.Add(part, displayChance);
-            }
             OhScrap.Events["RepairChecks"].active = true;
             if (FailCheck(false))
             {

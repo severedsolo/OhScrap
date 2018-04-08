@@ -24,7 +24,6 @@ namespace OhScrap
     class UPFMUtils : MonoBehaviour
     {
         //These hold all "stats" for parts that have already been generated (to stop them getting different results each time)
-        public Dictionary<Part, int> brokenParts = new Dictionary<Part, int>();
         public Dictionary<uint, float> randomisation = new Dictionary<uint, float>();
         public Dictionary<uint, int> batteryLifetimes = new Dictionary<uint, int>();
         public Dictionary<uint, int> controlSurfaceLifetimes = new Dictionary<uint, int>();
@@ -47,6 +46,7 @@ namespace OhScrap
         ShipConstruct editorConstruct;
         public bool editorWindow = false;
         public bool flightWindow = true;
+        bool highlightWorstPart = false;
 
         private void Awake()
         {
@@ -108,44 +108,59 @@ namespace OhScrap
         //This is mostly for use in the flight scene, will only run once assuming everything goes ok.
         void Update()
         {
-            if (vesselSafetyRating != 6) return;
-            if (!HighLogic.LoadedSceneIsEditor && FlightGlobals.ready)
+            if (vesselSafetyRating == 6)
             {
-                for (int i = 0; i < FlightGlobals.ActiveVessel.parts.Count(); i++)
+                if (!HighLogic.LoadedSceneIsEditor && FlightGlobals.ready)
                 {
-                    Part p = FlightGlobals.ActiveVessel.parts.ElementAt(i);
-                    List<BaseFailureModule> bfmList = p.FindModulesImplementing<BaseFailureModule>();
-                    for (int b = 0; b < bfmList.Count(); b++)
+                    for (int i = 0; i < FlightGlobals.ActiveVessel.parts.Count(); i++)
                     {
-                        BaseFailureModule bfm = bfmList.ElementAt(b);
-                        if (bfm == null) continue;
-                        if (bfm.safetyRating < vesselSafetyRating && !bfm.excluded)
+                        Part p = FlightGlobals.ActiveVessel.parts.ElementAt(i);
+                        List<BaseFailureModule> bfmList = p.FindModulesImplementing<BaseFailureModule>();
+                        for (int b = 0; b < bfmList.Count(); b++)
                         {
-                            vesselSafetyRating = bfm.safetyRating;
-                            worstPart = p;
+                            BaseFailureModule bfm = bfmList.ElementAt(b);
+                            if (bfm == null) continue;
+                            if (bfm.safetyRating < vesselSafetyRating && !bfm.excluded)
+                            {
+                                vesselSafetyRating = bfm.safetyRating;
+                                worstPart = p;
+                            }
+                        }
+                    }
+                }
+                if (HighLogic.LoadedSceneIsEditor && editorConstruct != null)
+                {
+                    for (int i = 0; i < editorConstruct.parts.Count(); i++)
+                    {
+                        Part p = editorConstruct.parts.ElementAt(i);
+                        List<BaseFailureModule> bfmList = p.FindModulesImplementing<BaseFailureModule>();
+                        for (int b = 0; b < bfmList.Count(); b++)
+                        {
+                            BaseFailureModule bfm = bfmList.ElementAt(b);
+                            if (bfm == null) continue;
+                            if (bfm.safetyRating < vesselSafetyRating)
+                            {
+                                vesselSafetyRating = bfm.safetyRating;
+                                worstPart = p;
+                            }
                         }
                     }
                 }
             }
-            if (HighLogic.LoadedSceneIsEditor && editorConstruct != null)
+            if (highlightWorstPart && worstPart.highlightType == Part.HighlightType.OnMouseOver)
             {
-                for (int i = 0; i < editorConstruct.parts.Count(); i++)
-                {
-                    Part p = editorConstruct.parts.ElementAt(i);
-                    List<BaseFailureModule> bfmList = p.FindModulesImplementing<BaseFailureModule>();
-                    for (int b = 0; b < bfmList.Count(); b++)
-                    {
-                        BaseFailureModule bfm = bfmList.ElementAt(b);
-                        if (bfm == null) continue;
-                        if (bfm.safetyRating < vesselSafetyRating)
-                        {
-                            vesselSafetyRating = bfm.safetyRating;
-                            worstPart = p;
-                        }
-                    }
-                }
+                worstPart.SetHighlightColor(Color.yellow);
+                worstPart.SetHighlightType(Part.HighlightType.AlwaysOn);
+                worstPart.SetHighlight(true, true);
+            }
+            else if (!highlightWorstPart && worstPart.highlightType == Part.HighlightType.AlwaysOn)
+            {
+                worstPart.SetHighlightType(Part.HighlightType.OnMouseOver);
+                worstPart.SetHighlightColor(Color.green);
+                worstPart.SetHighlight(false, false);
             }
         }
+
         //Removes the parts from the trackers when they die.
         private void OnPartDie(Part part)
         {
@@ -252,7 +267,11 @@ namespace OhScrap
                 return;
             }
             GUILayout.Label("Vessel Safety Rating: " + vesselSafetyRating + " " + s);
-            if (worstPart != null) GUILayout.Label("Worst Part: " + worstPart.partInfo.title);
+            if (worstPart != null)
+            {
+                GUILayout.Label("Worst Part: " + worstPart.partInfo.title);
+                if (GUILayout.Button("Highlight Worst Part")) highlightWorstPart = !highlightWorstPart;
+            }
             if (GUILayout.Button("Close"))
             {
                 display = false;
