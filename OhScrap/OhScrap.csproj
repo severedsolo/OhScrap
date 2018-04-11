@@ -83,6 +83,6 @@
 xcopy /Y "$(TargetPath)" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\Severedsolo\OhScrap\"
 xcopy /Y "$(TargetDir)$(TargetName).pdb" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\Severedsolo\OhScrap\"
 xcopy /Y "$(TargetDir)$(TargetName).dll.mdb" "F:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\Severedsolo\OhScrap\"
-xcopy /Y "$(TargetPath)" "C:\Users\evilp\source\repos\OhScrap\GameData\Severedsolo\OhScrap"</PostBuildEvent>
+if $(ConfigurationName) ==  Release (xcopy /Y "$(TargetPath)" "C:\Users\evilp\source\repos\OhScrap\GameData\Severedsolo\OhScrap")</PostBuildEvent>
   </PropertyGroup>
 </Project>

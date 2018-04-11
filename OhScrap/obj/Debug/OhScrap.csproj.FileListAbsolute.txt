@@ -6,4 +6,12 @@ C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\UnityEngine.dll
 C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Debug\OhScrap.csproj.CoreCompileInputs.cache
 C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Debug\OhScrap.dll
 C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Debug\OhScrap.pdb
-C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Debug\OhScrap.csprojResolveAssemblyReference.cache
+C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\Assembly-CSharp.dll
+C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\UnityEngine.UI.dll
+C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\KSPTrackIR.dll
+C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\KSPAssets.dll
+C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\Mono.Cecil.dll
+C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\Ionic.Zip.dll
+C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\TDx.TDxInput.dll
+C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\RedShellSDK.dll
+C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Debug\Assembly-CSharp.xml

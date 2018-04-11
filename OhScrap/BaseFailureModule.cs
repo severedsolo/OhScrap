@@ -190,6 +190,7 @@ namespace OhScrap
                         OhScrap.Events["ToggleHighlight"].active = true;
                         OhScrap.highlight = true;
                         Debug.Log("[OhScrap]: Chance of Failure was " + displayChance + "% (Generation " + OhScrap.generation + ", " + SYP.TimesRecovered + " recoveries)");
+                        part.FindModuleImplementing<ModuleUPFMEvents>().highlightOverride = true;
                     }
                 }
                 return;

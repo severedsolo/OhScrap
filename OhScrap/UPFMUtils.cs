@@ -155,7 +155,7 @@ namespace OhScrap
                     worstPart.SetHighlightType(Part.HighlightType.AlwaysOn);
                     worstPart.SetHighlight(true, true);
                 }
-                else if (!highlightWorstPart && worstPart.highlightType == Part.HighlightType.AlwaysOn)
+                if (!highlightWorstPart && worstPart.highlightType == Part.HighlightType.AlwaysOn && !worstPart.FindModuleImplementing<ModuleUPFMEvents>().highlightOverride)
                 {
                     worstPart.SetHighlightType(Part.HighlightType.OnMouseOver);
                     worstPart.SetHighlightColor(Color.green);

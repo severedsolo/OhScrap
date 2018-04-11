@@ -21,6 +21,7 @@ namespace OhScrap
         [KSPField(isPersistant = false, guiActive = true, guiName = "Generation", guiActiveEditor = true)]
         public int generation = 0;
         public bool customFailureEvent = false;
+        public bool highlightOverride = false;
 
         private void Start()
         {
