@@ -176,11 +176,6 @@ namespace OhScrap
         {
             //If ScrapYard didn't return a sensible ID last time we checked, try again.
             if (!ready) Initialise();
-            //No point trying to fail parts in the editor.
-            if (HighLogic.LoadedSceneIsEditor) return;
-            //We don't want to interfere with MH Missions - they can have their own failures if the author wants.
-            if (HighLogic.CurrentGame.Mode == Game.Modes.MISSION) return;
-            if (!FailureAllowed()) return;
             //fails the part and posts the message if needed
             if (hasFailed)
             {
@@ -199,10 +194,7 @@ namespace OhScrap
                 }
                 return;
             }
-            if (!willFail)
-            {
-                return;
-            }
+            if (!willFail) return;
             if (Planetarium.GetUniversalTime() < failureTime) return;
             //Everything below this line only happens when the part first fails. Once "hasFailed" is true this code will not run again
             if (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().stopOnFailure) TimeWarp.SetRate(0, true);
@@ -235,8 +227,11 @@ namespace OhScrap
 #if DEBUG
             if (part != null) Debug.Log("[UPFM]: Chances of " + SYP.ID + " " + moduleName + " failing calculated to be " + chanceOfFailure * 100 + "%");
 #endif
-            //No Failures if this is a KRASH simulation
+            //No Failures if this is a KRASH simulation, a mission, we are in the editor, or the player has disabled failures for this module.
+            if (HighLogic.CurrentGame.Mode == Game.Modes.MISSION) return false;
+            if (HighLogic.LoadedSceneIsEditor) return false;
             if (KRASHWrapper.simulationActive()) return false;
+            if (!FailureAllowed()) return false;
             //every time a part fails the check, we increment the failure Check multiplier
             if (Randomiser.instance.NextDouble() < chanceOfFailure)
             {
