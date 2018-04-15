@@ -24,7 +24,7 @@ namespace OhScrap
         public bool endOfLife = false;
         [KSPField(isPersistant = true, guiActive = false)]
         public bool hasFailed = false;
-        [KSPField(isPersistant = true, guiActive = false)]
+        [KSPField(isPersistant = false, guiActive = false)]
         public bool postMessage = true;
         [KSPField(isPersistant = true, guiActive = false)]
         public string failureType = "none";
@@ -191,9 +191,9 @@ namespace OhScrap
                         OhScrap.Events["ToggleHighlight"].active = true;
                         OhScrap.highlight = true;
                         Debug.Log("[OhScrap]: Chance of Failure was " + displayChance + "% (Generation " + OhScrap.generation + ", " + SYP.TimesRecovered + " recoveries)");
+                        UPFMUtils.instance.vesselSafetyRating = 6;
                     }
                 }
-                UPFMUtils.instance.vesselSafetyRating = 6;
                 return;
             }
             if (!willFail) return;
