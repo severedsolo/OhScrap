@@ -36,7 +36,7 @@ namespace OhScrap
         public Dictionary<string, int> numberOfFailures = new Dictionary<string, int>();
         public Dictionary<uint, int> generations = new Dictionary<uint, int>();
 
-        int vesselSafetyRating = 6;
+        public int vesselSafetyRating = 6;
         Part worstPart;
         public bool display = false;
         bool dontBother = false;
@@ -97,7 +97,7 @@ namespace OhScrap
                 {
                     BaseFailureModule bfm = bfmList.ElementAt(b);
                     if (bfm == null) continue;
-                    if (bfm.safetyRating < vesselSafetyRating && !bfm.excluded)
+                    if (bfm.safetyRating < vesselSafetyRating && !bfm.excluded && !bfm.hasFailed)
                     {
                         vesselSafetyRating = bfm.safetyRating;
                         worstPart = p;
@@ -153,7 +153,7 @@ namespace OhScrap
                 {
                     worstPart.SetHighlightColor(Color.yellow);
                     worstPart.SetHighlightType(Part.HighlightType.AlwaysOn);
-                    worstPart.SetHighlight(true, true);
+                    worstPart.SetHighlight(true, false);
                 }
                 if (!highlightWorstPart && worstPart.highlightType == Part.HighlightType.AlwaysOn && !worstPart.FindModuleImplementing<ModuleUPFMEvents>().highlightOverride)
                 {
