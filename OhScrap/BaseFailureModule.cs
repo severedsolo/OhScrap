@@ -182,8 +182,8 @@ namespace OhScrap
                 FailPart();
                 if (!suppressFailure)
                 {
-                    OhScrap.SetFailedHighlight();
                     part.FindModuleImplementing<ModuleUPFMEvents>().highlightOverride = true;
+                    OhScrap.SetFailedHighlight();
                     if (postMessage)
                     {
                         PostFailureMessage();
