@@ -63,7 +63,7 @@ namespace OhScrap
         //At the moment though it's evenly distributed.
         private void PopulateShuffleBag(List<double> shuffleBag, int i)
         {
-            for (double d = 0.001f; d < 1.0; d += 0.001f)
+            for (double d = 0.01f; d < 1.0; d += 0.01f)
             {
                 if (shuffleBag.Contains(d)) continue;
                 shuffleBag.Add(d);
