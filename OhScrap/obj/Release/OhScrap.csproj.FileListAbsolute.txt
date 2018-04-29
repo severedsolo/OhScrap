@@ -14,5 +14,4 @@ C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Release\Mono.Cecil.dll
 C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Release\Ionic.Zip.dll
 C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Release\TDx.TDxInput.dll
 C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Release\RedShellSDK.dll
-C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Release\Assembly-CSharp.xml
-C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Release\OhScrap.csprojResolveAssemblyReference.cache
+C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Release\OhScrap.csproj.CopyComplete
