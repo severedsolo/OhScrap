@@ -24,17 +24,9 @@ namespace OhScrap
     class UPFMUtils : MonoBehaviour
     {
         //These hold all "stats" for parts that have already been generated (to stop them getting different results each time)
-        public Dictionary<uint, float> randomisation = new Dictionary<uint, float>();
-        public Dictionary<uint, int> batteryLifetimes = new Dictionary<uint, int>();
-        public Dictionary<uint, int> controlSurfaceLifetimes = new Dictionary<uint, int>();
-        public Dictionary<uint, int> engineLifetimes = new Dictionary<uint, int>();
-        public Dictionary<uint, int> parachuteLifetimes = new Dictionary<uint, int>();
-        public Dictionary<uint, int> reactionWheelLifetimes = new Dictionary<uint, int>();
-        public Dictionary<uint, int> solarPanelLifetimes = new Dictionary<uint, int>();
-        public Dictionary<uint, int> tankLifetimes = new Dictionary<uint, int>();
-        public Dictionary<uint, int> RCSLifetimes = new Dictionary<uint, int>();
-        public Dictionary<string, int> numberOfFailures = new Dictionary<string, int>();
         public Dictionary<uint, int> generations = new Dictionary<uint, int>();
+        public Dictionary<uint, float> randomisation = new Dictionary<uint, float>();
+        public Dictionary<string, int> numberOfFailures = new Dictionary<string, int>();
 
         public int vesselSafetyRating = 6;
         Part worstPart;
@@ -170,13 +162,7 @@ namespace OhScrap
             ModuleSYPartTracker SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
             if (SYP == null) return;
             randomisation.Remove(SYP.ID);
-            batteryLifetimes.Remove(SYP.ID);
-            controlSurfaceLifetimes.Remove(SYP.ID);
-            engineLifetimes.Remove(SYP.ID);
-            parachuteLifetimes.Remove(SYP.ID);
-            reactionWheelLifetimes.Remove(SYP.ID);
-            solarPanelLifetimes.Remove(SYP.ID);
-            tankLifetimes.Remove(SYP.ID);
+            generations.Remove(SYP.ID);
 #if DEBUG
             Debug.Log("[UPFM]: Stopped Tracking " + SYP.ID);
 #endif
