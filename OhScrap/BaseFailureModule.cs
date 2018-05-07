@@ -64,6 +64,7 @@ namespace OhScrap
             Fields["displayChance"].guiActiveEditor = true;
             Fields["safetyRating"].guiActive = true;
 #endif
+            if (HighLogic.LoadedSceneIsEditor) hasFailed = false;
             //find the ScrapYard Module straight away, as we can't do any calculations without it.
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
             chanceOfFailure = baseChanceOfFailure;
