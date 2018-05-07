@@ -79,7 +79,7 @@ namespace OhScrap
             OhScrap.RefreshPart();
             //Initialise the Failure Module.
             if (launched || HighLogic.LoadedSceneIsEditor) Initialise();
-            GameEvents.onLaunch.Add(OnLaunch);
+            GameEvents.VesselSituation.onLaunch.Add(OnLaunch);
 
         }
         
@@ -107,7 +107,7 @@ namespace OhScrap
         }
 
         //when the vessel launches allow the parts to be put back nto the inventory.
-        private void OnLaunch(EventReport data)
+        private void OnLaunch(Vessel data)
         {
             launched = true;
             Initialise();
@@ -264,7 +264,7 @@ namespace OhScrap
 
         private void OnDestroy()
         {
-            GameEvents.onLaunch.Remove(OnLaunch);
+            GameEvents.VesselSituation.onLaunch.Remove(OnLaunch);
             if (ScrapYardEvents.OnSYTrackerUpdated != null) ScrapYardEvents.OnSYTrackerUpdated.Remove(OnSYTrackerUpdated);
             if (ScrapYardEvents.OnSYInventoryAppliedToVessel != null) ScrapYardEvents.OnSYInventoryAppliedToVessel.Remove(OnSYInventoryAppliedToVessel);
         }
