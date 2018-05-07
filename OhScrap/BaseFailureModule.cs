@@ -176,7 +176,17 @@ namespace OhScrap
         private void FixedUpdate()
         {
             //If ScrapYard didn't return a sensible ID last time we checked, try again.
-            if (!ready) Initialise();
+            if (!ready)
+            {
+                Initialise();
+                return;
+            }
+            //OnLaunch doesn't fire for rovers, so we do a secondary check for whether the vessel is moving, and fire it manually if it is.
+            if(!launched && FlightGlobals.ActiveVessel != null)
+            {
+                if (FlightGlobals.ActiveVessel.speed > 1) OnLaunch(FlightGlobals.ActiveVessel);
+                return;
+            }
             //fails the part and posts the message if needed
             if (hasFailed)
             {
