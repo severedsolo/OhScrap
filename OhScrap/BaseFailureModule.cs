@@ -79,7 +79,7 @@ namespace OhScrap
             OhScrap.RefreshPart();
             //Initialise the Failure Module.
             if (launched || HighLogic.LoadedSceneIsEditor) Initialise();
-            GameEvents.VesselSituation.onLaunch.Add(OnLaunch);
+            GameEvents.onLaunch.Add(OnLaunch);
 
         }
         
@@ -107,7 +107,12 @@ namespace OhScrap
         }
 
         //when the vessel launches allow the parts to be put back nto the inventory.
-        private void OnLaunch(Vessel data)
+        private void OnLaunch(EventReport data)
+        {
+            ActivateFailures();
+        }
+
+        private void ActivateFailures()
         {
             launched = true;
             Initialise();
@@ -118,8 +123,8 @@ namespace OhScrap
 #endif
         }
 
-        // This is where we "initialise" the failure module and get everything ready
-        public void Initialise()
+            // This is where we "initialise" the failure module and get everything ready
+            public void Initialise()
         {
             //ScrapYard isn't always ready when OhScrap is so we check to see if it's returning an ID yet. If not, return and wait until it does.
             ready = SYP.ID != 0;
@@ -184,7 +189,7 @@ namespace OhScrap
             //OnLaunch doesn't fire for rovers, so we do a secondary check for whether the vessel is moving, and fire it manually if it is.
             if(!launched && FlightGlobals.ActiveVessel != null)
             {
-                if (FlightGlobals.ActiveVessel.speed > 1) OnLaunch(FlightGlobals.ActiveVessel);
+                if (FlightGlobals.ActiveVessel.speed > 1) ActivateFailures();
                 return;
             }
             //fails the part and posts the message if needed
@@ -274,7 +279,7 @@ namespace OhScrap
 
         private void OnDestroy()
         {
-            GameEvents.VesselSituation.onLaunch.Remove(OnLaunch);
+            GameEvents.onLaunch.Remove(OnLaunch);
             if (ScrapYardEvents.OnSYTrackerUpdated != null) ScrapYardEvents.OnSYTrackerUpdated.Remove(OnSYTrackerUpdated);
             if (ScrapYardEvents.OnSYInventoryAppliedToVessel != null) ScrapYardEvents.OnSYInventoryAppliedToVessel.Remove(OnSYInventoryAppliedToVessel);
         }
