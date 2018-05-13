@@ -176,7 +176,7 @@ namespace OhScrap
         //this repairs the part.
         public virtual void RepairPart() { }
         //this should read from the Difficulty Settings.
-        protected virtual bool FailureAllowed() { return true; }
+        protected virtual bool FailureAllowed() { return false; }
 
         private void FixedUpdate()
         {
