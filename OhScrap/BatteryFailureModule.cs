@@ -26,7 +26,7 @@ namespace OhScrap
             battery.flowState = false;
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             if (message) return;
-            ScreenMessages.PostScreenMessage("Battery short circuited!");
+            if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage("Battery short circuited!");
             Debug.Log("[OhScrap]: " + SYP.ID + " has suffered a short circuit failure");
             message = true;
         }

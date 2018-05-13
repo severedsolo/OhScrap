@@ -35,7 +35,7 @@ namespace OhScrap
             if (message) return;
             message = true;
             postMessage = true;
-            ScreenMessages.PostScreenMessage("RCS Failure!");
+            if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage("RCS Failure!");
             Debug.Log("[OhScrap]: " + SYP.ID + " RCS has failed");
         }
         //turns it back on again

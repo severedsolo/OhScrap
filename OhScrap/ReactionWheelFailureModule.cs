@@ -35,7 +35,7 @@ namespace OhScrap
             if (message) return;
             message = true;
             if (rw.wheelState != ModuleReactionWheel.WheelState.Broken) Debug.Log("[OhScrap]: " + SYP.ID + "'s reaction wheels have failed");
-            ScreenMessages.PostScreenMessage("A reaction wheel has failed");
+            if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage("A reaction wheel has failed");
         }
         //Turns it back on again,
         public override void RepairPart()

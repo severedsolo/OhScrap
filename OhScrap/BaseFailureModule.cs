@@ -202,12 +202,12 @@ namespace OhScrap
                     OhScrap.SetFailedHighlight();
                     if (postMessage)
                     {
-                        PostFailureMessage();
-                        postMessage = false;
                         OhScrap.Events["ToggleHighlight"].active = true;
                         OhScrap.highlight = true;
                         Debug.Log("[OhScrap]: Chance of Failure was " + displayChance + "% (Generation " + OhScrap.generation + ", " + SYP.TimesRecovered + " recoveries)");
                         UPFMUtils.instance.vesselSafetyRating = 6;
+                        postMessage = false;
+                        if(vessel.vesselType != VesselType.Debris) PostFailureMessage();
                     }
                 }
                 return;

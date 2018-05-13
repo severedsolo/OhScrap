@@ -43,7 +43,7 @@ namespace OhScrap
                 if (!postMessage)
                 {
                     failureType = "retraction error";
-                    ScreenMessages.PostScreenMessage(part.partInfo.title + " retraction mechanism jammed");
+                    if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage(part.partInfo.title + " retraction mechanism jammed");
                     Debug.Log("[OhScrap]: " + SYP.ID + " retraction mechanism has jammed");
                     postMessage = true;
                 }

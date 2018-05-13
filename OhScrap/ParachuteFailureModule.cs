@@ -35,7 +35,7 @@ namespace OhScrap
             if (message) return;
             message = true;
             postMessage = true;
-            ScreenMessages.PostScreenMessage("Parachute Failure!");
+            if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage("Parachute Failure!");
             Debug.Log("[OhScrap]: " + SYP.ID + " parachute has failed");
         }
     }

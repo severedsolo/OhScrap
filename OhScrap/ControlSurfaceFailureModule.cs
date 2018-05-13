@@ -35,7 +35,7 @@ namespace OhScrap
             controlSurface.ignoreYaw = true;
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             if (message) return;
-            ScreenMessages.PostScreenMessage("Control Surface Failure!");
+            if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage("Control Surface Failure!");
             Debug.Log("[OhScrap]: " + SYP.ID + " has suffered a control surface failure");
             message = true;
         }

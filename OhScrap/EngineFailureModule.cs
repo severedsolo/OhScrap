@@ -82,7 +82,7 @@ namespace OhScrap
                         Debug.Log("[OhScrap]: " + SYP.ID + " decided not to fail after all");
                         break;
                 }
-                ScreenMessages.PostScreenMessage(failureType + " detected on " + part.partInfo.title);
+                if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage(failureType + " detected on " + part.partInfo.title);
                 postMessage = true;
                 return;
             }

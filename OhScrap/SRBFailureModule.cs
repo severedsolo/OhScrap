@@ -39,7 +39,7 @@ namespace OhScrap
             suppressFailure = false;
             if (!message)
             {
-                ScreenMessages.PostScreenMessage(part.partInfo.title + " has failed to ignite");
+                if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage(part.partInfo.title + " has failed to ignite");
                 Debug.Log("[OhScrap]: " + SYP.ID + " has failed to ignite");
                 postMessage = true;
                 message = true;

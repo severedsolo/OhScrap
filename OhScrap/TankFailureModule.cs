@@ -91,7 +91,7 @@ namespace OhScrap
                 leaking = potentialLeaks.ElementAt(Randomiser.instance.RandomInteger(0, potentialLeaks.Count()));
                 leakingName = leaking.resourceName;
                 Debug.Log("[OhScrap]: " + leaking.resourceName + " started leaking from " + SYP.ID);
-                ScreenMessages.PostScreenMessage("A tank of " + leaking.resourceName + " started to leak!");
+                if(vessel.vesselType != VesselType.Debris)ScreenMessages.PostScreenMessage("A tank of " + leaking.resourceName + " started to leak!");
                 failureType = leaking.resourceName + " leak";
             }
             leaking.amount = leaking.amount * 0.999f;
