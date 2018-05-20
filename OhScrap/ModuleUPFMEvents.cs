@@ -37,8 +37,6 @@ namespace OhScrap
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
             if (SYP.TimesRecovered == 0)
             {
-                UPFMUtils.instance.randomisation.Remove(SYP.ID);
-                UPFMUtils.instance.generations.Remove(SYP.ID);
                 SYP.MakeFresh();
             }
             refreshed = true;
