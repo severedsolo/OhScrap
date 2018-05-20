@@ -74,7 +74,7 @@ namespace OhScrap
             //listen to ScrapYard Events so we can recalculate when needed
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             ScrapYardEvents.OnSYInventoryAppliedToVessel.Add(OnSYInventoryAppliedToVessel);
-            ScrapYardEvents.OnSYInventoryChanged.Add(OnSYInventoryChanged);
+            ScrapYardEvents.OnSYInventoryAppliedToPart.Add(OnSYInventoryAppliedToPart);
             OhScrap = part.FindModuleImplementing<ModuleUPFMEvents>();
             //refresh part if we are in the editor and parts never been used before (just returns if not)
             OhScrap.RefreshPart();
@@ -82,6 +82,14 @@ namespace OhScrap
             if (launched || HighLogic.LoadedSceneIsEditor) Initialise();
             GameEvents.onLaunch.Add(OnLaunch);
 
+        }
+
+        private void OnSYInventoryAppliedToPart(Part p)
+        {
+            if (p != part) return;
+            willFail = false;
+            chanceOfFailure = baseChanceOfFailure;
+            Initialise();
         }
 
         private void OnSYInventoryChanged(InventoryPart data0, bool data1)
