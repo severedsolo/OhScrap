@@ -74,6 +74,7 @@ namespace OhScrap
             //listen to ScrapYard Events so we can recalculate when needed
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             ScrapYardEvents.OnSYInventoryAppliedToVessel.Add(OnSYInventoryAppliedToVessel);
+            ScrapYardEvents.OnSYInventoryChanged.Add(OnSYInventoryChanged);
             OhScrap = part.FindModuleImplementing<ModuleUPFMEvents>();
             //refresh part if we are in the editor and parts never been used before (just returns if not)
             OhScrap.RefreshPart();
@@ -82,7 +83,14 @@ namespace OhScrap
             GameEvents.onLaunch.Add(OnLaunch);
 
         }
-        
+
+        private void OnSYInventoryChanged(InventoryPart data0, bool data1)
+        {
+            willFail = false;
+            chanceOfFailure = baseChanceOfFailure;
+            Initialise();
+        }
+
         // if SY applies inventory we reset the module as it could be a whole new part now.
         private void OnSYInventoryAppliedToVessel()
         {
