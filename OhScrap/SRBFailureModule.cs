@@ -15,7 +15,6 @@ namespace OhScrap
         //They will however suppress the messages until the player tries to launch.
         protected override void Overrides()
         {
-            maxTimeToFailure = 0;
             launched = true;
             Fields["displayChance"].guiName = "Chance of SRB Failure";
             Fields["safetyRating"].guiName = "SRB Safety Rating";
@@ -27,6 +26,7 @@ namespace OhScrap
         protected override bool FailureAllowed()
         {
             if (KRASHWrapper.simulationActive()) return false;
+            if (engine.currentThrottle > 0) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().SRBFailureModuleAllowed;
         }
         //Part will just shutdown and not be restartable.

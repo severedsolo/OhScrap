@@ -26,6 +26,7 @@ namespace OhScrap
         }
         protected override bool FailureAllowed()
         {
+            if (!antenna.enabled) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().AntennaFailureModuleAllowed;
         }
         protected override void FailPart()
