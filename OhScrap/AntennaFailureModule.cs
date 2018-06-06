@@ -26,7 +26,10 @@ namespace OhScrap
         }
         protected override bool FailureAllowed()
         {
-            if (!antenna.enabled) return false;
+            if(part.FindModuleImplementing<ModuleDeployableAntenna>() != null)
+            {
+                if (part.FindModuleImplementing<ModuleDeployableAntenna>().deployState != ModuleDeployablePart.DeployState.EXTENDED) return false;
+            }
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().AntennaFailureModuleAllowed;
         }
         protected override void FailPart()
