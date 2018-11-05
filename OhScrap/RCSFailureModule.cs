@@ -13,7 +13,6 @@ namespace OhScrap
 
         protected override bool FailureAllowed()
         {
-            if (!rcs.rcs_active) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().RCSFailureModuleAllowed;
         }
 
@@ -23,12 +22,12 @@ namespace OhScrap
             Fields["safetyRating"].guiName = "RCS Safety Rating";
             failureType = "RCS failure";
             postMessage = false;
-            rcs = part.FindModuleImplementing<ModuleRCS>();
         }
 
         //turns the RCS off.
         protected override void FailPart()
         {
+            rcs = part.FindModuleImplementing<ModuleRCS>();
             if (rcs == null) return;
             if (rcs.vessel != FlightGlobals.ActiveVessel) return;
             rcs.rcsEnabled = false;

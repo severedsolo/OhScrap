@@ -19,17 +19,23 @@ namespace OhScrap
 
         protected override void Overrides()
         {
+            maxTimeToFailure = 120;
             Fields["displayChance"].guiName = "Chance of Engine Failure";
             Fields["safetyRating"].guiName = "Engine Safety Rating";
             postMessage = false;
             engine = part.FindModuleImplementing<ModuleEngines>();
+            //If the ISP at sea level suggests this is a space engine, change the lifetime and failure rates accordingly
+            float staticPressure = (float)(FlightGlobals.GetHomeBody().GetPressure(0) * PhysicsGlobals.KpaToAtmospheres);
+            if (engine.atmosphereCurve.Evaluate(staticPressure) <= 100.0f)
+            {
+                expectedLifetime = 3;
+                baseChanceOfFailure = 0.1f;
+            }
         }   
 
         protected override bool FailureAllowed()
         {
-            if(!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().EngineFailureModuleAllowed) return false;
-            if (engine.currentThrottle == 0) return false;
-            return true;
+            return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().EngineFailureModuleAllowed;
         }
 
         protected override void FailPart()

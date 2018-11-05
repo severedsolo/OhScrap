@@ -16,10 +16,16 @@ namespace OhScrap
         public override bool HasPresets { get { return false; } }
         public bool autoPersistance = true;
         public bool newGameOnly = false;
+        [GameParameters.CustomParameterUI("Display Safety Warnings?")]
+        public bool safetyWarning = true;
+        [GameParameters.CustomParameterUI("Recover parts above Safety Threshold?")]
+        public bool safetyRecover = true;
         [GameParameters.CustomParameterUI("Highlight Part Failures?")]
         public bool highlightFailures = true;
         [GameParameters.CustomParameterUI("Stop Timewarp on Failure?")]
         public bool stopOnFailure = true;
+        [GameParameters.CustomIntParameterUI("Safety Threshold", toolTip = "At what failure threshold should OhScrap display a warning?")]
+        public int safetyThreshold = 25;
         [GameParameters.CustomParameterUI("Antenna")]
         public bool AntennaFailureModuleAllowed = true;
         [GameParameters.CustomParameterUI("Battery")]

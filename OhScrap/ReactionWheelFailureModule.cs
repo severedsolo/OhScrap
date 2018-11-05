@@ -16,13 +16,11 @@ namespace OhScrap
             Fields["displayChance"].guiName = "Chance of Reaction Wheel Failure";
             Fields["safetyRating"].guiName = "Reaction Wheel Safety Rating";
             failureType = "reaction wheel failure";
-            rw = part.FindModuleImplementing<ModuleReactionWheel>();
             remoteRepairable = true;
         }
 
         protected override bool FailureAllowed()
         {
-            if (!rw.operational) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ReactionWheelFailureModuleAllowed;
         }
 

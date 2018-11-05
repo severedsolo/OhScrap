@@ -13,7 +13,6 @@ namespace OhScrap
 
         protected override bool FailureAllowed()
         {
-            if (chute.deploymentState != ModuleParachute.deploymentStates.SEMIDEPLOYED && chute.deploymentState != ModuleParachute.deploymentStates.DEPLOYED) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ParachuteFailureModuleAllowed;
         }
 
@@ -23,12 +22,12 @@ namespace OhScrap
             failureType = "parachute failure";
             Fields["safetyRating"].guiName = "Parachute Safety Rating";
             postMessage = false;
-            chute = part.FindModuleImplementing<ModuleParachute>();
         }
 
         //Cuts the chute if it's deployed
         protected override void FailPart()
         {
+            chute = part.FindModuleImplementing<ModuleParachute>();
             if (chute == null) return;
             if (chute.vessel != FlightGlobals.ActiveVessel) return;
             if (chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED) chute.CutParachute();

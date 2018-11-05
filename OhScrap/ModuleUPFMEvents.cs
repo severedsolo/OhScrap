@@ -160,6 +160,12 @@ namespace OhScrap
                 part.SetHighlight(false, false);
                 repair.postMessage = true;
             }
+            //Once the part has been repaired run the Initialise Event again (possibly another fail)
+            for (int i = 0; i < bfm.Count; i++)
+            {
+                BaseFailureModule bf = bfm.ElementAt(i);
+                bf.Initialise();
+            }
         }
 
         //Determines whether a repair will be successful
@@ -169,22 +175,19 @@ namespace OhScrap
             float repairChance = 0.5f;
             if(FlightGlobals.ActiveVessel.GetCrewCount() >0)
             {
-                if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) repairChance = 0.5f;
+                //if repair is done by EVA success is 75%
+                if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) repairChance = 0.75f;
                 for(int i = 0; i<FlightGlobals.ActiveVessel.GetVesselCrew().Count(); i++)
                 {
+                    //Engineers give a one time 10% bonus to repair rates
                     ProtoCrewMember p = FlightGlobals.ActiveVessel.GetVesselCrew().ElementAt(i);
                     if(p.trait == "Engineer")
                     {
-                        if (p.experienceLevel > 0)
-                        {
-                            repairChance += (p.experienceLevel / 100.0f);
-                        }
-                        else repairChance += 0.1f;
+                        repairChance += 0.1f;
                         break;
                     }
                 }
             }
-            if (repairChance > 1.0f) repairChance = 0.9f;
             return Randomiser.instance.NextDouble() > repairChance;
         }
 

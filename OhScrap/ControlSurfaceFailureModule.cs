@@ -23,12 +23,12 @@ namespace OhScrap
 
         protected override bool FailureAllowed()
         {
-            if (part.vessel.atmDensity == 0) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ControlSurfaceFailureModuleAllowed;
         }
         //control surface will stick and not respond to input
         protected override void FailPart()
         {
+            if (part.vessel.atmDensity == 0) return;
             controlSurface = part.FindModuleImplementing<ModuleControlSurface>();
             controlSurface.ignorePitch = true;
             controlSurface.ignoreRoll = true;

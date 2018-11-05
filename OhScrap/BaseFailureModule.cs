@@ -1,9 +1,12 @@
-﻿using KSP.UI.Screens;
+﻿using UnityEngine;
+using System;
+using System.Text;
+using System.Collections.Generic;
+using KSP.UI.Screens;
+using System.Collections;
+using Expansions.Missions;
 using ScrapYard;
 using ScrapYard.Modules;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
 
 namespace OhScrap
 {
@@ -40,16 +43,12 @@ namespace OhScrap
         public int displayChance = 100;
         [KSPField(isPersistant = false, guiActive = true, guiName = "Base Safety Rating", guiActiveEditor = true)]
         public int safetyRating = 6;
+        double failureTime = 0;
+        public double maxTimeToFailure = 1800;
         public ModuleUPFMEvents OhScrap;
         public bool remoteRepairable = false;
         public bool excluded = false;
         public bool suppressFailure = false;
-        public double nextCheck = 0;
-        [KSPField(isPersistant = true, guiActive = false)]
-        public int minTimeBetweenFailureChecks = 1;
-        [KSPField(isPersistant = true, guiActive = false)]
-        public int maxTimeBetweenFailureChecks = 7200;
-        
 
 #if DEBUG
         [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = false, guiName = "Force Failure (DEBUG)")]
@@ -61,8 +60,8 @@ namespace OhScrap
         private void Start()
         {
 #if DEBUG
-            Fields["chanceOfFailure"].guiActive = true;
-            Fields["chanceOfFailure"].guiActiveEditor = true;
+            Fields["displayChance"].guiActive = true;
+            Fields["displayChance"].guiActiveEditor = true;
             Fields["safetyRating"].guiActive = true;
 #endif
             if (HighLogic.LoadedSceneIsEditor) hasFailed = false;
@@ -82,18 +81,8 @@ namespace OhScrap
             //Initialise the Failure Module.
             if (launched || HighLogic.LoadedSceneIsEditor) Initialise();
             GameEvents.onLaunch.Add(OnLaunch);
-        }
 
-        private void FailureRecurrance()
-        {
-            if (HighLogic.LoadedSceneIsEditor) return;
-            if (Planetarium.GetUniversalTime() < nextCheck) return;
-            nextCheck = Planetarium.GetUniversalTime() + Randomiser.instance.RandomInteger(minTimeBetweenFailureChecks, maxTimeBetweenFailureChecks);
-            if (hasFailed) return;
-            if (willFail) return;
-            if (!FailureAllowed()) return;
-            if (!launched) return;
-            Initialise();        }
+        }
 
         private void OnSYInventoryAppliedToPart(Part p)
         {
@@ -143,9 +132,8 @@ namespace OhScrap
         {
             launched = true;
             Initialise();
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyRecover && displayChance < HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) return;
             if (!hasFailed) OhScrap.doNotRecover = false;
-            nextCheck = Planetarium.GetUniversalTime() + Randomiser.instance.RandomInteger(1, maxTimeBetweenFailureChecks);
-            InvokeRepeating("FailureRecurrance", 1.0f, 1.0f);
 #if DEBUG
             Debug.Log("[UPFM]: " + SYP.ID + "marked as recoverable");
 #endif
@@ -170,8 +158,11 @@ namespace OhScrap
             {
                 if (FailCheck(true) && !HighLogic.LoadedSceneIsEditor && launched)
                 {
+                    //Most failures will happen up to 30 minutes in the future, but the more damaged a part is, the shorter it can hold on.
+                    double timeToFailure = (maxTimeToFailure * (1 - chanceOfFailure)) * Randomiser.instance.NextDouble();
+                    failureTime = Planetarium.GetUniversalTime() + timeToFailure;
                     willFail = true;
-                    Debug.Log("[OhScrap]: " + SYP.ID + " " + ClassName + " failed");
+                    Debug.Log("[OhScrap]: " + SYP.ID + " " + ClassName + " will attempt to fail in " + timeToFailure + " seconds");
 #if !DEBUG
                     Debug.Log("[OhScrap]: Chance of Failure was "+displayChance+"% (Generation "+OhScrap.generation+", "+SYP.TimesRecovered+ "recoveries)");
 #endif
@@ -180,13 +171,16 @@ namespace OhScrap
             displayChance = (int)(chanceOfFailure * 100);
             //this compares the actual failure rate to the safety threshold and returns a safety calc based on how far below the safety threshold the actual failure rate is.
             //This is what the player actually sees when determining if a part is "failing" or not.
-            if (chanceOfFailure < 0.002) safetyRating = 5;
-            else if (chanceOfFailure < 0.0034) safetyRating = 4;
-            else if (chanceOfFailure < 0.0048) safetyRating = 3;
-            else if (chanceOfFailure < 0.0062) safetyRating = 2;
+            float safetyCalc = 1.0f - ((float)displayChance / HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold);
+            if (safetyCalc > 0.95) safetyRating = 5;
+            else if (safetyCalc > 0.9) safetyRating = 4;
+            else if (safetyCalc > 0.8) safetyRating = 3;
+            else if (safetyCalc > 0.7) safetyRating = 2;
             else safetyRating = 1;
             // if the part is damaged beyond the safety rating (usually only if you've pushed it beyond End Of Life) then it gets a 0
-            if (chanceOfFailure > baseChanceOfFailure) safetyRating = 0;
+            if (displayChance > HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) safetyRating = 0;
+            //shows a 1% failure rate as a fallback in case it rounds the float to 0
+            if (chanceOfFailure == 0.01f) displayChance = 1;
         }
         //These methods all are overriden by the failure modules
         
@@ -209,7 +203,7 @@ namespace OhScrap
                 return;
             }
             //OnLaunch doesn't fire for rovers, so we do a secondary check for whether the vessel is moving, and fire it manually if it is.
-            if (!launched && FlightGlobals.ActiveVessel != null)
+            if(!launched && FlightGlobals.ActiveVessel != null)
             {
                 if (FlightGlobals.ActiveVessel.speed > 1) ActivateFailures();
                 return;
@@ -229,17 +223,17 @@ namespace OhScrap
                         Debug.Log("[OhScrap]: Chance of Failure was " + displayChance + "% (Generation " + OhScrap.generation + ", " + SYP.TimesRecovered + " recoveries)");
                         UPFMUtils.instance.vesselSafetyRating = 6;
                         postMessage = false;
-                        if (vessel.vesselType != VesselType.Debris) PostFailureMessage();
+                        if(vessel.vesselType != VesselType.Debris) PostFailureMessage();
                     }
                 }
                 return;
             }
             if (!willFail) return;
+            if (Planetarium.GetUniversalTime() < failureTime) return;
             //Everything below this line only happens when the part first fails. Once "hasFailed" is true this code will not run again
             if (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().stopOnFailure) TimeWarp.SetRate(0, true);
             hasFailed = true;
             OhScrap.Events["RepairChecks"].active = true;
-            CancelInvoke();
             if (FailCheck(false))
             {
                 OhScrap.MarkBroken();
@@ -250,12 +244,10 @@ namespace OhScrap
         //This determines whether or not the part will fail.
         public bool FailCheck(bool recalcChance)
         {
-            int standardisedGeneration = OhScrap.generation;
-            if (standardisedGeneration > 10) standardisedGeneration = 10;
-            if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure/standardisedGeneration + randomisation;
-            else chanceOfFailure = ((baseChanceOfFailure/standardisedGeneration) + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
+            if (SYP.TimesRecovered == 0) chanceOfFailure = baseChanceOfFailure/OhScrap.generation + randomisation;
+            else chanceOfFailure = ((baseChanceOfFailure/OhScrap.generation) + randomisation) * (SYP.TimesRecovered / (float)expectedLifetime);
             //Chance of Failure can never exceed the safety threshold unless the part has reached "end of life"
-            if (chanceOfFailure > baseChanceOfFailure) chanceOfFailure = baseChanceOfFailure;
+            if (chanceOfFailure * 100 > HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) chanceOfFailure = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
             //If the part has reached it's "end of life" the failure rate will quickly deteriorate.
             float endOfLifeMultiplier = (SYP.TimesRecovered - expectedLifetime) / 5.0f;
             if (endOfLifeMultiplier > 0)

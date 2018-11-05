@@ -175,8 +175,9 @@ namespace OhScrap
             if (SYP == null) return 0;
             float f = 0;
             if (randomisation.TryGetValue(SYP.ID, out f)) return f;
-            int randomFactor = 1;
-            if (builds > 0) randomFactor = 1 / builds;
+            int randomFactor = 8;
+            if (builds > 0) randomFactor = 10 / builds;
+            if (randomFactor > 1) f = (Randomiser.instance.RandomInteger(1, randomFactor) / 100.0f);
             if (numberOfFailures.TryGetValue(p.name, out int i))
             {
 #if DEBUG
@@ -184,6 +185,8 @@ namespace OhScrap
 #endif
                 f = f / i;
             }
+            float threshold = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
+            if (f > threshold) f = threshold - 0.01f;
             if (!float.IsNaN(f))
             {
                 randomisation.Add(SYP.ID, f);
@@ -208,6 +211,7 @@ namespace OhScrap
         //shouldn't really be using OnGUI but I'm too lazy to learn PopUpDialog
         private void OnGUI()
         {
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyWarning) return;
             if (HighLogic.CurrentGame.Mode == Game.Modes.MISSION) return;
             if (dontBother) return;
             if (!display) return;
