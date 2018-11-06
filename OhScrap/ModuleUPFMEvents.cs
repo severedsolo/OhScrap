@@ -12,12 +12,13 @@ namespace OhScrap
     class ModuleUPFMEvents : PartModule
     {
         [KSPField(isPersistant = true, guiActive = false)]
-        public bool highlight = false;
+        public bool highlight = true;
+        bool doNotRecover = false;
+        [KSPField(isPersistant = false, guiActiveEditor = true, guiName = "Tested")]
+        public bool tested = false;
         BaseFailureModule repair;
         ModuleSYPartTracker SYP;
         public bool refreshed = false;
-        [KSPField(isPersistant = true, guiActive = false)]
-        public bool doNotRecover = true;
         [KSPField(isPersistant = false, guiActive = true, guiName = "Generation", guiActiveEditor = true)]
         public int generation = 0;
         public bool customFailureEvent = false;
@@ -158,7 +159,6 @@ namespace OhScrap
                 part.highlightType = Part.HighlightType.OnMouseOver;
                 part.SetHighlightColor(Color.green);
                 part.SetHighlight(false, false);
-                repair.postMessage = true;
             }
             //Once the part has been repaired run the Initialise Event again (possibly another fail)
             for (int i = 0; i < bfm.Count; i++)
@@ -171,24 +171,24 @@ namespace OhScrap
         //Determines whether a repair will be successful
         private bool RepairFailCheck()
         {
-            //base success chance is 50%
-            float repairChance = 0.5f;
+            //base success chance is 20%
+            float repairChance = 0.2f;
             if(FlightGlobals.ActiveVessel.GetCrewCount() >0)
             {
-                //if repair is done by EVA success is 75%
-                if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) repairChance = 0.75f;
+                //if repair is done by EVA success is 40%
+                if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() != null) repairChance = 0.4f;
                 for(int i = 0; i<FlightGlobals.ActiveVessel.GetVesselCrew().Count(); i++)
                 {
-                    //Engineers give a one time 10% bonus to repair rates
+                    //Engineers give a 10% bonus per level to repair rates
                     ProtoCrewMember p = FlightGlobals.ActiveVessel.GetVesselCrew().ElementAt(i);
                     if(p.trait == "Engineer")
                     {
-                        repairChance += 0.1f;
+                        repairChance += p.experienceLevel*0.1f;
                         break;
                     }
                 }
             }
-            return Randomiser.instance.NextDouble() > repairChance;
+            return UPFMUtils.instance._randomiser.NextDouble() > repairChance;
         }
 
         bool Repaired()

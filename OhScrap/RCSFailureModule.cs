@@ -9,7 +9,6 @@ namespace OhScrap
     class RCSFailureModule : BaseFailureModule
     {
         ModuleRCS rcs;
-        bool message;
 
         protected override bool FailureAllowed()
         {
@@ -20,23 +19,22 @@ namespace OhScrap
         {
             Fields["displayChance"].guiName = "Chance of RCS Failure";
             Fields["safetyRating"].guiName = "RCS Safety Rating";
-            failureType = "RCS failure";
-            postMessage = false;
+            failureType = "RCS Failure";
         }
 
         //turns the RCS off.
-        protected override void FailPart()
+        public override void FailPart()
         {
             rcs = part.FindModuleImplementing<ModuleRCS>();
             if (rcs == null) return;
-            if (rcs.vessel != FlightGlobals.ActiveVessel) return;
+            if (rcs.vessel != FlightGlobals.ActiveVessel)
+            {
+                hasFailed = false;
+                return;
+            }
             rcs.rcsEnabled = false;
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
-            if (message) return;
-            message = true;
-            postMessage = true;
-            if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage("RCS Failure!");
-            Debug.Log("[OhScrap]: " + SYP.ID + " RCS has failed");
+            if (hasFailed) return;
         }
         //turns it back on again
         public override void RepairPart()

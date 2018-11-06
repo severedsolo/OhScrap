@@ -7,6 +7,7 @@ using System.Reflection;
 using KSP.UI.Screens;
 using ScrapYard;
 using ScrapYard.Modules;
+using System.Collections;
 
 namespace OhScrap
 {
@@ -25,10 +26,9 @@ namespace OhScrap
     {
         //These hold all "stats" for parts that have already been generated (to stop them getting different results each time)
         public Dictionary<uint, int> generations = new Dictionary<uint, int>();
-        public Dictionary<uint, float> randomisation = new Dictionary<uint, float>();
-        public Dictionary<string, int> numberOfFailures = new Dictionary<string, int>();
-
-        public int vesselSafetyRating = 6;
+        public List<uint> testedParts = new List<uint>();
+        public int vesselSafetyRating = -1;
+        double nextFailureCheck = 0;
         Part worstPart;
         public bool display = false;
         bool dontBother = false;
@@ -39,6 +39,7 @@ namespace OhScrap
         public bool editorWindow = false;
         public bool flightWindow = true;
         bool highlightWorstPart = false;
+        public System.Random _randomiser = new System.Random();
 
         private void Awake()
         {
@@ -59,11 +60,69 @@ namespace OhScrap
             {
                 display = editorWindow;
             }
+            if (HighLogic.LoadedScene == GameScenes.FLIGHT) InvokeRepeating("CheckForFailures", 10.0f, 10.0f);
         }
-        //Resets the safety rating to 6 so when we loop through the vessel we don't get garbage data.
+
+        private void CheckForFailures()
+        {
+            if (!FlightGlobals.ready) return;
+            if (KRASHWrapper.simulationActive()) return;
+            if(FlightGlobals.ActiveVessel.FindPartModuleImplementing<ModuleUPFMEvents>() != null)
+            {
+                if(FlightGlobals.ActiveVessel.FindPartModuleImplementing<ModuleUPFMEvents>().tested == false) return;
+            }
+            if (Planetarium.GetUniversalTime() < nextFailureCheck) return;
+            if (vesselSafetyRating == -1) return;
+            List<BaseFailureModule> failureModules = FlightGlobals.ActiveVessel.FindPartModulesImplementing<BaseFailureModule>();
+            if (failureModules.Count == 0) return;
+            double chanceOfFailure = 0;
+            for(int i = 0; i<failureModules.Count; i++)
+            {
+                BaseFailureModule bfm = failureModules.ElementAt(i);
+                chanceOfFailure += bfm.chanceOfFailure;
+            }
+            chanceOfFailure /= failureModules.Count();
+            if (FlightGlobals.ActiveVessel.situation == Vessel.Situations.FLYING) nextFailureCheck = Planetarium.GetUniversalTime() + 10;
+            else nextFailureCheck = Planetarium.GetUniversalTime() + 1800;
+            if (_randomiser.NextDouble() > chanceOfFailure) return;
+            BaseFailureModule failedModule = null;
+            int counter = 0;
+            while(counter<100)
+            {
+                failedModule = failureModules.ElementAt(_randomiser.Next(0, failureModules.Count));
+                if (!failedModule.launched) return;
+                if (_randomiser.NextDouble() < failedModule.chanceOfFailure || counter >= 100)
+                {
+                    if (failedModule.hasFailed) continue;
+                    if (counter >= 100 && failedModule.hasFailed) return;
+                    StartFailure(failedModule);
+                    break;
+                }
+                counter++;
+            }
+            if (!failedModule.hasFailed) return;
+            failedModule.part.FindModuleImplementing<ModuleUPFMEvents>().SetFailedHighlight();
+            ScreenMessages.PostScreenMessage(failedModule.part.partInfo.title + ": " + failedModule.failureType);
+            StringBuilder msg = new StringBuilder();
+            msg.AppendLine(failedModule.part.vessel.vesselName);
+            msg.AppendLine("");
+            msg.AppendLine(failedModule.part.partInfo.title + " has suffered a " + failedModule.failureType);
+            msg.AppendLine("");
+            MessageSystem.Message m = new MessageSystem.Message("OhScrap", msg.ToString(), MessageSystemButton.MessageButtonColor.ORANGE, MessageSystemButton.ButtonIcons.ALERT);
+            MessageSystem.Instance.AddMessage(m);
+            Debug.Log("[OhScrap]: " + failedModule.SYP.ID + " of type " + failedModule.part.partInfo.title + " has suffered a " + failedModule.failureType);
+            TimeWarp.SetRate(0, true);
+        }
+
+        private void StartFailure(BaseFailureModule bfm)
+        {
+            bfm.hasFailed = true;
+            bfm.FailPart();
+        }
+
         private void OnFlightGlobalsReady(bool data)
         {
-            vesselSafetyRating = 6;
+            vesselSafetyRating = -1;
         }
         //This keeps track of which generation the part is.
         //If its been seen before it will be in the dictionary, so we can just return that (rather than having to guess by builds and times recovered)
@@ -79,7 +138,9 @@ namespace OhScrap
         //When the Editor Vessel is modified check the safety ratings and update the UI
         private void onEditorShipModified(ShipConstruct shipConstruct)
         {
-            vesselSafetyRating = 6;
+            vesselSafetyRating = 0;
+            int worstPartRating = 6;
+            int bfmCount = 0;
             editorConstruct = shipConstruct;
             for (int i = 0; i < shipConstruct.parts.Count(); i++)
             {
@@ -89,19 +150,24 @@ namespace OhScrap
                 {
                     BaseFailureModule bfm = bfmList.ElementAt(b);
                     if (bfm == null) continue;
-                    if (bfm.safetyRating < vesselSafetyRating && !bfm.excluded && !bfm.hasFailed)
+                    if (bfm.safetyRating < worstPartRating && !bfm.excluded && !bfm.hasFailed)
                     {
-                        vesselSafetyRating = bfm.safetyRating;
                         worstPart = p;
                     }
+                    vesselSafetyRating += bfm.safetyRating;
+                    bfmCount++;
                 }
+                vesselSafetyRating = vesselSafetyRating / bfmCount;
             }
         }
         //This is mostly for use in the flight scene, will only run once assuming everything goes ok.
         void Update()
         {
-            if (vesselSafetyRating == 6)
+            try
             {
+                int bfmCount = 0;
+                vesselSafetyRating = 0;
+                int worstPartRating = 6;
                 if (!HighLogic.LoadedSceneIsEditor && FlightGlobals.ready)
                 {
                     for (int i = 0; i < FlightGlobals.ActiveVessel.parts.Count(); i++)
@@ -112,11 +178,14 @@ namespace OhScrap
                         {
                             BaseFailureModule bfm = bfmList.ElementAt(b);
                             if (bfm == null) continue;
-                            if (bfm.safetyRating < vesselSafetyRating && !bfm.excluded)
+                            if (!bfm.ready) return;
+                            if (bfm.safetyRating < worstPartRating && !bfm.excluded)
                             {
-                                vesselSafetyRating = bfm.safetyRating;
                                 worstPart = p;
+                                worstPartRating = bfm.safetyRating;
                             }
+                            vesselSafetyRating += bfm.safetyRating;
+                            bfmCount++;
                         }
                     }
                 }
@@ -130,28 +199,39 @@ namespace OhScrap
                         {
                             BaseFailureModule bfm = bfmList.ElementAt(b);
                             if (bfm == null) continue;
-                            if (bfm.safetyRating < vesselSafetyRating)
+                            if (!bfm.ready) return;
+                            if (bfm.safetyRating < worstPartRating)
                             {
-                                vesselSafetyRating = bfm.safetyRating;
                                 worstPart = p;
+                                worstPartRating = bfm.safetyRating;
                             }
+                            vesselSafetyRating += bfm.safetyRating;
+                            bfmCount++;
                         }
                     }
                 }
+                vesselSafetyRating = vesselSafetyRating / bfmCount;
             }
-            if (worstPart != null)
+            catch (DivideByZeroException)
             {
-                if (highlightWorstPart && worstPart.highlightType == Part.HighlightType.OnMouseOver)
+                return;
+            }
+            finally
+            {
+                if (worstPart != null)
                 {
-                    worstPart.SetHighlightColor(Color.yellow);
-                    worstPart.SetHighlightType(Part.HighlightType.AlwaysOn);
-                    worstPart.SetHighlight(true, false);
-                }
-                if (!highlightWorstPart && worstPart.highlightType == Part.HighlightType.AlwaysOn && !worstPart.FindModuleImplementing<ModuleUPFMEvents>().highlightOverride)
-                {
-                    worstPart.SetHighlightType(Part.HighlightType.OnMouseOver);
-                    worstPart.SetHighlightColor(Color.green);
-                    worstPart.SetHighlight(false, false);
+                    if (highlightWorstPart && worstPart.highlightType == Part.HighlightType.OnMouseOver)
+                    {
+                        worstPart.SetHighlightColor(Color.yellow);
+                        worstPart.SetHighlightType(Part.HighlightType.AlwaysOn);
+                        worstPart.SetHighlight(true, false);
+                    }
+                    if (!highlightWorstPart && worstPart.highlightType == Part.HighlightType.AlwaysOn && !worstPart.FindModuleImplementing<ModuleUPFMEvents>().highlightOverride)
+                    {
+                        worstPart.SetHighlightType(Part.HighlightType.OnMouseOver);
+                        worstPart.SetHighlightColor(Color.green);
+                        worstPart.SetHighlight(false, false);
+                    }
                 }
             }
         }
@@ -161,41 +241,12 @@ namespace OhScrap
         {
             ModuleSYPartTracker SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
             if (SYP == null) return;
-            randomisation.Remove(SYP.ID);
             generations.Remove(SYP.ID);
 #if DEBUG
             Debug.Log("[UPFM]: Stopped Tracking " + SYP.ID);
 #endif
         }
 
-        //Like Generations this checks if we've already generated a random factor, and if not generates one.
-        public float GetRandomisation(Part p, int builds)
-        {
-            ModuleSYPartTracker SYP = p.FindModuleImplementing<ModuleSYPartTracker>();
-            if (SYP == null) return 0;
-            float f = 0;
-            if (randomisation.TryGetValue(SYP.ID, out f)) return f;
-            int randomFactor = 8;
-            if (builds > 0) randomFactor = 10 / builds;
-            if (randomFactor > 1) f = (Randomiser.instance.RandomInteger(1, randomFactor) / 100.0f);
-            if (numberOfFailures.TryGetValue(p.name, out int i))
-            {
-#if DEBUG
-                Debug.Log("[UPFM]: " + p.name + " failure bonus of " + i + " applied");
-#endif
-                f = f / i;
-            }
-            float threshold = HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold / 100.0f;
-            if (f > threshold) f = threshold - 0.01f;
-            if (!float.IsNaN(f))
-            {
-                randomisation.Add(SYP.ID, f);
-#if DEBUG
-                Debug.Log("[UPFM]: Applied Random Factor of " + f + " to part " + SYP.ID);
-#endif
-            }
-            return f;
-        }
         //Add the toolbar button to the GUI
         public void GUIReady()
         {
@@ -228,17 +279,32 @@ namespace OhScrap
             string s;
             switch (vesselSafetyRating)
             {
-                case 5:
+                case 10:
                     s = "(Excellent)";
                     break;
-                case 4:
+                case 9:
+                    s = "(Excellent)";
+                    break;
+                case 8:
                     s = "(Good)";
                     break;
-                case 3:
+                case 7:
+                    s = "(Good)";
+                    break;
+                case 6:
                     s = "(Average)";
                     break;
-                case 2:
+                case 5:
+                    s = "(Average)";
+                    break;
+                case 4:
                     s = "(Poor)";
+                    break;
+                case 3:
+                    s = "(Poor)";
+                    break;
+                case 2:
+                    s = "(Terrible)";
                     break;
                 case 1:
                     s = "(Terrible)";
@@ -250,7 +316,7 @@ namespace OhScrap
                     s = "(Invalid)";
                     break;
             }
-            if(vesselSafetyRating == 6)
+            if(vesselSafetyRating == -1)
             {
                 GUILayout.Label("No parts detected. Place or right click on a part");
                 return;

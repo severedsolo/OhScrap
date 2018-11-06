@@ -15,13 +15,14 @@ namespace OhScrap
         //They will however suppress the messages until the player tries to launch.
         protected override void Overrides()
         {
-            maxTimeToFailure = 0;
             launched = true;
             Fields["displayChance"].guiName = "Chance of SRB Failure";
             Fields["safetyRating"].guiName = "SRB Safety Rating";
             failureType = "ignition failure";
             engine = part.FindModuleImplementing<ModuleEngines>();
             suppressFailure = true;
+            if (HighLogic.LoadedScene != GameScenes.FLIGHT) return;
+            if (UPFMUtils.instance._randomiser.NextDouble() < chanceOfFailure) InvokeRepeating("FailPart", 0.5f, 0.5f);
         }
 
         protected override bool FailureAllowed()
@@ -30,7 +31,7 @@ namespace OhScrap
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().SRBFailureModuleAllowed;
         }
         //Part will just shutdown and not be restartable.
-        protected override void FailPart()
+        public override void FailPart()
         {
             if (engine.currentThrottle == 0) return;
             engine.allowShutdown = true;
@@ -40,8 +41,6 @@ namespace OhScrap
             if (!message)
             {
                 if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage(part.partInfo.title + " has failed to ignite");
-                Debug.Log("[OhScrap]: " + SYP.ID + " has failed to ignite");
-                postMessage = true;
                 message = true;
             }
         }

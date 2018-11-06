@@ -48,7 +48,7 @@ namespace OhScrap
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().TankFailureModuleAllowed;
         }
         //Assuming that part has a resource that is not on the blacklist, it will leak.
-        protected override void FailPart()
+        public override void FailPart()
         {
             if (leaking == null)
             {
@@ -83,15 +83,12 @@ namespace OhScrap
                         leakingName = "None";
                         hasFailed = false;
                         willFail = false;
-                        postMessage = false;
                         Debug.Log("[OhScrap]: " + SYP.ID + "has no resources that could fail. Failure aborted");
                         return;
                     }
                 }
-                leaking = potentialLeaks.ElementAt(Randomiser.instance.RandomInteger(0, potentialLeaks.Count()));
+                leaking = potentialLeaks.ElementAt(UPFMUtils.instance._randomiser.Next(0, potentialLeaks.Count()));
                 leakingName = leaking.resourceName;
-                Debug.Log("[OhScrap]: " + leaking.resourceName + " started leaking from " + SYP.ID);
-                if(vessel.vesselType != VesselType.Debris)ScreenMessages.PostScreenMessage("A tank of " + leaking.resourceName + " started to leak!");
                 failureType = leaking.resourceName + " leak";
             }
             leaking.amount = leaking.amount * 0.999f;

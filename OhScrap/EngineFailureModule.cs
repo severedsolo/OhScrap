@@ -19,17 +19,15 @@ namespace OhScrap
 
         protected override void Overrides()
         {
-            maxTimeToFailure = 120;
             Fields["displayChance"].guiName = "Chance of Engine Failure";
             Fields["safetyRating"].guiName = "Engine Safety Rating";
-            postMessage = false;
             engine = part.FindModuleImplementing<ModuleEngines>();
             //If the ISP at sea level suggests this is a space engine, change the lifetime and failure rates accordingly
             float staticPressure = (float)(FlightGlobals.GetHomeBody().GetPressure(0) * PhysicsGlobals.KpaToAtmospheres);
             if (engine.atmosphereCurve.Evaluate(staticPressure) <= 100.0f)
             {
                 expectedLifetime = 3;
-                baseChanceOfFailure = 0.1f;
+                baseChanceOfFailure = baseChanceOfFailure-0.01f;
             }
         }   
 
@@ -38,10 +36,15 @@ namespace OhScrap
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().EngineFailureModuleAllowed;
         }
 
-        protected override void FailPart()
+        public override void FailPart()
         {
             engine = part.FindModuleImplementing<ModuleEngines>();
             gimbal = part.FindModuleImplementing<ModuleGimbal>();
+            if(engine.currentThrottle == 0)
+            {
+                hasFailed = false;
+                return;
+            }
             if (engine != null)
             {
                 //In the event of a fuel line leak, the chance of explosion will be reset if the engine is shut down.
@@ -55,7 +58,7 @@ namespace OhScrap
             //Randomly pick which failure we will give the player
             if (failureType == "none")
             {
-                int i = Randomiser.instance.RandomInteger(1, 5);
+                int i = UPFMUtils.instance._randomiser.Next(1, 5);
                 switch (i)
                 {
                     case 1:
@@ -82,8 +85,6 @@ namespace OhScrap
                         Debug.Log("[OhScrap]: " + SYP.ID + " decided not to fail after all");
                         break;
                 }
-                if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage(failureType + " detected on " + part.partInfo.title);
-                postMessage = true;
                 return;
             }
             switch (failureType)
@@ -97,14 +98,14 @@ namespace OhScrap
                     if (timeBetweenFailureEvents > Planetarium.GetUniversalTime()) break;
                     if (fuelLineCounter < 0) part.explode();
                     else fuelLineCounter--;
-                    timeBetweenFailureEvents = Planetarium.GetUniversalTime() + Randomiser.instance.RandomInteger(1, 10);
+                    timeBetweenFailureEvents = Planetarium.GetUniversalTime() + UPFMUtils.instance._randomiser.Next(1, 5);
                     break;
                 //Engine will constantly lose thrust
                 case "Underthrust":
                     if (timeBetweenFailureEvents <= Planetarium.GetUniversalTime())
                     {
                         engine.thrustPercentage = engine.thrustPercentage * 0.9f;
-                        timeBetweenFailureEvents = Planetarium.GetUniversalTime() + Randomiser.instance.RandomInteger(10, 30);
+                        timeBetweenFailureEvents = Planetarium.GetUniversalTime() + UPFMUtils.instance._randomiser.Next(10, 30);
                         staticThrust = engine.thrustPercentage;
                     }
                     engine.thrustPercentage = staticThrust;
