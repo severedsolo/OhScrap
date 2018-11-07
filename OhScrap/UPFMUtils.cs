@@ -79,6 +79,7 @@ namespace OhScrap
             for(int i = 0; i<failureModules.Count; i++)
             {
                 BaseFailureModule bfm = failureModules.ElementAt(i);
+                if (bfm.isSRB) continue;
                 chanceOfFailure += bfm.chanceOfFailure;
             }
             chanceOfFailure /= failureModules.Count();
@@ -91,6 +92,7 @@ namespace OhScrap
             while (counter >= 0)
             {
                 failedModule = failureModules.ElementAt(counter);
+                if (failedModule.isSRB) continue;
                 if (!failedModule.launched) return;
                 if (_randomiser.NextDouble() < failedModule.chanceOfFailure)
                 {
@@ -159,7 +161,7 @@ namespace OhScrap
                 {
                     BaseFailureModule bfm = bfmList.ElementAt(b);
                     if (bfm == null) continue;
-                    if (bfm.safetyRating < worstPartRating && !bfm.excluded && !bfm.hasFailed)
+                    if (bfm.safetyRating < worstPartRating && !bfm.isSRB && !bfm.hasFailed)
                     {
                         worstPart = p;
                     }
@@ -188,7 +190,7 @@ namespace OhScrap
                             BaseFailureModule bfm = bfmList.ElementAt(b);
                             if (bfm == null) continue;
                             if (!bfm.ready) return;
-                            if (bfm.safetyRating < worstPartRating && !bfm.excluded)
+                            if (bfm.safetyRating < worstPartRating && !bfm.isSRB)
                             {
                                 worstPart = p;
                                 worstPartRating = bfm.safetyRating;

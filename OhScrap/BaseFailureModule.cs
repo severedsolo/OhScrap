@@ -40,8 +40,8 @@ namespace OhScrap
         public int safetyRating = -1;
         public ModuleUPFMEvents OhScrap;
         public bool remoteRepairable = false;
-        public bool excluded = false;
-        public bool suppressFailure = false;
+        public bool isSRB = false;
+        bool excluded = false;
 
 #if DEBUG
         [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = false, guiName = "Force Failure (DEBUG)")]
@@ -156,9 +156,11 @@ namespace OhScrap
             if (chanceOfFailure == 0.01f) displayChance = 1;
             if (hasFailed) part.FindModuleImplementing<ModuleUPFMEvents>().SetFailedHighlight();
             ready = true;
+            if(HighLogic.LoadedScene == GameScenes.FLIGHT && isSRB && UPFMUtils.instance._randomiser.NextDouble() < chanceOfFailure) InvokeRepeating("FailPart", 0.5f, 0.5f);
+
         }
         //These methods all are overriden by the failure modules
-        
+
         //Overrides are things like the UI names, and specific things that we might want to be different for a module
         //For example engines fail after only 2 minutes instead of 30
         protected virtual void Overrides() { }

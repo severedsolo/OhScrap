@@ -20,9 +20,8 @@ namespace OhScrap
             Fields["safetyRating"].guiName = "SRB Safety Rating";
             failureType = "ignition failure";
             engine = part.FindModuleImplementing<ModuleEngines>();
-            suppressFailure = true;
+            isSRB = true;
             if (HighLogic.LoadedScene != GameScenes.FLIGHT) return;
-            if (UPFMUtils.instance._randomiser.NextDouble() < chanceOfFailure) InvokeRepeating("FailPart", 0.5f, 0.5f);
         }
 
         protected override bool FailureAllowed()
@@ -36,14 +35,15 @@ namespace OhScrap
             if (engine.currentThrottle == 0) return;
             engine.allowShutdown = true;
             engine.allowRestart = false;
+            hasFailed = true;
             engine.Shutdown();
-            suppressFailure = false;
             if (!message)
             {
                 if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage(part.partInfo.title + " has failed to ignite");
                 message = true;
             }
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
+            CancelInvoke("FailPart");
         }
         //SRBs cant be reoaired.
         public override void RepairPart()

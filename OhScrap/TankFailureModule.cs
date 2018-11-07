@@ -21,7 +21,7 @@ namespace OhScrap
             if (potentialLeaks.Count == 0)
             {
                 Fields["safetyRating"].guiActiveEditor = false;
-                excluded = true;
+                Fields["safetyRating"].guiActive = false;
             }
             ConfigNode[] blackListNode = GameDatabase.Instance.GetConfigNodes("OHSCRAP_RESOURCE_BLACKLIST");
             if (blackListNode.Count() > 0)
@@ -39,7 +39,7 @@ namespace OhScrap
                 if (potentialLeaks.Count == 0)
                 {
                     Fields["safetyRating"].guiActiveEditor = false;
-                    excluded = true;
+                    Fields["safetyRating"].guiActive = false;
                 }
             }
         }
