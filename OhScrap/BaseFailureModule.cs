@@ -178,12 +178,17 @@ namespace OhScrap
                 return;
             }
             //OnLaunch doesn't fire for rovers, so we do a secondary check for whether the vessel is moving, and fire it manually if it is.
-            if(!launched && FlightGlobals.ActiveVessel != null)
+            if (!launched && FlightGlobals.ActiveVessel != null)
             {
                 if (FlightGlobals.ActiveVessel.speed > 1) ActivateFailures();
                 return;
             }
-            if (hasFailed) FailPart();
+            if (hasFailed)
+            {
+                OhScrap.Events["RepairChecks"].active = true;
+                OhScrap.Events["ToggleHighlight"].active = true;
+                FailPart();
+            }
         }
 
         private void OnDestroy()
