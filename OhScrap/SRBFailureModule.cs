@@ -43,6 +43,7 @@ namespace OhScrap
                 if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage(part.partInfo.title + " has failed to ignite");
                 message = true;
             }
+            if (OhScrap.highlight) OhScrap.SetFailedHighlight();
         }
         //SRBs cant be reoaired.
         public override void RepairPart()

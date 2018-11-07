@@ -188,7 +188,7 @@ namespace OhScrap
                     }
                 }
             }
-            return UPFMUtils.instance._randomiser.NextDouble() > repairChance;
+            return UPFMUtils.instance._randomiser.NextDouble() < repairChance;
         }
 
         bool Repaired()

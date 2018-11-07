@@ -86,22 +86,31 @@ namespace OhScrap
             else nextFailureCheck = Planetarium.GetUniversalTime() + 1800;
             if (_randomiser.NextDouble() > chanceOfFailure) return;
             BaseFailureModule failedModule = null;
-            int counter = 0;
-            while(counter<100)
+            int counter = failureModules.Count()-1;
+            failureModules = failureModules.OrderBy(f => f.chanceOfFailure).ToList();
+            while (counter >= 0)
             {
-                failedModule = failureModules.ElementAt(_randomiser.Next(0, failureModules.Count));
+                failedModule = failureModules.ElementAt(counter);
                 if (!failedModule.launched) return;
-                if (_randomiser.NextDouble() < failedModule.chanceOfFailure || counter >= 100)
+                if (_randomiser.NextDouble() < failedModule.chanceOfFailure)
                 {
                     if (failedModule.hasFailed) continue;
-                    if (counter >= 100 && failedModule.hasFailed) return;
                     StartFailure(failedModule);
-                    break;
+                    if (!failedModule.hasFailed) continue;
+                    else break;
                 }
-                counter++;
+                else if(counter <= 0)
+                {
+                    failedModule = failureModules.ElementAt(failureModules.Count()-1);
+                    StartFailure(failedModule);
+                }
+                counter--;
             }
             if (!failedModule.hasFailed) return;
-            failedModule.part.FindModuleImplementing<ModuleUPFMEvents>().SetFailedHighlight();
+            ModuleUPFMEvents eventModule = failedModule.part.FindModuleImplementing<ModuleUPFMEvents>();
+            eventModule.SetFailedHighlight();
+            eventModule.Events["ToggleHighlight"].active = true;
+            eventModule.Events["RepairChecks"].active = true;
             ScreenMessages.PostScreenMessage(failedModule.part.partInfo.title + ": " + failedModule.failureType);
             StringBuilder msg = new StringBuilder();
             msg.AppendLine(failedModule.part.vessel.vesselName);
