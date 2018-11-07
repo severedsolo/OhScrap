@@ -41,7 +41,7 @@ namespace OhScrap
         public ModuleUPFMEvents OhScrap;
         public bool remoteRepairable = false;
         public bool isSRB = false;
-        bool excluded = false;
+        public bool excluded = false;
 
 #if DEBUG
         [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = false, guiName = "Force Failure (DEBUG)")]

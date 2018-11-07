@@ -80,6 +80,7 @@ namespace OhScrap
             {
                 BaseFailureModule bfm = failureModules.ElementAt(i);
                 if (bfm.isSRB) continue;
+                if (bfm.excluded) continue;
                 chanceOfFailure += bfm.chanceOfFailure;
             }
             chanceOfFailure /= failureModules.Count();
@@ -93,6 +94,7 @@ namespace OhScrap
             {
                 failedModule = failureModules.ElementAt(counter);
                 if (failedModule.isSRB) continue;
+                if (failedModule.excluded) continue;
                 if (!failedModule.launched) return;
                 if (_randomiser.NextDouble() < failedModule.chanceOfFailure)
                 {
