@@ -60,7 +60,7 @@ namespace OhScrap
             {
                 display = editorWindow;
             }
-            if (HighLogic.LoadedScene == GameScenes.FLIGHT) InvokeRepeating("CheckForFailures", 10.0f, 10.0f);
+            if (HighLogic.LoadedScene == GameScenes.FLIGHT) InvokeRepeating("CheckForFailures", 0.5f, 0.5f);
         }
 
         private void CheckForFailures()
@@ -79,14 +79,21 @@ namespace OhScrap
             for(int i = 0; i<failureModules.Count; i++)
             {
                 BaseFailureModule bfm = failureModules.ElementAt(i);
+                if (!bfm.launched) return;
                 if (bfm.isSRB) continue;
                 if (bfm.excluded) continue;
                 chanceOfFailure += bfm.chanceOfFailure;
             }
             chanceOfFailure /= failureModules.Count();
-            if (FlightGlobals.ActiveVessel.situation == Vessel.Situations.FLYING) nextFailureCheck = Planetarium.GetUniversalTime() + 10;
+            if (FlightGlobals.ActiveVessel.situation == Vessel.Situations.FLYING && FlightGlobals.ActiveVessel.mainBody == FlightGlobals.GetHomeBody()) nextFailureCheck = Planetarium.GetUniversalTime() + 10;
             else nextFailureCheck = Planetarium.GetUniversalTime() + 1800;
-            if (_randomiser.NextDouble() > chanceOfFailure) return;
+            double failureRoll = _randomiser.NextDouble();
+            if(HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().logging)
+            {
+                Logger.instance.Log("Failure Chance: " + chanceOfFailure + ", Rolled: " + failureRoll + " Succeeded: " + (failureRoll <= chanceOfFailure).ToString());
+            }
+            if (failureRoll > chanceOfFailure) return;
+            Logger.instance.Log("Failure Event! Safety Rating: " + vesselSafetyRating + ", MET: " + FlightGlobals.ActiveVessel.missionTime);
             BaseFailureModule failedModule = null;
             int counter = failureModules.Count()-1;
             failureModules = failureModules.OrderBy(f => f.chanceOfFailure).ToList();
@@ -100,17 +107,28 @@ namespace OhScrap
                 {
                     if (failedModule.hasFailed) continue;
                     StartFailure(failedModule);
-                    if (!failedModule.hasFailed) continue;
-                    else break;
+                    if (!failedModule.hasFailed)
+                    {
+                        if (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().logging) Logger.instance.Log("Attempted to fail " + failedModule.part.partInfo.title + " but part isn't in use. Seeking next candidate");
+                        continue;
+                    }
+                    else
+                    {
+                        Logger.instance.Log("Failing " + failedModule.part.partInfo.title);
+                        break;
+                    }
                 }
                 else if(counter <= 0)
                 {
-                    failedModule = failureModules.ElementAt(failureModules.Count()-1);
-                    StartFailure(failedModule);
+                    Logger.instance.Log("No parts failed this time");
                 }
                 counter--;
             }
-            if (!failedModule.hasFailed) return;
+            if (!failedModule.hasFailed)
+            {
+                Logger.instance.Log("Failure was aborted on " + failedModule.part.partInfo.title + " (part probably isn't in use");
+                return;
+            }
             ModuleUPFMEvents eventModule = failedModule.part.FindModuleImplementing<ModuleUPFMEvents>();
             eventModule.SetFailedHighlight();
             eventModule.Events["ToggleHighlight"].active = true;
@@ -125,6 +143,7 @@ namespace OhScrap
             MessageSystem.Instance.AddMessage(m);
             Debug.Log("[OhScrap]: " + failedModule.SYP.ID + " of type " + failedModule.part.partInfo.title + " has suffered a " + failedModule.failureType);
             TimeWarp.SetRate(0, true);
+            Logger.instance.Log("Failure Successful");
         }
 
         private void StartFailure(BaseFailureModule bfm)

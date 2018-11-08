@@ -24,8 +24,8 @@ namespace OhScrap
         public bool highlightFailures = true;
         [GameParameters.CustomParameterUI("Stop Timewarp on Failure?")]
         public bool stopOnFailure = true;
-        [GameParameters.CustomIntParameterUI("Safety Threshold", toolTip = "At what failure threshold should OhScrap display a warning?")]
-        public int safetyThreshold = 25;
+        [GameParameters.CustomParameterUI("Extra Logging")]
+        public bool logging = false;
         [GameParameters.CustomParameterUI("Antenna")]
         public bool AntennaFailureModuleAllowed = true;
         [GameParameters.CustomParameterUI("Battery")]

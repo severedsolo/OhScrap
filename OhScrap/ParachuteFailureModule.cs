@@ -27,9 +27,9 @@ namespace OhScrap
         {
             chute = part.FindModuleImplementing<ModuleParachute>();
             if (chute == null) return;
+            if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             if (chute.vessel != FlightGlobals.ActiveVessel) return;
             if (chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED) chute.CutParachute();
-            if (OhScrap.highlight) OhScrap.SetFailedHighlight();
         }
     }
 }

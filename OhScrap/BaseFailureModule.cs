@@ -140,20 +140,18 @@ namespace OhScrap
             displayChance = (int)(chanceOfFailure * 100);
             //this compares the actual failure rate to the safety threshold and returns a safety calc based on how far below the safety threshold the actual failure rate is.
             //This is what the player actually sees when determining if a part is "failing" or not.
-            if (chanceOfFailure <= 0.01f) safetyRating = 10;
-            else if (chanceOfFailure < 0.02f) safetyRating = 9;
-            else if (chanceOfFailure < 0.03f) safetyRating = 8;
-            else if (chanceOfFailure < 0.04f) safetyRating = 7;
-            else if (chanceOfFailure < 0.05f) safetyRating = 6;
-            else if (chanceOfFailure < 0.06f) safetyRating = 5;
-            else if (chanceOfFailure < 0.07f) safetyRating = 4;
-            else if (chanceOfFailure < 0.08f) safetyRating = 3;
-            else if (chanceOfFailure < 0.09f) safetyRating = 2;
+            if (chanceOfFailure <= baseChanceOfFailure/10) safetyRating = 10;
+            else if (chanceOfFailure < baseChanceOfFailure/10*2) safetyRating = 9;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 3) safetyRating = 8;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 4) safetyRating = 7;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 5) safetyRating = 6;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 6) safetyRating = 5;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 7) safetyRating = 4;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 8) safetyRating = 3;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 9) safetyRating = 2;
             else safetyRating = 1;
-            // if the part is damaged beyond the safety rating (usually only if you've pushed it beyond End Of Life) then it gets a 0
-            if (displayChance > HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().safetyThreshold) safetyRating = 0;
             //shows a 1% failure rate as a fallback in case it rounds the float to 0
-            if (chanceOfFailure == 0.01f) displayChance = 1;
+            if (chanceOfFailure <= 0.01f) displayChance = 1;
             if (hasFailed) part.FindModuleImplementing<ModuleUPFMEvents>().SetFailedHighlight();
             ready = true;
             if(HighLogic.LoadedScene == GameScenes.FLIGHT && isSRB && UPFMUtils.instance._randomiser.NextDouble() < chanceOfFailure) InvokeRepeating("FailPart", 0.5f, 0.5f);

@@ -66,6 +66,7 @@
     <Compile Include="ControlSurfaceFailureModule.cs" />
     <Compile Include="EngineFailureModule.cs" />
     <Compile Include="KRASHWrapper.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="ModuleUPFMEvents.cs" />
     <Compile Include="ParachuteFailureModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
