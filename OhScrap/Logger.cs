@@ -15,7 +15,7 @@ namespace OhScrap
 
         public void Awake()
         {
-            logs.Add("Using Oh Scrap 1.4b4");
+            logs.Add("Using Oh Scrap 1.4b5");
             instance = this;
         }
 
