@@ -40,10 +40,10 @@ namespace OhScrap
         public bool flightWindow = true;
         bool highlightWorstPart = false;
         public System.Random _randomiser = new System.Random();
-        public float minimumFailureChance = 0.003f;
-        int timeBetweenChecksPlanes = 15;
-        int timeBetweenChecksRocketsAtmosphere = 1;
-        int timeBetweenChecksRocketsSpace = 1;
+        public float minimumFailureChance = 0.01f;
+        int timeBetweenChecksPlanes = 150;
+        int timeBetweenChecksRocketsAtmosphere = 10;
+        int timeBetweenChecksRocketsSpace = 1800;
         public bool ready = false;
 
         private void Awake()
@@ -115,8 +115,12 @@ namespace OhScrap
                 chanceOfFailure += bfm.chanceOfFailure;
             }
             chanceOfFailure /= failureModules.Count();
-            if (FlightGlobals.ActiveVessel.situation == Vessel.Situations.FLYING && FlightGlobals.ActiveVessel.mainBody == FlightGlobals.GetHomeBody()) nextFailureCheck = Planetarium.GetUniversalTime() + 10;
-            else nextFailureCheck = Planetarium.GetUniversalTime() + 1800;
+            if (FlightGlobals.ActiveVessel.situation == Vessel.Situations.FLYING && FlightGlobals.ActiveVessel.mainBody == FlightGlobals.GetHomeBody())
+            {
+                if (FlightGlobals.ActiveVessel.missionTime < 300) nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsAtmosphere;
+                else nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksPlanes;
+            }
+            else nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsSpace;
             double failureRoll = _randomiser.NextDouble();
             if(HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().logging)
             {

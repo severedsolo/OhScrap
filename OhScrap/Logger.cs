@@ -7,6 +7,7 @@ using System.IO;
 
 namespace OhScrap
 {
+    [KSPAddon(KSPAddon.Startup.Flight, false)]
     class Logger : MonoBehaviour
     {
         public List<string> logs = new List<string>();
@@ -18,8 +19,6 @@ namespace OhScrap
             instance = this;
             directory = KSPUtil.ApplicationRootPath + "/GameData/Severedsolo/OhScrap/Logs/";
             DirectoryInfo source = new DirectoryInfo(directory);
-
-            // Get info of each file into the directory
             foreach (FileInfo fi in source.GetFiles())
             {
                 var creationTime = fi.CreationTime;
