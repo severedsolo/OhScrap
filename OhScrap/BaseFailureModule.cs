@@ -130,7 +130,7 @@ namespace OhScrap
             chanceOfFailure = baseChanceOfFailure;
             if (SYP.TimesRecovered == 0 || !UPFMUtils.instance.testedParts.Contains(SYP.ID)) chanceOfFailure = baseChanceOfFailure - OhScrap.generation*0.01f;
             else chanceOfFailure = (baseChanceOfFailure - (OhScrap.generation*0.01f)) * (SYP.TimesRecovered / (float)expectedLifetime);
-            if (chanceOfFailure < 0.01f) chanceOfFailure = 0.01f;
+            if (chanceOfFailure < UPFMUtils.instance.minimumFailureChance) chanceOfFailure = UPFMUtils.instance.minimumFailureChance;
             //if the part has already failed turn the repair and highlight events on.
             if (hasFailed)
             {
@@ -150,8 +150,6 @@ namespace OhScrap
             else if (chanceOfFailure < baseChanceOfFailure / 10 * 8) safetyRating = 3;
             else if (chanceOfFailure < baseChanceOfFailure / 10 * 9) safetyRating = 2;
             else safetyRating = 1;
-            //shows a 1% failure rate as a fallback in case it rounds the float to 0
-            if (chanceOfFailure <= 0.01f) displayChance = 1;
             if (hasFailed) part.FindModuleImplementing<ModuleUPFMEvents>().SetFailedHighlight();
             ready = true;
             if(HighLogic.LoadedScene == GameScenes.FLIGHT && isSRB && UPFMUtils.instance._randomiser.NextDouble() < chanceOfFailure) InvokeRepeating("FailPart", 0.5f, 0.5f);

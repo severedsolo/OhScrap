@@ -40,11 +40,34 @@ namespace OhScrap
         public bool flightWindow = true;
         bool highlightWorstPart = false;
         public System.Random _randomiser = new System.Random();
+        public float minimumFailureChance = 0.003f;
+        int timeBetweenChecksPlanes = 15;
+        int timeBetweenChecksRocketsAtmosphere = 1;
+        int timeBetweenChecksRocketsSpace = 1;
+        public bool ready = false;
 
         private void Awake()
         {
             instance = this;
+            ReadDefaultCfg();
         }
+
+        private void ReadDefaultCfg()
+        {
+            ConfigNode cn = ConfigNode.Load(KSPUtil.ApplicationRootPath + "/GameData/Severedsolo/OhScrap/PluginData/DefaultSettings.cfg");
+            if(cn == null)
+            {
+                Debug.Log("[OhScrap]: Default Settings file is missing. Using hardcoded defaults");
+                ready = true;
+                return;
+            }
+            float.TryParse(cn.GetValue("minimumFailureChance"), out minimumFailureChance);
+            int.TryParse(cn.GetValue("timeBetweenChecksPlanes"), out timeBetweenChecksPlanes);
+            int.TryParse(cn.GetValue("timeBetweenChecksRocketsAtmosphere"), out timeBetweenChecksRocketsAtmosphere);
+            int.TryParse(cn.GetValue("timeBetweenChecksRocketsSpace"), out timeBetweenChecksRocketsSpace);
+            ready = true;
+        }
+
         private void Start()
         {
             GameEvents.onPartDie.Add(OnPartDie);

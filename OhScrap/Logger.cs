@@ -7,16 +7,27 @@ using System.IO;
 
 namespace OhScrap
 {
-    [KSPAddon(KSPAddon.Startup.Flight, false)]
     class Logger : MonoBehaviour
     {
         public List<string> logs = new List<string>();
         public static Logger instance;
-
+        string directory;
         public void Awake()
         {
             logs.Add("Using Oh Scrap 1.4b5");
             instance = this;
+            directory = KSPUtil.ApplicationRootPath + "/GameData/Severedsolo/OhScrap/Logs/";
+            DirectoryInfo source = new DirectoryInfo(directory);
+
+            // Get info of each file into the directory
+            foreach (FileInfo fi in source.GetFiles())
+            {
+                var creationTime = fi.CreationTime;
+                if (creationTime < (DateTime.Now - new TimeSpan(1, 0, 0, 0)))
+                {
+                    fi.Delete();
+                }
+            }
         }
 
         public void Log(string s)
@@ -28,7 +39,7 @@ namespace OhScrap
         public void OnDisable()
         {
             if (logs.Count() == 0) return;
-            string path = KSPUtil.ApplicationRootPath + "/GameData/Severedsolo/OhScrap/Logs/" + DateTime.Now.ToString("yyyyMMddHHmmss")+".txt";
+            string path = directory + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")+".txt";
             using (StreamWriter writer = File.AppendText(path))
             {
                 foreach (string s in logs)
