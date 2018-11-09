@@ -51,6 +51,7 @@ namespace OhScrap
             GameEvents.onGUIApplicationLauncherReady.Add(GUIReady);
             GameEvents.onEditorShipModified.Add(onEditorShipModified);
             GameEvents.OnFlightGlobalsReady.Add(OnFlightGlobalsReady);
+            GameEvents.onVesselSituationChange.Add(SituationChange);
             //Remembers if the player had the windows opened for closed last time they loaded this scene.
             if (!HighLogic.LoadedSceneIsEditor)
             {
@@ -61,6 +62,12 @@ namespace OhScrap
                 display = editorWindow;
             }
             if (HighLogic.LoadedScene == GameScenes.FLIGHT) InvokeRepeating("CheckForFailures", 0.5f, 0.5f);
+        }
+
+        private void SituationChange(GameEvents.HostedFromToAction<Vessel, Vessel.Situations> data)
+        {
+            if (data.host != FlightGlobals.ActiveVessel) return;
+            nextFailureCheck = 0;
         }
 
         private void CheckForFailures()
