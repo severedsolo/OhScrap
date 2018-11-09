@@ -380,12 +380,13 @@ namespace OhScrap
             else flightWindow = display;
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             display = false;
             GameEvents.onGUIApplicationLauncherReady.Remove(GUIReady);
             GameEvents.onPartDie.Remove(OnPartDie);
             GameEvents.OnFlightGlobalsReady.Remove(OnFlightGlobalsReady);
+            GameEvents.onVesselSituationChange.Remove(SituationChange);
             if (ToolbarButton == null) return;
             ApplicationLauncher.Instance.RemoveModApplication(ToolbarButton);
         }
