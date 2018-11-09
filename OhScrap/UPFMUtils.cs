@@ -137,30 +137,23 @@ namespace OhScrap
                 if (failedModule.isSRB) continue;
                 if (failedModule.excluded) continue;
                 if (!failedModule.launched) return;
+                if (!failedModule.FailureAllowed()) continue;
                 if (_randomiser.NextDouble() < failedModule.chanceOfFailure)
                 {
                     if (failedModule.hasFailed) continue;
                     StartFailure(failedModule);
-                    if (!failedModule.hasFailed)
-                    {
-                        if (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().logging) Logger.instance.Log("Attempted to fail " + failedModule.part.partInfo.title + " but part isn't in use. Seeking next candidate");
-                        continue;
-                    }
-                    else
-                    {
-                        Logger.instance.Log("Failing " + failedModule.part.partInfo.title);
-                        break;
-                    }
+                    Logger.instance.Log("Failing " + failedModule.part.partInfo.title);
+                    break;
                 }
-                else if(counter <= 0)
+                else if (counter <= 0)
                 {
                     Logger.instance.Log("No parts failed this time");
                 }
                 counter--;
             }
-            if (!failedModule.hasFailed)
+            if (!failedModule.FailureAllowed())
             {
-                Logger.instance.Log("Failure was aborted on " + failedModule.part.partInfo.title + " (part probably isn't in use");
+                Logger.instance.Log("No parts failed. Aborted failure");
                 return;
             }
             ModuleUPFMEvents eventModule = failedModule.part.FindModuleImplementing<ModuleUPFMEvents>();

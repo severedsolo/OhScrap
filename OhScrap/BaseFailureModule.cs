@@ -140,15 +140,15 @@ namespace OhScrap
             displayChance = (int)(chanceOfFailure * 100);
             //this compares the actual failure rate to the safety threshold and returns a safety calc based on how far below the safety threshold the actual failure rate is.
             //This is what the player actually sees when determining if a part is "failing" or not.
-            if (chanceOfFailure <= baseChanceOfFailure/10) safetyRating = 10;
-            else if (chanceOfFailure < baseChanceOfFailure/10*2) safetyRating = 9;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 3) safetyRating = 8;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 4) safetyRating = 7;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 5) safetyRating = 6;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 6) safetyRating = 5;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 7) safetyRating = 4;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 8) safetyRating = 3;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 9) safetyRating = 2;
+            if (chanceOfFailure <= baseChanceOfFailure /10) safetyRating = 10;
+            else if (chanceOfFailure <= baseChanceOfFailure /9) safetyRating = 9;
+            else if (chanceOfFailure <= baseChanceOfFailure /8 ) safetyRating = 8;
+            else if (chanceOfFailure <= baseChanceOfFailure / 7) safetyRating = 7;
+            else if (chanceOfFailure <= baseChanceOfFailure / 6) safetyRating = 6;
+            else if (chanceOfFailure <= baseChanceOfFailure / 5) safetyRating = 5;
+            else if (chanceOfFailure <= baseChanceOfFailure / 4) safetyRating = 4;
+            else if (chanceOfFailure <= baseChanceOfFailure / 3) safetyRating = 3;
+            else if (chanceOfFailure <= baseChanceOfFailure / 2) safetyRating = 2;
             else safetyRating = 1;
             if (hasFailed) part.FindModuleImplementing<ModuleUPFMEvents>().SetFailedHighlight();
             ready = true;
@@ -165,7 +165,7 @@ namespace OhScrap
         //this repairs the part.
         public virtual void RepairPart() { }
         //this should read from the Difficulty Settings.
-        protected virtual bool FailureAllowed() { return false; }
+        public virtual bool FailureAllowed() { return false; }
 
         private void FixedUpdate()
         {

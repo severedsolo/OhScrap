@@ -24,7 +24,7 @@ namespace OhScrap
             if (HighLogic.LoadedScene != GameScenes.FLIGHT) return;
         }
 
-        protected override bool FailureAllowed()
+        public override bool FailureAllowed()
         {
             if (KRASHWrapper.simulationActive()) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().SRBFailureModuleAllowed;

@@ -10,7 +10,7 @@ namespace OhScrap
     {
         ModuleParachute chute;
 
-        protected override bool FailureAllowed()
+        public override bool FailureAllowed()
         {
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ParachuteFailureModuleAllowed;
         }

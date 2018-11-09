@@ -31,8 +31,9 @@ namespace OhScrap
             }
         }   
 
-        protected override bool FailureAllowed()
+        public override bool FailureAllowed()
         {
+            if (part.FindModuleImplementing<ModuleEngines>().currentThrottle == 0) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().EngineFailureModuleAllowed;
         }
 
@@ -40,11 +41,6 @@ namespace OhScrap
         {
             engine = part.FindModuleImplementing<ModuleEngines>();
             gimbal = part.FindModuleImplementing<ModuleGimbal>();
-            if(engine.currentThrottle == 0)
-            {
-                hasFailed = false;
-                return;
-            }
             if (engine != null)
             {
                 //In the event of a fuel line leak, the chance of explosion will be reset if the engine is shut down.

@@ -9,7 +9,6 @@ namespace OhScrap
     class ReactionWheelFailureModule : BaseFailureModule
     {
         ModuleReactionWheel rw;
-        bool busted = false;
 
         protected override void Overrides()
         {
@@ -19,8 +18,10 @@ namespace OhScrap
             remoteRepairable = true;
         }
 
-        protected override bool FailureAllowed()
+        public override bool FailureAllowed()
         {
+            rw = part.FindModuleImplementing<ModuleReactionWheel>();
+            if (!rw.isEnabled && rw.wheelState != ModuleReactionWheel.WheelState.Active) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ReactionWheelFailureModuleAllowed;
         }
 
@@ -28,16 +29,10 @@ namespace OhScrap
         public override void FailPart()
         {
             rw = part.FindModuleImplementing<ModuleReactionWheel>();
-            if(!rw.isEnabled && rw.wheelState != ModuleReactionWheel.WheelState.Active && !busted)
-            {
-                hasFailed = false;
-                return;
-            }
             rw.isEnabled = false;
             rw.wheelState = ModuleReactionWheel.WheelState.Broken;
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             hasFailed = true;
-            busted = true;
         }
         //Turns it back on again,
         public override void RepairPart()
@@ -45,7 +40,6 @@ namespace OhScrap
             rw = part.FindModuleImplementing<ModuleReactionWheel>();
             rw.isEnabled = true;
             rw.wheelState = ModuleReactionWheel.WheelState.Active;
-            busted = false;
         }
     }
 }

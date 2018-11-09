@@ -11,6 +11,8 @@ namespace OhScrap
         PartResource leaking;
         [KSPField(isPersistant = true, guiActive = false)]
         public string leakingName = "None";
+        bool cantLeak = false;
+
         protected override void Overrides()
         {
             Fields["displayChance"].guiName = "Chance of Resource Tank Failure";
@@ -40,11 +42,13 @@ namespace OhScrap
                 {
                     Fields["safetyRating"].guiActiveEditor = false;
                     Fields["safetyRating"].guiActive = false;
+                    cantLeak = true;
                 }
             }
         }
-        protected override bool FailureAllowed()
+        public override bool FailureAllowed()
         {
+            if (cantLeak) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().TankFailureModuleAllowed;
         }
         //Assuming that part has a resource that is not on the blacklist, it will leak.
@@ -81,8 +85,7 @@ namespace OhScrap
                     {
                         leaking = null;
                         leakingName = "None";
-                        hasFailed = false;
-                        willFail = false;
+                        cantLeak = true;
                         Debug.Log("[OhScrap]: " + SYP.ID + "has no resources that could fail. Failure aborted");
                         return;
                     }

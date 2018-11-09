@@ -10,8 +10,9 @@ namespace OhScrap
     {
         ModuleRCS rcs;
 
-        protected override bool FailureAllowed()
+        public override bool FailureAllowed()
         {
+            if (!part.FindModuleImplementing<ModuleRCS>().rcsEnabled) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().RCSFailureModuleAllowed;
         }
 
@@ -27,11 +28,6 @@ namespace OhScrap
         {
             rcs = part.FindModuleImplementing<ModuleRCS>();
             if (rcs == null) return;
-            if (rcs.vessel != FlightGlobals.ActiveVessel)
-            {
-                hasFailed = false;
-                return;
-            }
             rcs.rcsEnabled = false;
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             if (hasFailed) return;

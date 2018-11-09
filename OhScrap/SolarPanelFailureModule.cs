@@ -19,8 +19,11 @@ namespace OhScrap
             Fields["safetyRating"].guiName = "Solar Panel Safety Rating";
             remoteRepairable = true;
         }
-        protected override bool FailureAllowed()
+        public override bool FailureAllowed()
         {
+            panel = part.FindModuleImplementing<ModuleDeployableSolarPanel>();
+            if (panel == null) return false;
+            if (!panel.isTracking) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().SolarPanelFailureModuleAllowed;
         }
         public override void FailPart()
@@ -28,11 +31,6 @@ namespace OhScrap
             //If the part can't retract will always get a sun tracking error, otherwise it will get a retraction or sun tracking at random.
             panel = part.FindModuleImplementing<ModuleDeployableSolarPanel>();
             if (panel == null) return;
-            if (!panel.isTracking)
-            {
-                hasFailed = false;
-                return;
-            }
             if (!trackingSet)
             {
                 if (UPFMUtils.instance._randomiser.NextDouble() < 0.5) trackingFailure = true;

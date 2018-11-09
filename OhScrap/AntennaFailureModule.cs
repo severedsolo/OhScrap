@@ -23,7 +23,8 @@ namespace OhScrap
             antenna = part.FindModuleImplementing<ModuleDataTransmitter>();
             remoteRepairable = true;
         }
-        protected override bool FailureAllowed()
+
+        public override bool FailureAllowed()
         {
             if(part.FindModuleImplementing<ModuleDeployableAntenna>() != null)
             {
@@ -32,14 +33,7 @@ namespace OhScrap
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().AntennaFailureModuleAllowed;
         }
         public override void FailPart()
-        {
-            //if the antenna isn't turned on, don't bother.
-            if (!antenna.enabled)
-            {
-                hasFailed = false;
-                return;
-            }
-                    
+        {   
             //if this is the first time we've failed this antenna, we need to make a note of the original power for when it's repaired.
             if(firstFail)
             {

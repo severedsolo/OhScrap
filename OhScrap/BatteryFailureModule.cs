@@ -35,7 +35,7 @@ namespace OhScrap
             battery.flowState = true;
         }
 
-        protected override bool FailureAllowed()
+        public override bool FailureAllowed()
         {
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().BatteryFailureModuleAllowed;
         }

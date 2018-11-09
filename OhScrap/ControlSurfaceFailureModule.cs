@@ -19,18 +19,14 @@ namespace OhScrap
             remoteRepairable = true;
         }
 
-        protected override bool FailureAllowed()
+        public override bool FailureAllowed()
         {
+            if (part.vessel.atmDensity == 0) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ControlSurfaceFailureModuleAllowed;
         }
         //control surface will stick and not respond to input
         public override void FailPart()
         {
-            if (part.vessel.atmDensity == 0)
-            {
-                hasFailed = false;
-                return;
-            }
             controlSurface = part.FindModuleImplementing<ModuleControlSurface>();
             controlSurface.ignorePitch = true;
             controlSurface.ignoreRoll = true;
