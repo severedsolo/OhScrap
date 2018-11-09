@@ -128,8 +128,8 @@ namespace OhScrap
             if (UPFMUtils.instance.testedParts.Contains(SYP.ID)) part.FindModuleImplementing<ModuleUPFMEvents>().tested = true;
             OhScrap.generation = UPFMUtils.instance.GetGeneration(SYP.ID, part);
             chanceOfFailure = baseChanceOfFailure;
-            if (SYP.TimesRecovered == 0 || !UPFMUtils.instance.testedParts.Contains(SYP.ID)) chanceOfFailure = baseChanceOfFailure - OhScrap.generation*0.01f;
-            else chanceOfFailure = (baseChanceOfFailure - (OhScrap.generation*0.01f)) * (SYP.TimesRecovered / (float)expectedLifetime);
+            if (SYP.TimesRecovered == 0 || !UPFMUtils.instance.testedParts.Contains(SYP.ID)) chanceOfFailure = baseChanceOfFailure/OhScrap.generation;
+            else chanceOfFailure = (baseChanceOfFailure/OhScrap.generation) * (SYP.TimesRecovered / (float)expectedLifetime);
             if (chanceOfFailure < UPFMUtils.instance.minimumFailureChance) chanceOfFailure = UPFMUtils.instance.minimumFailureChance;
             //if the part has already failed turn the repair and highlight events on.
             if (hasFailed)
