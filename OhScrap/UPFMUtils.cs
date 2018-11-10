@@ -41,10 +41,18 @@ namespace OhScrap
         bool highlightWorstPart = false;
         public System.Random _randomiser = new System.Random();
         public float minimumFailureChance = 0.01f;
-        int timeBetweenChecksPlanes = 150;
+        int timeBetweenChecksPlanes = 10;
         int timeBetweenChecksRocketsAtmosphere = 10;
         int timeBetweenChecksRocketsSpace = 1800;
         public bool ready = false;
+        public bool debugMode = false;
+        bool advancedDisplay = false;
+        public double timeToOrbit = 300;
+        double chanceOfFailure = 0;
+        string failureMode = "Space/Landed";
+        double displayFailureChance = 0;
+        string sampleTime = "1 year";
+
 
         private void Awake()
         {
@@ -65,6 +73,8 @@ namespace OhScrap
             int.TryParse(cn.GetValue("timeBetweenChecksPlanes"), out timeBetweenChecksPlanes);
             int.TryParse(cn.GetValue("timeBetweenChecksRocketsAtmosphere"), out timeBetweenChecksRocketsAtmosphere);
             int.TryParse(cn.GetValue("timeBetweenChecksRocketsSpace"), out timeBetweenChecksRocketsSpace);
+            double.TryParse(cn.GetValue("timeToOrbit"), out timeToOrbit);
+            bool.TryParse(cn.GetValue("debugMode"), out debugMode);
             ready = true;
         }
 
@@ -105,7 +115,8 @@ namespace OhScrap
             if (vesselSafetyRating == -1) return;
             List<BaseFailureModule> failureModules = FlightGlobals.ActiveVessel.FindPartModulesImplementing<BaseFailureModule>();
             if (failureModules.Count == 0) return;
-            double chanceOfFailure = 0;
+            int moduleCount = 0;
+            chanceOfFailure = 0;
             for(int i = 0; i<failureModules.Count; i++)
             {
                 BaseFailureModule bfm = failureModules.ElementAt(i);
@@ -113,14 +124,10 @@ namespace OhScrap
                 if (bfm.isSRB) continue;
                 if (bfm.excluded) continue;
                 chanceOfFailure += bfm.chanceOfFailure;
+                moduleCount++;
             }
-            chanceOfFailure /= failureModules.Count();
-            if (FlightGlobals.ActiveVessel.situation == Vessel.Situations.FLYING && FlightGlobals.ActiveVessel.mainBody == FlightGlobals.GetHomeBody())
-            {
-                if (FlightGlobals.ActiveVessel.missionTime < 300) nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsAtmosphere;
-                else nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksPlanes;
-            }
-            else nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsSpace;
+            chanceOfFailure /= moduleCount;
+            GetNextCheck(moduleCount);
             double failureRoll = _randomiser.NextDouble();
             if(HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().logging)
             {
@@ -134,6 +141,7 @@ namespace OhScrap
             while (counter >= 0)
             {
                 failedModule = failureModules.ElementAt(counter);
+                counter--;
                 if (failedModule.hasFailed) continue;
                 if (failedModule.isSRB) continue;
                 if (failedModule.excluded) continue;
@@ -150,9 +158,8 @@ namespace OhScrap
                 {
                     Logger.instance.Log("No parts failed this time");
                 }
-                counter--;
             }
-            if (!failedModule.FailureAllowed())
+            if (counter < 0)
             {
                 Logger.instance.Log("No parts failed. Aborted failure");
                 return;
@@ -172,6 +179,49 @@ namespace OhScrap
             Debug.Log("[OhScrap]: " + failedModule.SYP.ID + " of type " + failedModule.part.partInfo.title + " has suffered a " + failedModule.failureType);
             TimeWarp.SetRate(0, true);
             Logger.instance.Log("Failure Successful");
+        }
+
+        private void GetNextCheck(float moduleCount)
+        {
+            double chanceOfEvent = 0;
+            double chanceOfIndividualFailure = 0;
+            chanceOfIndividualFailure = 1 - Math.Pow(1 - chanceOfFailure, moduleCount);
+            if (debugMode) Debug.Log("[OhScrap]: chance of individual: " + chanceOfIndividualFailure);
+            if (FlightGlobals.ActiveVessel.situation == Vessel.Situations.FLYING && FlightGlobals.ActiveVessel.mainBody == FlightGlobals.GetHomeBody())
+            {
+                if (FlightGlobals.ActiveVessel.missionTime < timeToOrbit)
+                {
+                    nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsAtmosphere;
+                    failureMode = "Atmosphere";
+                    sampleTime = timeToOrbit/60+" minutes";
+                }
+                else
+                {
+                    nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksPlanes;
+                    failureMode = "Plane";
+                    sampleTime = "15 minutes";
+                }
+            }
+            else
+            {
+                nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsSpace;
+                failureMode = "Space/Landed";
+                sampleTime = "1 year";
+            }
+            switch(failureMode)
+            {
+                case "Atmosphere":
+                    chanceOfEvent = 1 - Math.Pow(chanceOfFailure, timeToOrbit / timeBetweenChecksRocketsAtmosphere);
+                    break;
+                case "Plane":
+                    chanceOfEvent = 1 - Math.Pow(chanceOfFailure, 900 / timeBetweenChecksPlanes);
+                    break;
+                case "Space/Landed":
+                    chanceOfEvent = 1 - Math.Pow(chanceOfFailure, 9203400 / timeBetweenChecksRocketsSpace);
+                    break;
+            }
+            if (debugMode) Debug.Log("[OhScrap]: Chance of Event " + chanceOfEvent);
+            displayFailureChance = (chanceOfEvent * chanceOfFailure) * 100;
         }
 
         private void StartFailure(BaseFailureModule bfm)
