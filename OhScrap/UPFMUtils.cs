@@ -134,6 +134,7 @@ namespace OhScrap
             while (counter >= 0)
             {
                 failedModule = failureModules.ElementAt(counter);
+                counter--;
                 if (failedModule.hasFailed) continue;
                 if (failedModule.isSRB) continue;
                 if (failedModule.excluded) continue;
@@ -150,7 +151,6 @@ namespace OhScrap
                 {
                     Logger.instance.Log("No parts failed this time");
                 }
-                counter--;
             }
             if (!failedModule.FailureAllowed())
             {
