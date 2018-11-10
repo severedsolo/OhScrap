@@ -121,13 +121,16 @@ namespace OhScrap
             {
                 BaseFailureModule bfm = failureModules.ElementAt(i);
                 if (!bfm.launched) return;
-                if (bfm.isSRB) continue;
-                if (bfm.excluded) continue;
+                if (bfm.isSRB || bfm.excluded || bfm.hasFailed || !bfm.FailureAllowed())
+                {
+                    failureModules.Remove(bfm);
+                    continue;
+                }
                 chanceOfFailure += bfm.chanceOfFailure;
                 moduleCount++;
             }
             chanceOfFailure /= moduleCount;
-            GetNextCheck(moduleCount);
+            SetNextCheck(moduleCount);
             double failureRoll = _randomiser.NextDouble();
             if(HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().logging)
             {
@@ -154,14 +157,10 @@ namespace OhScrap
                     Logger.instance.Log("Failing " + failedModule.part.partInfo.title);
                     break;
                 }
-                else if (counter <= 0)
-                {
-                    Logger.instance.Log("No parts failed this time");
-                }
             }
             if (counter < 0)
             {
-                Logger.instance.Log("No parts failed. Aborted failure");
+                Logger.instance.Log("No parts failed this time. Aborted failure");
                 return;
             }
             ModuleUPFMEvents eventModule = failedModule.part.FindModuleImplementing<ModuleUPFMEvents>();
@@ -181,12 +180,15 @@ namespace OhScrap
             Logger.instance.Log("Failure Successful");
         }
 
-        private void GetNextCheck(float moduleCount)
+        private void SetNextCheck(float moduleCount)
         {
             double chanceOfEvent = 0;
             double chanceOfIndividualFailure = 0;
-            chanceOfIndividualFailure = 1 - Math.Pow(1 - chanceOfFailure, moduleCount);
-            if (debugMode) Debug.Log("[OhScrap]: chance of individual: " + chanceOfIndividualFailure);
+            double exponent = 0;
+            double preparedNumber;
+            preparedNumber = 1 - chanceOfFailure;
+            preparedNumber = Math.Pow(preparedNumber, moduleCount);
+            chanceOfIndividualFailure = 1 - preparedNumber;
             if (FlightGlobals.ActiveVessel.situation == Vessel.Situations.FLYING && FlightGlobals.ActiveVessel.mainBody == FlightGlobals.GetHomeBody())
             {
                 if (FlightGlobals.ActiveVessel.missionTime < timeToOrbit)
@@ -194,6 +196,7 @@ namespace OhScrap
                     nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsAtmosphere;
                     failureMode = "Atmosphere";
                     sampleTime = timeToOrbit/60+" minutes";
+                    nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsAtmosphere;
                 }
                 else
                 {
@@ -206,22 +209,24 @@ namespace OhScrap
             {
                 nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsSpace;
                 failureMode = "Space/Landed";
-                sampleTime = "1 year";
+                sampleTime = "30 days";
             }
             switch(failureMode)
             {
                 case "Atmosphere":
-                    chanceOfEvent = 1 - Math.Pow(chanceOfFailure, timeToOrbit / timeBetweenChecksRocketsAtmosphere);
+                    exponent = timeToOrbit / timeBetweenChecksRocketsAtmosphere;
                     break;
                 case "Plane":
-                    chanceOfEvent = 1 - Math.Pow(chanceOfFailure, 900 / timeBetweenChecksPlanes);
+                    exponent = 900 / timeBetweenChecksPlanes;
                     break;
                 case "Space/Landed":
-                    chanceOfEvent = 1 - Math.Pow(chanceOfFailure, 9203400 / timeBetweenChecksRocketsSpace);
+                    exponent = 648000 / timeBetweenChecksRocketsSpace;
                     break;
             }
-            if (debugMode) Debug.Log("[OhScrap]: Chance of Event " + chanceOfEvent);
-            displayFailureChance = (chanceOfEvent * chanceOfFailure) * 100;
+            preparedNumber = 1 - chanceOfFailure;
+            preparedNumber = Math.Pow(preparedNumber, exponent);
+            chanceOfEvent = 1 - preparedNumber;
+            displayFailureChance = chanceOfEvent * chanceOfIndividualFailure * 100;
         }
 
         private void StartFailure(BaseFailureModule bfm)
@@ -432,6 +437,12 @@ namespace OhScrap
                 return;
             }
             GUILayout.Label("Vessel Safety Rating: " + vesselSafetyRating + " " + s);
+            if(debugMode)advancedDisplay = GUILayout.Toggle(advancedDisplay, "Show Advanced Calculations (WARNING: EXPERIMENTAL)");
+            if (advancedDisplay)
+            {
+                GUILayout.Label("MODE: " + failureMode);
+                GUILayout.Label("Chance of Failure in next " + sampleTime + ": " + displayFailureChance + "%");
+            }
             if (worstPart != null)
             {
                 GUILayout.Label("Worst Part: " + worstPart.partInfo.title);
