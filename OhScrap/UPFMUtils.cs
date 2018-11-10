@@ -134,6 +134,7 @@ namespace OhScrap
             while (counter >= 0)
             {
                 failedModule = failureModules.ElementAt(counter);
+                if (failedModule.hasFailed) continue;
                 if (failedModule.isSRB) continue;
                 if (failedModule.excluded) continue;
                 if (!failedModule.launched) return;
