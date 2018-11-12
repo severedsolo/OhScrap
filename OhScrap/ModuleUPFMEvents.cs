@@ -23,6 +23,7 @@ namespace OhScrap
         public int generation = 0;
         public bool customFailureEvent = false;
         public bool highlightOverride = false;
+        public bool repairTried = false;
 
         private void Start()
         {
@@ -141,17 +142,16 @@ namespace OhScrap
             while (!Repaired())
             {
                 //If the module fails the check or it's already been marked as irrepairable will stop trying.
-                if (RepairFailCheck() || doNotRecover)
+                if (RepairFailCheck() || repairTried)
                 {
                     ScreenMessages.PostScreenMessage("This part is beyond repair");
-                    doNotRecover = true;
+                    repairTried = true;
                     Debug.Log("[OhScrap]: " + SYP.ID + " is too badly damaged to be fixed");
                     return;
                 }
                 //reset the failure status on the module and disables the highlight.
                 repair.hasFailed = false;
                 repair.willFail = false;
-                Events["RepairChecks"].active = false;
                 repair.RepairPart();
                 if (!customFailureEvent) ScreenMessages.PostScreenMessage("The part should be ok to use now");
                 repair.numberOfRepairs++;
@@ -204,6 +204,9 @@ namespace OhScrap
                 repair = bfm;
                 return false;
             }
+            Events["RepairChecks"].active = false;
+            Events["ToggleHighlight"].active = false;
+            doNotRecover = false;
             return true;
         }
     }

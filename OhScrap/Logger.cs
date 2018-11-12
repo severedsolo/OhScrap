@@ -15,7 +15,7 @@ namespace OhScrap
         string directory;
         public void Awake()
         {
-            logs.Add("Using Oh Scrap 1.4b5.1");
+            logs.Add("Using Oh Scrap 1.4b6");
             instance = this;
             directory = KSPUtil.ApplicationRootPath + "/GameData/Severedsolo/OhScrap/Logs/";
             DirectoryInfo source = new DirectoryInfo(directory);
@@ -37,7 +37,7 @@ namespace OhScrap
 
         public void OnDisable()
         {
-            if (logs.Count() == 0) return;
+            if (logs.Count() == 1) return;
             string path = directory + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")+".txt";
             using (StreamWriter writer = File.AppendText(path))
             {

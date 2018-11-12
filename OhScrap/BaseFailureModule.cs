@@ -1,12 +1,8 @@
 ﻿using UnityEngine;
-using System;
-using System.Text;
 using System.Collections.Generic;
-using KSP.UI.Screens;
-using System.Collections;
-using Expansions.Missions;
 using ScrapYard;
 using ScrapYard.Modules;
+using System;
 
 namespace OhScrap
 {
@@ -123,13 +119,14 @@ namespace OhScrap
             public void Initialise()
         {
             //ScrapYard isn't always ready when OhScrap is so we check to see if it's returning an ID yet. If not, return and wait until it does.
-            ready = SYP.ID != 0;
+            if (SYP.ID == 0 || !UPFMUtils.instance.ready) ready = false;
+            else ready = true;
             if (!ready) return;
             if (UPFMUtils.instance.testedParts.Contains(SYP.ID)) part.FindModuleImplementing<ModuleUPFMEvents>().tested = true;
             OhScrap.generation = UPFMUtils.instance.GetGeneration(SYP.ID, part);
             chanceOfFailure = baseChanceOfFailure;
-            if (SYP.TimesRecovered == 0 || !UPFMUtils.instance.testedParts.Contains(SYP.ID)) chanceOfFailure = baseChanceOfFailure/OhScrap.generation;
-            else chanceOfFailure = (baseChanceOfFailure/OhScrap.generation) * (SYP.TimesRecovered / (float)expectedLifetime);
+            if (SYP.TimesRecovered == 0 || !UPFMUtils.instance.testedParts.Contains(SYP.ID)) chanceOfFailure = CalculateInitialFailureRate();
+            else chanceOfFailure = CalculateInitialFailureRate() * (SYP.TimesRecovered / (float)expectedLifetime);
             if (chanceOfFailure < UPFMUtils.instance.minimumFailureChance) chanceOfFailure = UPFMUtils.instance.minimumFailureChance;
             //if the part has already failed turn the repair and highlight events on.
             if (hasFailed)
@@ -140,21 +137,27 @@ namespace OhScrap
             displayChance = (int)(chanceOfFailure * 100);
             //this compares the actual failure rate to the safety threshold and returns a safety calc based on how far below the safety threshold the actual failure rate is.
             //This is what the player actually sees when determining if a part is "failing" or not.
-            if (chanceOfFailure <= baseChanceOfFailure /10) safetyRating = 10;
-            else if (chanceOfFailure <= baseChanceOfFailure /9) safetyRating = 9;
-            else if (chanceOfFailure <= baseChanceOfFailure /8 ) safetyRating = 8;
-            else if (chanceOfFailure <= baseChanceOfFailure / 7) safetyRating = 7;
-            else if (chanceOfFailure <= baseChanceOfFailure / 6) safetyRating = 6;
-            else if (chanceOfFailure <= baseChanceOfFailure / 5) safetyRating = 5;
-            else if (chanceOfFailure <= baseChanceOfFailure / 4) safetyRating = 4;
-            else if (chanceOfFailure <= baseChanceOfFailure / 3) safetyRating = 3;
-            else if (chanceOfFailure <= baseChanceOfFailure / 2) safetyRating = 2;
+            if (chanceOfFailure <= baseChanceOfFailure / 10) safetyRating = 10;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 2) safetyRating = 9;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 3) safetyRating = 8;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 4) safetyRating = 7;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 5) safetyRating = 6;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 6) safetyRating = 5;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 7) safetyRating = 4;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 8) safetyRating = 3;
+            else if (chanceOfFailure < baseChanceOfFailure / 10 * 9) safetyRating = 2;
             else safetyRating = 1;
             if (hasFailed) part.FindModuleImplementing<ModuleUPFMEvents>().SetFailedHighlight();
             ready = true;
             if(HighLogic.LoadedScene == GameScenes.FLIGHT && isSRB && UPFMUtils.instance._randomiser.NextDouble() < chanceOfFailure) InvokeRepeating("FailPart", 0.5f, 0.5f);
 
         }
+
+        private float CalculateInitialFailureRate()
+        {
+            return baseChanceOfFailure - (OhScrap.generation * (baseChanceOfFailure / 10));
+        }
+
         //These methods all are overriden by the failure modules
 
         //Overrides are things like the UI names, and specific things that we might want to be different for a module

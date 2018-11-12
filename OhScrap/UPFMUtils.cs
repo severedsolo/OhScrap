@@ -163,21 +163,6 @@ namespace OhScrap
                 Logger.instance.Log("No parts failed this time. Aborted failure");
                 return;
             }
-            ModuleUPFMEvents eventModule = failedModule.part.FindModuleImplementing<ModuleUPFMEvents>();
-            eventModule.SetFailedHighlight();
-            eventModule.Events["ToggleHighlight"].active = true;
-            eventModule.Events["RepairChecks"].active = true;
-            ScreenMessages.PostScreenMessage(failedModule.part.partInfo.title + ": " + failedModule.failureType);
-            StringBuilder msg = new StringBuilder();
-            msg.AppendLine(failedModule.part.vessel.vesselName);
-            msg.AppendLine("");
-            msg.AppendLine(failedModule.part.partInfo.title + " has suffered a " + failedModule.failureType);
-            msg.AppendLine("");
-            MessageSystem.Message m = new MessageSystem.Message("OhScrap", msg.ToString(), MessageSystemButton.MessageButtonColor.ORANGE, MessageSystemButton.ButtonIcons.ALERT);
-            MessageSystem.Instance.AddMessage(m);
-            Debug.Log("[OhScrap]: " + failedModule.SYP.ID + " of type " + failedModule.part.partInfo.title + " has suffered a " + failedModule.failureType);
-            TimeWarp.SetRate(0, true);
-            Logger.instance.Log("Failure Successful");
         }
 
         private void SetNextCheck(float moduleCount)
@@ -226,13 +211,30 @@ namespace OhScrap
             preparedNumber = 1 - chanceOfFailure;
             preparedNumber = Math.Pow(preparedNumber, exponent);
             chanceOfEvent = 1 - preparedNumber;
-            displayFailureChance = chanceOfEvent * chanceOfIndividualFailure * 100;
+            displayFailureChance = Math.Round(chanceOfEvent * chanceOfIndividualFailure * 100,0);
         }
 
-        private void StartFailure(BaseFailureModule bfm)
+        private void StartFailure(BaseFailureModule failedModule)
         {
-            bfm.hasFailed = true;
-            bfm.FailPart();
+            failedModule.hasFailed = true;
+            failedModule.FailPart();
+            ModuleUPFMEvents eventModule = failedModule.part.FindModuleImplementing<ModuleUPFMEvents>();
+            eventModule.highlight = true;
+            eventModule.SetFailedHighlight();
+            eventModule.Events["ToggleHighlight"].active = true;
+            eventModule.Events["RepairChecks"].active = true;
+            eventModule.MarkBroken();
+            ScreenMessages.PostScreenMessage(failedModule.part.partInfo.title + ": " + failedModule.failureType);
+            StringBuilder msg = new StringBuilder();
+            msg.AppendLine(failedModule.part.vessel.vesselName);
+            msg.AppendLine("");
+            msg.AppendLine(failedModule.part.partInfo.title + " has suffered a " + failedModule.failureType);
+            msg.AppendLine("");
+            MessageSystem.Message m = new MessageSystem.Message("OhScrap", msg.ToString(), MessageSystemButton.MessageButtonColor.ORANGE, MessageSystemButton.ButtonIcons.ALERT);
+            MessageSystem.Instance.AddMessage(m);
+            Debug.Log("[OhScrap]: " + failedModule.SYP.ID + " of type " + failedModule.part.partInfo.title + " has suffered a " + failedModule.failureType);
+            TimeWarp.SetRate(0, true);
+            Logger.instance.Log("Failure Successful");
         }
 
         private void OnFlightGlobalsReady(bool data)
@@ -254,7 +256,7 @@ namespace OhScrap
         private void onEditorShipModified(ShipConstruct shipConstruct)
         {
             vesselSafetyRating = 0;
-            int worstPartRating = 6;
+            float worstPartChance = 1;
             int bfmCount = 0;
             editorConstruct = shipConstruct;
             for (int i = 0; i < shipConstruct.parts.Count(); i++)
@@ -265,9 +267,10 @@ namespace OhScrap
                 {
                     BaseFailureModule bfm = bfmList.ElementAt(b);
                     if (bfm == null) continue;
-                    if (bfm.safetyRating < worstPartRating && !bfm.isSRB && !bfm.hasFailed)
+                    if (bfm.chanceOfFailure > worstPartChance && !bfm.isSRB && !bfm.hasFailed)
                     {
                         worstPart = p;
+                        worstPartChance = bfm.chanceOfFailure;
                     }
                     vesselSafetyRating += bfm.safetyRating;
                     bfmCount++;
@@ -282,7 +285,7 @@ namespace OhScrap
             {
                 int bfmCount = 0;
                 vesselSafetyRating = 0;
-                int worstPartRating = 6;
+                double worstPartChance = 0;
                 if (!HighLogic.LoadedSceneIsEditor && FlightGlobals.ready)
                 {
                     for (int i = 0; i < FlightGlobals.ActiveVessel.parts.Count(); i++)
@@ -294,10 +297,10 @@ namespace OhScrap
                             BaseFailureModule bfm = bfmList.ElementAt(b);
                             if (bfm == null) continue;
                             if (!bfm.ready) return;
-                            if (bfm.safetyRating < worstPartRating && !bfm.isSRB)
+                            if (bfm.chanceOfFailure > worstPartChance && !bfm.isSRB && !bfm.hasFailed)
                             {
                                 worstPart = p;
-                                worstPartRating = bfm.safetyRating;
+                                worstPartChance = bfm.chanceOfFailure;
                             }
                             vesselSafetyRating += bfm.safetyRating;
                             bfmCount++;
@@ -315,10 +318,10 @@ namespace OhScrap
                             BaseFailureModule bfm = bfmList.ElementAt(b);
                             if (bfm == null) continue;
                             if (!bfm.ready) return;
-                            if (bfm.safetyRating < worstPartRating)
+                            if (bfm.chanceOfFailure > worstPartChance)
                             {
                                 worstPart = p;
-                                worstPartRating = bfm.safetyRating;
+                                worstPartChance = bfm.chanceOfFailure;
                             }
                             vesselSafetyRating += bfm.safetyRating;
                             bfmCount++;
@@ -437,7 +440,7 @@ namespace OhScrap
                 return;
             }
             GUILayout.Label("Vessel Safety Rating: " + vesselSafetyRating + " " + s);
-            if(debugMode)advancedDisplay = GUILayout.Toggle(advancedDisplay, "Show Advanced Calculations (WARNING: EXPERIMENTAL)");
+            advancedDisplay = GUILayout.Toggle(advancedDisplay, "Show Advanced Calculations (WARNING: EXPERIMENTAL)");
             if (advancedDisplay)
             {
                 GUILayout.Label("MODE: " + failureMode);

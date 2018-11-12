@@ -18,12 +18,12 @@ namespace OhScrap
         public bool newGameOnly = false;
         [GameParameters.CustomParameterUI("Display Safety Warnings?")]
         public bool safetyWarning = true;
-        [GameParameters.CustomParameterUI("Recover parts above Safety Threshold?")]
-        public bool safetyRecover = true;
         [GameParameters.CustomParameterUI("Highlight Part Failures?")]
         public bool highlightFailures = true;
         [GameParameters.CustomParameterUI("Stop Timewarp on Failure?")]
         public bool stopOnFailure = true;
+        [GameParameters.CustomParameterUI("Override Stage Recovery?")]
+        public bool overrideStageRecovery = false;
         [GameParameters.CustomParameterUI("Extra Logging")]
         public bool logging = false;
         [GameParameters.CustomParameterUI("Antenna")]
