@@ -8,6 +8,7 @@ using KSP.UI.Screens;
 using ScrapYard;
 using ScrapYard.Modules;
 using System.Collections;
+using System.IO;
 
 namespace OhScrap
 {
@@ -442,9 +443,10 @@ namespace OhScrap
                 return;
             }
             GUILayout.Label("Vessel Safety Rating: " + vesselSafetyRating + " " + s);
-            advancedDisplay = GUILayout.Toggle(advancedDisplay, "Show Advanced Calculations (WARNING: EXPERIMENTAL)");
+            advancedDisplay = File.Exists(KSPUtil.ApplicationRootPath + "GameData/Severedsolo/OhScrap/debug.txt");
             if (advancedDisplay)
             {
+                GUILayout.Label("WARNING! CALCULATIONS ARE EXPERIMENTAL");
                 GUILayout.Label("MODE: " + failureMode);
                 GUILayout.Label("Chance of Failure in next " + sampleTime + ": " + displayFailureChance + "%");
             }
