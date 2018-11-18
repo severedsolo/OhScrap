@@ -13,7 +13,7 @@ namespace OhScrap
     {
         [KSPField(isPersistant = true, guiActive = false)]
         public bool highlight = true;
-        bool doNotRecover = false;
+        public bool doNotRecover = false;
         [KSPField(isPersistant = false, guiActiveEditor = true, guiName = "Tested")]
         public bool tested = false;
         BaseFailureModule repair;
@@ -142,7 +142,7 @@ namespace OhScrap
             while (!Repaired())
             {
                 //If the module fails the check or it's already been marked as irrepairable will stop trying.
-                if (RepairFailCheck() || repairTried)
+                if (!RepairFailCheck() || repairTried)
                 {
                     ScreenMessages.PostScreenMessage("This part is beyond repair");
                     repairTried = true;
@@ -188,7 +188,9 @@ namespace OhScrap
                     }
                 }
             }
-            return UPFMUtils.instance._randomiser.NextDouble() < repairChance;
+            double roll = UPFMUtils.instance._randomiser.NextDouble();
+            Debug.Log("[OhScrap]: Repair Chance: " + repairChance + " Rolled: " + roll + " Success: " + (roll < repairChance).ToString());
+            return roll < repairChance;
         }
 
         bool Repaired()

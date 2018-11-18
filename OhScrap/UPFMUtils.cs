@@ -8,7 +8,6 @@ using KSP.UI.Screens;
 using ScrapYard;
 using ScrapYard.Modules;
 using System.Collections;
-using System.IO;
 
 namespace OhScrap
 {
@@ -116,22 +115,9 @@ namespace OhScrap
             if (vesselSafetyRating == -1) return;
             List<BaseFailureModule> failureModules = FlightGlobals.ActiveVessel.FindPartModulesImplementing<BaseFailureModule>();
             if (failureModules.Count == 0) return;
-            int moduleCount = 0;
-            chanceOfFailure = 0;
-            for(int i = 0; i<failureModules.Count; i++)
-            {
-                BaseFailureModule bfm = failureModules.ElementAt(i);
-                if (!bfm.launched) return;
-                if (bfm.isSRB || bfm.excluded || bfm.hasFailed || !bfm.FailureAllowed())
-                {
-                    failureModules.Remove(bfm);
-                    continue;
-                }
-                chanceOfFailure += bfm.chanceOfFailure;
-                moduleCount++;
-            }
-            chanceOfFailure /= moduleCount;
-            SetNextCheck(moduleCount);
+            chanceOfFailure = 0.11-(vesselSafetyRating*0.01);
+            if (chanceOfFailure < minimumFailureChance) chanceOfFailure = minimumFailureChance;
+            SetNextCheck(failureModules);
             double failureRoll = _randomiser.NextDouble();
             if(HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().logging)
             {
@@ -166,12 +152,24 @@ namespace OhScrap
             }
         }
 
-        private void SetNextCheck(float moduleCount)
+        private void SetNextCheck(List<BaseFailureModule> failureModules)
         {
+
             double chanceOfEvent = 0;
             double chanceOfIndividualFailure = 0;
             double exponent = 0;
             double preparedNumber;
+            int moduleCount = 0;
+            for (int i = 0; i < failureModules.Count(); i++)
+            {
+                BaseFailureModule failedModule = failureModules.ElementAt(i);
+                if (failedModule.hasFailed) continue;
+                if (failedModule.isSRB) continue;
+                if (failedModule.excluded) continue;
+                if (!failedModule.launched) return;
+                if (!failedModule.FailureAllowed()) continue;
+                moduleCount++;
+            }
             preparedNumber = 1 - chanceOfFailure;
             preparedNumber = Math.Pow(preparedNumber, moduleCount);
             chanceOfIndividualFailure = 1 - preparedNumber;
@@ -209,10 +207,13 @@ namespace OhScrap
                     exponent = 648000 / timeBetweenChecksRocketsSpace;
                     break;
             }
-            preparedNumber = 1 - chanceOfFailure;
+            preparedNumber = vesselSafetyRating * 0.01;
+            preparedNumber = 0.11f - preparedNumber;
+            preparedNumber = 1 - preparedNumber;
             preparedNumber = Math.Pow(preparedNumber, exponent);
             chanceOfEvent = 1 - preparedNumber;
             displayFailureChance = Math.Round(chanceOfEvent * chanceOfIndividualFailure * 100,0);
+            if (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().logging) Logger.instance.Log("[OhScrap]: Calculated chance of failure in next " + sampleTime + " is " + displayFailureChance + "%");
         }
 
         private void StartFailure(BaseFailureModule failedModule)
@@ -224,7 +225,7 @@ namespace OhScrap
             eventModule.SetFailedHighlight();
             eventModule.Events["ToggleHighlight"].active = true;
             eventModule.Events["RepairChecks"].active = true;
-            eventModule.MarkBroken();
+            eventModule.doNotRecover = true;
             ScreenMessages.PostScreenMessage(failedModule.part.partInfo.title + ": " + failedModule.failureType);
             StringBuilder msg = new StringBuilder();
             msg.AppendLine(failedModule.part.vessel.vesselName);
@@ -441,7 +442,7 @@ namespace OhScrap
                 return;
             }
             GUILayout.Label("Vessel Safety Rating: " + vesselSafetyRating + " " + s);
-            if (File.Exists(KSPUtil.ApplicationRootPath + "/GameData/Severedsolo/OhScrap/debug.txt")) advancedDisplay = GUILayout.Toggle(advancedDisplay, "Show Advanced Calculations (WARNING: EXPERIMENTAL)");
+            advancedDisplay = GUILayout.Toggle(advancedDisplay, "Show Advanced Calculations (WARNING: EXPERIMENTAL)");
             if (advancedDisplay)
             {
                 GUILayout.Label("MODE: " + failureMode);

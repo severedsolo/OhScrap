@@ -27,7 +27,7 @@ namespace OhScrap
             if (engine.atmosphereCurve.Evaluate(staticPressure) <= 100.0f)
             {
                 expectedLifetime = 3;
-                baseChanceOfFailure -= 0.02f;
+                baseChanceOfFailure = baseChanceOfFailure-0.01f;
             }
         }   
 
