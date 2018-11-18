@@ -57,7 +57,6 @@ namespace OhScrap
             //find the ScrapYard Module straight away, as we can't do any calculations without it.
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
             chanceOfFailure = baseChanceOfFailure;
-            if (expectedLifetime > 12) expectedLifetime = (expectedLifetime / 10) + 2;
             //overrides are defined in each failue Module - stuff that the generic module can't handle.
             Overrides();
             //listen to ScrapYard Events so we can recalculate when needed
