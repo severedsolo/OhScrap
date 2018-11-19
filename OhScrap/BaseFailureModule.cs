@@ -127,7 +127,11 @@ namespace OhScrap
             if (SYP.TimesRecovered == 0 || !UPFMUtils.instance.testedParts.Contains(SYP.ID)) chanceOfFailure = CalculateInitialFailureRate();
             else chanceOfFailure = CalculateInitialFailureRate() * (SYP.TimesRecovered / (float)expectedLifetime);
             if (chanceOfFailure < UPFMUtils.instance.minimumFailureChance) chanceOfFailure = UPFMUtils.instance.minimumFailureChance;
-            if (SYP.TimesRecovered > expectedLifetime) chanceOfFailure += 1 - (expectedLifetime / SYP.TimesRecovered);
+            if (SYP.TimesRecovered > expectedLifetime)
+            {
+                float endOfLifeBonus = (float)expectedLifetime / SYP.TimesRecovered;
+                chanceOfFailure += (1 - endOfLifeBonus) / 10;
+            }
             //if the part has already failed turn the repair and highlight events on.
             if (hasFailed)
             {
