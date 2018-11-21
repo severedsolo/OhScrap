@@ -21,7 +21,6 @@ namespace OhScrap
             failureType = "ignition failure";
             engine = part.FindModuleImplementing<ModuleEngines>();
             isSRB = true;
-            if (HighLogic.LoadedScene != GameScenes.FLIGHT) return;
         }
 
         public override bool FailureAllowed()

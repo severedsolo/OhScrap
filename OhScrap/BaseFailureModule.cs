@@ -161,6 +161,7 @@ namespace OhScrap
         {
             int generation = OhScrap.generation;
             if (generation > 10) generation = 10;
+            if (isSRB) return baseChanceOfFailure / generation; 
             return baseChanceOfFailure+0.01f - (generation * (baseChanceOfFailure / 10));
         }
 
