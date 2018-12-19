@@ -153,8 +153,7 @@ namespace OhScrap
             else safetyRating = 1;
             if (hasFailed) part.FindModuleImplementing<ModuleUPFMEvents>().SetFailedHighlight();
             ready = true;
-            if(HighLogic.LoadedScene == GameScenes.FLIGHT && isSRB && UPFMUtils.instance._randomiser.NextDouble() < chanceOfFailure) InvokeRepeating("FailPart", 0.5f, 0.5f);
-
+            if(HighLogic.LoadedScene == GameScenes.FLIGHT && FailureAllowed() && isSRB && UPFMUtils.instance._randomiser.NextDouble() < chanceOfFailure) InvokeRepeating("FailPart", 0.5f, 0.5f);
         }
 
         private float CalculateInitialFailureRate()

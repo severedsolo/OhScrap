@@ -37,10 +37,13 @@ namespace OhScrap
         {
             if (!HighLogic.LoadedSceneIsEditor || refreshed) return;
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
+            Debug.Log("[OhScrap]: Attempting to refresh part " + SYP.ID);
             if (SYP.TimesRecovered == 0)
             {
                 SYP.MakeFresh();
+                Debug.Log("[OhScrap]: Refreshed. New ID is " + SYP.ID);
             }
+            else Debug.Log("[OhScrap]: " + SYP.ID + " has been recovered " + SYP.TimesRecovered + " times. No need to refresh");
             refreshed = true;
         }
         
