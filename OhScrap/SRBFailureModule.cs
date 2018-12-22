@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using System.Runtime.CompilerServices;
 
 namespace OhScrap
 {
@@ -31,6 +32,7 @@ namespace OhScrap
         //Part will just shutdown and not be restartable.
         public override void FailPart()
         {
+            if (KRASHWrapper.simulationActive()) return;
             if (engine.currentThrottle == 0) return;
             engine.allowShutdown = true;
             engine.allowRestart = false;
@@ -44,7 +46,8 @@ namespace OhScrap
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             CancelInvoke("FailPart");
         }
-        //SRBs cant be reoaired.
+       
+        //SRBs cant be repaired.
         public override void RepairPart()
         {
             ScreenMessages.PostScreenMessage("Igniting an SRB manually doesn't seem like a good idea");

@@ -63,6 +63,7 @@ namespace OhScrap
             ScrapYardEvents.OnSYTrackerUpdated.Add(OnSYTrackerUpdated);
             ScrapYardEvents.OnSYInventoryAppliedToVessel.Add(OnSYInventoryAppliedToVessel);
             ScrapYardEvents.OnSYInventoryAppliedToPart.Add(OnSYInventoryAppliedToPart);
+            ScrapYardEvents.OnSYInventoryChanged.Add(OnSYInventoryChanged);
             OhScrap = part.FindModuleImplementing<ModuleUPFMEvents>();
             //refresh part if we are in the editor and parts never been used before (just returns if not)
             OhScrap.RefreshPart();
@@ -109,6 +110,7 @@ namespace OhScrap
 
         private void ActivateFailures()
         {
+            if(KRASHWrapper.simulationActive()) return;
             launched = true;
             Initialise();
             UPFMUtils.instance.testedParts.Add(SYP.ID);
