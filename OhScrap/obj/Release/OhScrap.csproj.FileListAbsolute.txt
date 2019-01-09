@@ -64,3 +64,5 @@ D:/OneDrive/Documents/Github/OhScrap/OhScrap/obj/Release/OhScrap.pdb
 /home/martin/Documents/GitHub/OhScrap/OhScrap/obj/Release/OhScrap.csproj.CopyComplete
 /home/martin/Documents/GitHub/OhScrap/OhScrap/obj/Release/OhScrap.dll
 /home/martin/Documents/GitHub/OhScrap/OhScrap/obj/Release/OhScrap.pdb
+/home/martin/Documents/GitHub/OhScrap/OhScrap/bin/Release/Assembly-CSharp-firstpass.dll
+/home/martin/Documents/GitHub/OhScrap/OhScrap/bin/Release/Assembly-CSharp.dll

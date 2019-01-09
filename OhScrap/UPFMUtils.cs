@@ -116,6 +116,7 @@ namespace OhScrap
             if (vesselSafetyRating == -1) return;
             List<BaseFailureModule> failureModules = FlightGlobals.ActiveVessel.FindPartModulesImplementing<BaseFailureModule>();
             if (failureModules.Count == 0) return;
+            if (failureModules.ElementAt(0).launched == false) return;
             chanceOfFailure = 0.11-(vesselSafetyRating*0.01);
             if (chanceOfFailure < minimumFailureChance) chanceOfFailure = minimumFailureChance;
             SetNextCheck(failureModules);
