@@ -16,6 +16,11 @@ namespace OhScrap
         ModuleGimbal gimbal;
         [KSPField(isPersistant = true, guiActive = false)]
         float originalThrust;
+        [KSPField(isPersistant = true, guiActive = false)]
+        int spaceEngineExpectedLifetime;
+        [KSPField(isPersistant = true, guiActive = false)]
+        float spaceEngineBaseChanceOfFailure;
+
 
         protected override void Overrides()
         {
@@ -26,8 +31,8 @@ namespace OhScrap
             float staticPressure = (float)(FlightGlobals.GetHomeBody().GetPressure(0) * PhysicsGlobals.KpaToAtmospheres);
             if (engine.atmosphereCurve.Evaluate(staticPressure) <= 100.0f)
             {
-                expectedLifetime = 3;
-                baseChanceOfFailure = baseChanceOfFailure-0.01f;
+                expectedLifetime = spaceEngineExpectedLifetime;
+                baseChanceOfFailure = spaceEngineBaseChanceOfFailure;
             }
         }   
 
