@@ -83,10 +83,4 @@
     <Compile Include="StageRecoveryHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>"D:\OneDrive\Documents\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"
-xcopy /Y "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\Severedsolo\OhScrap\"
-xcopy /Y "$(TargetDir)$(TargetName).pdb" "C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\Severedsolo\OhScrap\"
-xcopy /Y "$(TargetDir)$(TargetName).dll.mdb" "C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\Severedsolo\OhScrap\"</PostBuildEvent>
-  </PropertyGroup>
 </Project>
