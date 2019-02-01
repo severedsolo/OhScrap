@@ -279,8 +279,8 @@ namespace OhScrap
                     vesselSafetyRating += bfm.safetyRating;
                     bfmCount++;
                 }
-                vesselSafetyRating = vesselSafetyRating / bfmCount;
             }
+            vesselSafetyRating = vesselSafetyRating / bfmCount;
         }
         //This is mostly for use in the flight scene, will only run once assuming everything goes ok.
         void Update()

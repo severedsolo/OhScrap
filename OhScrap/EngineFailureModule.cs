@@ -17,9 +17,9 @@ namespace OhScrap
         [KSPField(isPersistant = true, guiActive = false)]
         float originalThrust;
         [KSPField(isPersistant = true, guiActive = false)]
-        int spaceEngineExpectedLifetime;
+        int spaceEngineExpectedLifetime = 3;
         [KSPField(isPersistant = true, guiActive = false)]
-        float spaceEngineBaseChanceOfFailure;
+        float spaceEngineBaseChanceOfFailure = 0.1f;
 
 
         protected override void Overrides()

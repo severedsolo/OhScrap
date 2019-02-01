@@ -75,7 +75,7 @@ namespace OhScrap
 
         private void OnLaunch(EventReport data)
         {
-            if (FlightGlobals.ActiveVessel.speed > 8 || isSRB) return;
+            if (FlightGlobals.ActiveVessel.speed > 8) return;
             ActivateFailures();
         }
 
@@ -122,7 +122,7 @@ namespace OhScrap
             launched = true;
             Initialise();
             UPFMUtils.instance.testedParts.Add(SYP.ID);
-            if (HighLogic.LoadedScene == GameScenes.FLIGHT && FailureAllowed() && isSRB && UPFMUtils.instance._randomiser.NextDouble() < chanceOfFailure) InvokeRepeating("FailPart", 0.01f, 0.01f);
+            if (HighLogic.LoadedScene == GameScenes.FLIGHT && isSRB && FailureAllowed() && UPFMUtils.instance._randomiser.NextDouble() < chanceOfFailure) InvokeRepeating("FailPart", 0.01f, 0.01f);
         }
 
             // This is where we "initialise" the failure module and get everything ready
