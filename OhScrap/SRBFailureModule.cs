@@ -16,7 +16,6 @@ namespace OhScrap
         //They will however suppress the messages until the player tries to launch.
         protected override void Overrides()
         {
-            launched = true;
             Fields["displayChance"].guiName = "Chance of SRB Failure";
             Fields["safetyRating"].guiName = "SRB Safety Rating";
             failureType = "ignition failure";

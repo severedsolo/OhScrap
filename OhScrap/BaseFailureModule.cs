@@ -68,7 +68,15 @@ namespace OhScrap
             //refresh part if we are in the editor and parts never been used before (just returns if not)
             OhScrap.RefreshPart();
             //Initialise the Failure Module.
+            GameEvents.onLaunch.Add(OnLaunch);
             if (launched || HighLogic.LoadedSceneIsEditor) Initialise();
+            if (isSRB && vessel.speed <8) ActivateFailures();
+        }
+
+        private void OnLaunch(EventReport data)
+        {
+            if (FlightGlobals.ActiveVessel.speed > 8 || isSRB) return;
+            ActivateFailures();
         }
 
         private void OnSYInventoryAppliedToPart(Part p)
@@ -114,6 +122,7 @@ namespace OhScrap
             launched = true;
             Initialise();
             UPFMUtils.instance.testedParts.Add(SYP.ID);
+            if (HighLogic.LoadedScene == GameScenes.FLIGHT && FailureAllowed() && isSRB && UPFMUtils.instance._randomiser.NextDouble() < chanceOfFailure) InvokeRepeating("FailPart", 0.01f, 0.01f);
         }
 
             // This is where we "initialise" the failure module and get everything ready
@@ -143,19 +152,34 @@ namespace OhScrap
             displayChance = (int)(chanceOfFailure * 100);
             //this compares the actual failure rate to the safety threshold and returns a safety calc based on how far below the safety threshold the actual failure rate is.
             //This is what the player actually sees when determining if a part is "failing" or not.
-            if (chanceOfFailure <= baseChanceOfFailure / 10) safetyRating = 10;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 2) safetyRating = 9;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 3) safetyRating = 8;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 4) safetyRating = 7;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 5) safetyRating = 6;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 6) safetyRating = 5;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 7) safetyRating = 4;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 8) safetyRating = 3;
-            else if (chanceOfFailure < baseChanceOfFailure / 10 * 9) safetyRating = 2;
-            else safetyRating = 1;
-            if (hasFailed) part.FindModuleImplementing<ModuleUPFMEvents>().SetFailedHighlight();
-            ready = true;
-            if(HighLogic.LoadedScene == GameScenes.FLIGHT && FailureAllowed() && isSRB && UPFMUtils.instance._randomiser.NextDouble() < chanceOfFailure) InvokeRepeating("FailPart", 0.5f, 0.5f);
+            if (!isSRB)
+            {
+                if (chanceOfFailure <= baseChanceOfFailure / 10) safetyRating = 10;
+                else if (chanceOfFailure < baseChanceOfFailure / 10 * 2) safetyRating = 9;
+                else if (chanceOfFailure < baseChanceOfFailure / 10 * 3) safetyRating = 8;
+                else if (chanceOfFailure < baseChanceOfFailure / 10 * 4) safetyRating = 7;
+                else if (chanceOfFailure < baseChanceOfFailure / 10 * 5) safetyRating = 6;
+                else if (chanceOfFailure < baseChanceOfFailure / 10 * 6) safetyRating = 5;
+                else if (chanceOfFailure < baseChanceOfFailure / 10 * 7) safetyRating = 4;
+                else if (chanceOfFailure < baseChanceOfFailure / 10 * 8) safetyRating = 3;
+                else if (chanceOfFailure < baseChanceOfFailure / 10 * 9) safetyRating = 2;
+                else safetyRating = 1;
+                if (hasFailed) part.FindModuleImplementing<ModuleUPFMEvents>().SetFailedHighlight();
+                ready = true;
+            }
+            else
+            {
+                if (chanceOfFailure <= baseChanceOfFailure / 10) safetyRating = 10;
+                else if (chanceOfFailure < baseChanceOfFailure / 9) safetyRating = 9;
+                else if (chanceOfFailure < baseChanceOfFailure / 8) safetyRating = 8;
+                else if (chanceOfFailure < baseChanceOfFailure / 7) safetyRating = 7;
+                else if (chanceOfFailure < baseChanceOfFailure / 6) safetyRating = 6;
+                else if (chanceOfFailure < baseChanceOfFailure / 5) safetyRating = 5;
+                else if (chanceOfFailure < baseChanceOfFailure / 4) safetyRating = 4;
+                else if (chanceOfFailure < baseChanceOfFailure / 3) safetyRating = 3;
+                else if (chanceOfFailure < baseChanceOfFailure / 2) safetyRating = 2;
+                else safetyRating = 1;
+            }
         }
 
         private float CalculateInitialFailureRate()
@@ -189,7 +213,7 @@ namespace OhScrap
             //OnLaunch doesn't fire for rovers, so we do a secondary check for whether the vessel is moving, and fire it manually if it is.
             if (!launched && FlightGlobals.ActiveVessel != null)
             {
-                if (FlightGlobals.ActiveVessel.speed > 1) ActivateFailures();
+                if (FlightGlobals.ActiveVessel.speed > 8 && !isSRB) ActivateFailures();
                 return;
             }
             if (hasFailed)
