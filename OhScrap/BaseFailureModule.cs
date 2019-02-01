@@ -70,7 +70,6 @@ namespace OhScrap
             //Initialise the Failure Module.
             GameEvents.onLaunch.Add(OnLaunch);
             if (launched || HighLogic.LoadedSceneIsEditor) Initialise();
-            if (isSRB && vessel.speed <8) ActivateFailures();
         }
 
         private void OnLaunch(EventReport data)
@@ -118,13 +117,12 @@ namespace OhScrap
 
         private void ActivateFailures()
         {
-            if(KRASHWrapper.simulationActive()) return;
+            if (KRASHWrapper.simulationActive()) return;
             launched = true;
             Initialise();
             UPFMUtils.instance.testedParts.Add(SYP.ID);
             if (HighLogic.LoadedScene == GameScenes.FLIGHT && isSRB && FailureAllowed() && UPFMUtils.instance._randomiser.NextDouble() < chanceOfFailure) InvokeRepeating("FailPart", 0.01f, 0.01f);
         }
-
             // This is where we "initialise" the failure module and get everything ready
             public void Initialise()
         {
@@ -224,8 +222,9 @@ namespace OhScrap
             }
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
+            GameEvents.onLaunch.Remove(OnLaunch);
             if (ScrapYardEvents.OnSYTrackerUpdated != null) ScrapYardEvents.OnSYTrackerUpdated.Remove(OnSYTrackerUpdated);
             if (ScrapYardEvents.OnSYInventoryAppliedToVessel != null) ScrapYardEvents.OnSYInventoryAppliedToVessel.Remove(OnSYInventoryAppliedToVessel);
         }

@@ -1,8 +1,8 @@
 Executing: MiniAVC - 1.2.0.6
 Assembly: C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\MagiCore\MiniAVC.dll
 
-[Log 20:44:04.3114179]: Starter was created.
-[Log 20:44:06.0632080]: C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\MagiCore\MagiCore.version
+[Log 21:54:55.1210988]: Starter was created.
+[Log 21:54:56.8973211]: C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\MagiCore\MagiCore.version
 	NAME: MagiCore
 	URL: http://ksp.spacetux.net/avc/MagiCore
 	DOWNLOAD: NULL
@@ -18,4 +18,4 @@ Assembly: C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - M
 	CompatibleKspVersionMax: True
 	CompatibleGitHubVersion: True
 
-[Log 20:44:06.4545045]: Starter was destroyed.
+[Log 21:54:57.3126331]: Starter was destroyed.
