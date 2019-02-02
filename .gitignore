@@ -65,3 +65,5 @@ GameData/KerbalChangelog/KerbalChangelogChangelogv1-1-2.cfg
 GameData/KerbalChangelog/LICENSE
 OhScrap/obj/Debug/OhScrap.csproj.FileListAbsolute.txt
 OhScrap/obj/Release/OhScrap.csproj.FileListAbsolute.txt
+*.log
+OhScrap/obj/Release/OhScrap.csproj.FileListAbsolute.txt
