@@ -55,6 +55,7 @@ namespace OhScrap
         string sampleTime = "1 year";
 
 
+
         private void Awake()
         {
             instance = this;

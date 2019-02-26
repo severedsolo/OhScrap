@@ -104,7 +104,7 @@ namespace OhScrap
         }
 
         //This loops through every failure module on this part and runs the "Repair Part" method.
-        [KSPEvent(active = false, guiActive = true, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = false, guiName = "Repair ")]
+        [KSPEvent(active = false, guiActive = true, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = false, guiName = "Repair")]
         public void RepairChecks()
         {
             Debug.Log("[OhScrap]: Attempting repairs");
@@ -114,13 +114,20 @@ namespace OhScrap
             if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<KerbalEVA>() == null)
             {
                 Debug.Log("[OhScrap]: Attempting Remote Repair");
-                //If CommNet is enabled check if vessel is connected (can't upload a software fix with no connection)
-                if (CommNet.CommNetScenario.CommNetEnabled && !FlightGlobals.ActiveVessel.Connection.IsConnectedHome)
-                {
+                //If CommNet or RemoteTech is enabled, check if vessel is connected. (can't upload a software fix with no connection)
+               if(RemoteTechWrapper.available && !RemoteTechWrapper.hasConnectionToKSC(FlightGlobals.ActiveVessel.id))
+               {
+                    ScreenMessages.PostScreenMessage("Vessel must be connected to Homeworld before remote repair can be attempted");
+                    Debug.Log("[OhScrap]:(RemoteTech) Remote Repair aborted. Vessel not connected home");
+                    return;
+
+               }else if (CommNet.CommNetScenario.CommNetEnabled && !FlightGlobals.ActiveVessel.Connection.IsConnectedHome)
+               {
                     ScreenMessages.PostScreenMessage("Vessel must be connected to Homeworld before remote repair can be attempted");
                     Debug.Log("[OhScrap]: Remote Repair aborted. Vessel not connected home");
                     return;
-                }
+               }
+
                 //Check if the part is actually remote repairable. This will fail if any of the failed modules are not remote repairable.
                 for (int i = 0; i < bfm.Count(); i++)
                 {
