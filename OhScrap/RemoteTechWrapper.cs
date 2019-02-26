@@ -43,23 +43,19 @@ namespace OhScrap
 
         public static bool getRTBrokenStatus(PartModule p)
         {
-            if (p && p.GetType().FullName.Equals("ModuleRTAntenna"))
-            {
+           
+               Debug.Log("Yes");
               return GetReflectionValue<bool>(p, "IsRTBroken");
-            }
-            return false;
+          
         }
         public static void setRTBrokenStatus(PartModule p, bool value)
         {
-            if (p && p.GetType().FullName.Equals("ModuleRTAntenna"))
-            {
                 SetReflectionValue<bool>(p, "IsRTBroken", value);
-               // SetReflectionValue<bool>(p, "IsRTActive", value);
+                SetReflectionValue<bool>(p, "IsRTActive", value);
                 if (value == false)
                 {
                     p.GetType().GetMethod("OnConnectionRefresh").Invoke(p, null);
                 }
-            }
         }
         public static bool hasConnectionToKSC(Guid vesselGUID)
         {

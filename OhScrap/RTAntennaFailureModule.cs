@@ -47,7 +47,7 @@ namespace OhScrap
                 {
                     if (part.FindModuleImplementing<ModuleDeployableAntenna>().deployState != ModuleDeployablePart.DeployState.EXTENDED) return false;
                 }
-               //if (RemoteTechWrapper.getRTBrokenStatus(antenna)) return false;
+                //if (RemoteTechWrapper.getRTBrokenStatus(antenna)) return false;
                 return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().AntennaFailureModuleAllowed;
             }
             else
