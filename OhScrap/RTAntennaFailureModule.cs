@@ -15,7 +15,7 @@ namespace OhScrap
 
         private PartModule antenna;
         [KSPField(isPersistant = true, guiActive = false)]
-        bool RTAvailable = RemoteTechWrapper.available;
+        bool RTAvailable = ModWrapper.RemoteTechWrapper.available;
 
 
 
@@ -56,7 +56,7 @@ namespace OhScrap
         }
         public override void FailPart()
         {
-                RemoteTechWrapper.SetRTBrokenStatus(antenna, true);
+                ModWrapper.RemoteTechWrapper.SetRTBrokenStatus(antenna, true);
                 ScreenMessages.PostScreenMessage(antenna.part.partName + "is not responding. Connection Failure.");
                 if (OhScrap.highlight) OhScrap.SetFailedHighlight();
                 if (!hasFailed) Debug.Log("[OhScrap](RemoteTech): " + SYP.ID + " has stopped transmitting");
@@ -67,7 +67,7 @@ namespace OhScrap
         {
             if (antenna)
             {
-                RemoteTechWrapper.SetRTBrokenStatus(antenna, false);
+                ModWrapper.RemoteTechWrapper.SetRTBrokenStatus(antenna, false);
             }
         }
 

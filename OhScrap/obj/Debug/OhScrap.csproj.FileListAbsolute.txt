@@ -107,7 +107,6 @@ C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Debug\OhScrap.dll
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Debug\OhScrap.pdb
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Debug\Assembly-CSharp-firstpass.dll
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Debug\Assembly-CSharp.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Debug\ScrapYard.dll
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Debug\UnityEngine.dll
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Debug\UnityEngine.UI.dll
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Debug\KSPTrackIR.dll
@@ -115,6 +114,5 @@ C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Debug\KSPAssets.dll
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Debug\Mono.Cecil.dll
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Debug\Ionic.Zip.dll
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Debug\TDx.TDxInput.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Debug\MagiCore.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Debug\ScrapYard.pdb
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Debug\OhScrap.csproj.CopyComplete
+C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Debug\OhScrap.csprojAssemblyReference.cache

@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AntennaFailureModule.cs" />
+    <Compile Include="ModWrapper.cs" />
     <Compile Include="RTAntennaFailureModule.cs" />
     <Compile Include="BaseFailureModule.cs" />
     <Compile Include="BatteryFailureModule.cs" />
@@ -75,7 +76,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RCSFailureModule.cs" />
     <Compile Include="ReactionWheelFailureModule.cs" />
-    <Compile Include="RemoteTechWrapper.cs" />
     <Compile Include="SolarPanelFailureModule.cs" />
     <Compile Include="SRBFailureModule.cs" />
     <Compile Include="TankFailureModule.cs" />
