@@ -60,7 +60,7 @@ namespace OhScrap
                 RemoteTechWrapper.setRTBrokenStatus(antenna, true);
                 hasFailed = true;
                 if (OhScrap.highlight) OhScrap.SetFailedHighlight();
-                if (!hasFailed) Debug.Log("[OhScrap]: " + SYP.ID + " has stopped transmitting(RT)");
+                if (!hasFailed) Debug.Log("[OhScrap](RemoteTech): " + SYP.ID + " has stopped transmitting");
         }
         
         public override void RepairPart()

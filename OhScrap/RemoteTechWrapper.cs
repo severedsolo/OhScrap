@@ -25,7 +25,6 @@ namespace OhScrap
                     for (int i = 0; i < AssemblyLoader.loadedAssemblies.Count; i++)
                     {
                         var Asm = AssemblyLoader.loadedAssemblies[i];
-                        Debug.Log("[mike] ASSEMBLY LOADED -" + Asm.assembly.FullName);
                         if (Asm.dllName == "RemoteTech")
                         {
                             loaded = true;
@@ -44,8 +43,7 @@ namespace OhScrap
         public static bool getRTBrokenStatus(PartModule p)
         {
            
-               Debug.Log("Yes");
-              return GetReflectionValue<bool>(p, "IsRTBroken");
+          return GetReflectionValue<bool>(p, "IsRTBroken");
           
         }
         public static void setRTBrokenStatus(PartModule p, bool value)

@@ -30,7 +30,8 @@ namespace OhScrap
             {
                 if (part.FindModuleImplementing<ModuleDeployableAntenna>().deployState != ModuleDeployablePart.DeployState.EXTENDED) return false;
             }
-            return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().AntennaFailureModuleAllowed;
+            return (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().AntennaFailureModuleAllowed &&
+                        CommNet.CommNetScenario.CommNetEnabled);
         }
         public override void FailPart()
         {   
@@ -39,12 +40,12 @@ namespace OhScrap
             {
                 originalPower = antenna.antennaPower;
                 firstFail = false;
-
             }
             //turn the antenna power down to 0
             antenna.antennaPower = 0;
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             if (!hasFailed) Debug.Log("[OhScrap]: " + SYP.ID + " has stopped transmitting");
+            hasFailed = true;
         }
         //repair just turns the power back to the original power
         public override void RepairPart()
