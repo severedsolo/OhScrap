@@ -11,13 +11,9 @@ namespace OhScrap
     //Allows For failures on Antennas when remote tech is installed. Can fail Parts with ModuleRTAntenna.
     class RTAntennaFailureModule : BaseFailureModule
     {
-      
-
         private PartModule antenna;
         [KSPField(isPersistant = true, guiActive = false)]
-        bool RTAvailable = RemoteTechWrapper.available;
-
-
+        bool RTAvailable = ModWrapper.RemoteTechWrapper.available;
 
         protected override void Overrides()
         {
@@ -35,39 +31,34 @@ namespace OhScrap
 
                 }
             }
+      
             remoteRepairable = true;
         }
 
         public override bool FailureAllowed()
         {
-            if (antenna)
-            {
+                if (!antenna) return false;
                 if (!RTAvailable) return false;
-                if (part.FindModuleImplementing<ModuleDeployableAntenna>() != null)
-                {
-                    if (part.FindModuleImplementing<ModuleDeployableAntenna>().deployState != ModuleDeployablePart.DeployState.EXTENDED) return false;
-                }
-                return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().AntennaFailureModuleAllowed;
-            }
-            else
-            {
-                return false;
-            }
+                if (!ModWrapper.RemoteTechWrapper.GetAntennaDeployed(antenna)) return false; //Do not fail antennas that are deployed. Returns true if it cant be animated.
+
+                return (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().AntennaFailureModuleAllowed);
         }
         public override void FailPart()
         {
-                RemoteTechWrapper.SetRTBrokenStatus(antenna, true);
-                ScreenMessages.PostScreenMessage(antenna.part.partName + "is not responding. Connection Failure.");
-                if (OhScrap.highlight) OhScrap.SetFailedHighlight();
-                if (!hasFailed) Debug.Log("[OhScrap](RemoteTech): " + SYP.ID + " has stopped transmitting");
-                hasFailed = true;
+                if (!hasFailed)
+                {
+                    Debug.Log("[OhScrap](RemoteTech): " + SYP.ID + " has stopped transmitting");
+                    hasFailed = true;
+                }
+            if (OhScrap.highlight) OhScrap.SetFailedHighlight();
+            ModWrapper.RemoteTechWrapper.SetRTBrokenStatus(antenna, true);
         }
         
         public override void RepairPart()
         {
             if (antenna)
             {
-                RemoteTechWrapper.SetRTBrokenStatus(antenna, false);
+                ModWrapper.RemoteTechWrapper.SetRTBrokenStatus(antenna, false);
             }
         }
 
