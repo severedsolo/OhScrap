@@ -22,18 +22,26 @@ namespace OhScrap
         public override bool FailureAllowed()
         {
             if (part.vessel.atmDensity == 0) return false;
-            return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ControlSurfaceFailureModuleAllowed;
+            return (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ControlSurfaceFailureModuleAllowed
+            &&  !ModWrapper.FerramWrapper.available); 
         }
         //control surface will stick and not respond to input
         public override void FailPart()
         {
-            controlSurface = part.FindModuleImplementing<ModuleControlSurface>();
+            if (!controlSurface)
+            {
+                controlSurface = part.FindModuleImplementing<ModuleControlSurface>();
+            }
+            if(!hasFailed)
+            {
+                Debug.Log("[OhScrap]: " + SYP.ID + " has suffered a control surface failure");
+                hasFailed = true;
+            }
+
+            if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             controlSurface.ignorePitch = true;
             controlSurface.ignoreRoll = true;
             controlSurface.ignoreYaw = true;
-            if (OhScrap.highlight) OhScrap.SetFailedHighlight();
-            if (hasFailed) return;
-            Debug.Log("[OhScrap]: " + SYP.ID + " has suffered a control surface failure");
         }
         //restores control to the control surface
         public override void RepairPart()
