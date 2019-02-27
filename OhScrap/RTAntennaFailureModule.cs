@@ -47,7 +47,6 @@ namespace OhScrap
                 {
                     if (part.FindModuleImplementing<ModuleDeployableAntenna>().deployState != ModuleDeployablePart.DeployState.EXTENDED) return false;
                 }
-                //if (RemoteTechWrapper.getRTBrokenStatus(antenna)) return false;
                 return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().AntennaFailureModuleAllowed;
             }
             else
@@ -57,17 +56,18 @@ namespace OhScrap
         }
         public override void FailPart()
         {
-                RemoteTechWrapper.setRTBrokenStatus(antenna, true);
-                hasFailed = true;
+                RemoteTechWrapper.SetRTBrokenStatus(antenna, true);
+                ScreenMessages.PostScreenMessage(antenna.part.partName + "is not responding. Connection Failure.");
                 if (OhScrap.highlight) OhScrap.SetFailedHighlight();
                 if (!hasFailed) Debug.Log("[OhScrap](RemoteTech): " + SYP.ID + " has stopped transmitting");
+                hasFailed = true;
         }
         
         public override void RepairPart()
         {
             if (antenna)
             {
-                RemoteTechWrapper.setRTBrokenStatus(antenna, false);
+                RemoteTechWrapper.SetRTBrokenStatus(antenna, false);
             }
         }
 

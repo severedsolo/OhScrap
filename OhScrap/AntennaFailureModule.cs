@@ -40,12 +40,14 @@ namespace OhScrap
             {
                 originalPower = antenna.antennaPower;
                 firstFail = false;
+                ScreenMessages.PostScreenMessage(part.partInfo.title + " Is not responding. Antenna Communication Failure.");
             }
             //turn the antenna power down to 0
             antenna.antennaPower = 0;
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             if (!hasFailed) Debug.Log("[OhScrap]: " + SYP.ID + " has stopped transmitting");
             hasFailed = true;
+
         }
         //repair just turns the power back to the original power
         public override void RepairPart()

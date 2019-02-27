@@ -10,7 +10,6 @@ namespace OhScrap
     public class RemoteTechWrapper
     {
         private static readonly BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
-        public static RemoteTechWrapper instance;
         private static Assembly RT = null;
         private static Type RTAntenna = null;
       
@@ -39,14 +38,7 @@ namespace OhScrap
         }
 
     
-
-        public static bool getRTBrokenStatus(PartModule p)
-        {
-           
-          return GetReflectionValue<bool>(p, "IsRTBroken");
-          
-        }
-        public static void setRTBrokenStatus(PartModule p, bool value)
+        public static void SetRTBrokenStatus(PartModule p, bool value)
         {
                 SetReflectionValue<bool>(p, "IsRTBroken", value);
                 SetReflectionValue<bool>(p, "IsRTActive", value);
@@ -55,7 +47,7 @@ namespace OhScrap
                     p.GetType().GetMethod("OnConnectionRefresh").Invoke(p, null);
                 }
         }
-        public static bool hasConnectionToKSC(Guid vesselGUID)
+        public static bool HasConnectionToKSC(Guid vesselGUID)
         {
               object[] parametersArray = new object[1];
               parametersArray[0] = vesselGUID;
@@ -68,7 +60,7 @@ namespace OhScrap
         //Relfection Helpers. 
         private static T GetReflectionValue<T>(PartModule p, string field_name)
         {
-            return (T)instance.GetType().GetField(field_name, flags).GetValue(instance);
+            return (T)p.GetType().GetField(field_name, flags).GetValue(p);
         }
         private static void SetReflectionValue<T>(PartModule p, string value_name, T value)
         {

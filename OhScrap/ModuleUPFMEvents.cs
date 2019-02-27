@@ -115,7 +115,7 @@ namespace OhScrap
             {
                 Debug.Log("[OhScrap]: Attempting Remote Repair");
                 //If CommNet or RemoteTech is enabled, check if vessel is connected. (can't upload a software fix with no connection)
-               if(RemoteTechWrapper.available && !RemoteTechWrapper.hasConnectionToKSC(FlightGlobals.ActiveVessel.id))
+               if(RemoteTechWrapper.available && !RemoteTechWrapper.HasConnectionToKSC(FlightGlobals.ActiveVessel.id))
                {
                     ScreenMessages.PostScreenMessage("Vessel must be connected to Homeworld before remote repair can be attempted");
                     Debug.Log("[OhScrap]:(RemoteTech) Remote Repair aborted. Vessel not connected home");
