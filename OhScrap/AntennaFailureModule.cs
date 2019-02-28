@@ -6,45 +6,55 @@ using UnityEngine;
 
 namespace OhScrap
 {
+    //Handles Antenna Failures if remote tech is not installed.
     class AntennaFailureModule : BaseFailureModule
     {
         ModuleDataTransmitter antenna;
-        [KSPField(isPersistant = true, guiActive = false)]
-        bool firstFail = false;
+        ModuleDeployableAntenna deployableAntenna;
         [KSPField(isPersistant = true, guiActive = false)]
         double originalPower;
 
 
         protected override void Overrides()
         {
-            Fields["displayChance"].guiName = "Chance of Antenna Failure";
-            Fields["safetyRating"].guiName = "Antenna Safety Rating";
-            failureType = "communication failure";
             antenna = part.FindModuleImplementing<ModuleDataTransmitter>();
+            if (antenna && antenna.CommType == 0) //We wont fail the part if its an internal antenna. They arn't real antenna.
+            {
+                Fields["displayChance"].guiActive = false;
+                Fields["safetyRating"].guiActive = false;
+            }else
+            {
+                Fields["displayChance"].guiName = "Chance of Antenna Failure";
+                Fields["safetyRating"].guiName = "Antenna Safety Rating";
+            }
+            
+            failureType = "communication failure";
+            
+            deployableAntenna = part.FindModuleImplementing<ModuleDeployableAntenna>();
             remoteRepairable = true;
         }
 
         public override bool FailureAllowed()
         {
-            if(part.FindModuleImplementing<ModuleDeployableAntenna>() != null)
+            if(deployableAntenna != null)
             {
-                if (part.FindModuleImplementing<ModuleDeployableAntenna>().deployState != ModuleDeployablePart.DeployState.EXTENDED) return false;
+                if (deployableAntenna.deployState != ModuleDeployablePart.DeployState.EXTENDED) return false;
             }
-            return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().AntennaFailureModuleAllowed;
+            return (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().AntennaFailureModuleAllowed 
+                    && CommNet.CommNetScenario.CommNetEnabled
+                    && antenna.CommType != 0 ); // Not an internal antenna. Command pods without external antennas should not get an antenna failure.
         }
         public override void FailPart()
         {   
             //if this is the first time we've failed this antenna, we need to make a note of the original power for when it's repaired.
-            if(firstFail)
+            if(!hasFailed)
             {
                 originalPower = antenna.antennaPower;
-                firstFail = false;
-
+                Debug.Log("[OhScrap]: " + SYP.ID + " has stopped transmitting");
+                hasFailed = true;
             }
-            //turn the antenna power down to 0
-            antenna.antennaPower = 0;
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
-            if (!hasFailed) Debug.Log("[OhScrap]: " + SYP.ID + " has stopped transmitting");
+            antenna.antennaPower = 0;
         }
         //repair just turns the power back to the original power
         public override void RepairPart()
