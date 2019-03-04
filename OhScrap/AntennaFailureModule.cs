@@ -27,9 +27,7 @@ namespace OhScrap
                 Fields["displayChance"].guiName = "Chance of Antenna Failure";
                 Fields["safetyRating"].guiName = "Antenna Safety Rating";
             }
-            
             failureType = "communication failure";
-            
             deployableAntenna = part.FindModuleImplementing<ModuleDeployableAntenna>();
             remoteRepairable = true;
         }
