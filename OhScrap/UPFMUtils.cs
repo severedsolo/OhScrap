@@ -221,8 +221,8 @@ namespace OhScrap
 
         private void StartFailure(BaseFailureModule failedModule)
         {
-            failedModule.hasFailed = true;
             failedModule.FailPart();
+            failedModule.hasFailed = true;         
             ModuleUPFMEvents eventModule = failedModule.part.FindModuleImplementing<ModuleUPFMEvents>();
             eventModule.highlight = true;
             eventModule.SetFailedHighlight();

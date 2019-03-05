@@ -10,7 +10,7 @@ namespace OhScrap
     {
 
         PartModule FARControlSurface;
-        private System.Random _randomizer = new System.Random();
+        private static System.Random _randomizer = new System.Random();
 
         
         private int failMode;
@@ -31,14 +31,18 @@ namespace OhScrap
         
         private const int hingeWeightTotal = (hingePitchWeight * 3) + hingeResetWeight + hingeStuckWeight;
 
+        //Upper and lower bounds of how much we adjust the control surface input during a hinge failure. 
+        //Different hinge failures will feel more or less severe.
+        private const int minAdjustAmount = 8;
+        private const int maxAdjustAmount = 15;
 
-        
         private StuckScenario stuckScenario;
         private ResetScenario resetScenario;
         private List<Scenario> hingeFailureScenarios = new List<Scenario>(); 
 
         protected override void Overrides()
         {
+            Debug.Log("[Mike] - Test 1");
             Fields["displayChance"].guiName = "Chance of Control Surface Failure";
             Fields["safetyRating"].guiName = "Control Surface Safety Rating";
             failureType = "Control Surface Failure";
@@ -49,13 +53,24 @@ namespace OhScrap
                     FARControlSurface = pm;
                 }
             }
+            int adjustmentAmount = 0;
+            if(minAdjustAmount >= maxAdjustAmount)
+            {
+                adjustmentAmount = minAdjustAmount;
+            }else
+            {
+                adjustmentAmount = _randomizer.Next(minAdjustAmount, maxAdjustAmount);
+                Debug.Log("[Mike] - Test 2 - " + adjustmentAmount);
+            }
+            
+            
             //Part is mechanical so can be repaired remotely.
             remoteRepairable = true;
 
             //Setup Weights and references. 
-            hingeFailureScenarios.Add(new PitchChangeScenario(hingePitchWeight));
-            hingeFailureScenarios.Add(new YawChangeScenario(hingeYawWeight));
-            hingeFailureScenarios.Add(new RollChangeScenario(hingeRollWeight));
+            hingeFailureScenarios.Add(new PitchChangeScenario(hingePitchWeight, adjustmentAmount));
+            hingeFailureScenarios.Add(new YawChangeScenario(hingeYawWeight, adjustmentAmount));
+            hingeFailureScenarios.Add(new RollChangeScenario(hingeRollWeight, adjustmentAmount));
             resetScenario = new ResetScenario(hingeResetWeight);
             hingeFailureScenarios.Add(resetScenario);
             stuckScenario = new StuckScenario(hingeStuckWeight);
@@ -76,6 +91,7 @@ namespace OhScrap
             if (!FARControlSurface) return;
             if (!hasFailed) 
             {
+                Debug.Log("[Mike] - Test 3 ");
                 failMode = _randomizer.Next(1, weightTotal + 1);
                 //failTimeBrakeRudder = ModWrapper.FerramWrapper.GetCtrlSurfBrakeRudder(FARControlSurface);
                 resetScenario.failTimeYaw = ModWrapper.FerramWrapper.GetCtrlSurfYaw(FARControlSurface);
@@ -104,9 +120,8 @@ namespace OhScrap
                 }
 
                 //Load from Config? randomize once or every time? 
-                int adjustmnetAmount = (_randomizer.Next(-10, 10)) / 100;
                 int adjustmentRoll = _randomizer.Next(1, hingeWeightTotal + 1);
-
+                
                 int counter = hingeFailureScenarios.Count - 1;
                 Scenario s = null;
                 while (counter >= 0)
@@ -115,9 +130,11 @@ namespace OhScrap
                     if ((adjustmentRoll -= s.Weight) <= 0)
                     {
                         counter = 0;
+                        
                     }
                     counter--;
                 }
+                //Debug.Log("Running S.Run() on " + s.GetType().ToString());
                 s.Run(FARControlSurface);
                 if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             }
@@ -126,6 +143,7 @@ namespace OhScrap
         public override void RepairPart()
         {
             resetScenario.Run(FARControlSurface);
+            
         }
 
         private abstract class Scenario
@@ -138,46 +156,102 @@ namespace OhScrap
     
         private class PitchChangeScenario : Scenario
         {
-            int adjust_amount { get; set; }
+            public int adjustmentAmount { get; set; }
             private float curr_amount;
-            public PitchChangeScenario(int weight)
+            public PitchChangeScenario(int weight, int amount  )
             {
+                adjustmentAmount = amount;
                 Weight = weight;
             }
             public override void Run(PartModule surface)
             {
                 curr_amount = ModWrapper.FerramWrapper.GetCtrlSurfPitch(surface);
-                ModWrapper.FerramWrapper.SetCtrlSurfPitch(surface, (curr_amount + (curr_amount * adjust_amount)));
+                int sign = _randomizer.Next(0, 2);
+                if (curr_amount > 90.0f)
+                {
+                    sign = 1;
+                }else if(curr_amount < -90.0f)
+                {
+                    sign = 0;
+                }
+                
+
+                if(sign == 0)
+                {
+                    ModWrapper.FerramWrapper.SetCtrlSurfPitch(surface, (curr_amount + ((curr_amount * adjustmentAmount) / 100)));
+                }else
+                {
+                    ModWrapper.FerramWrapper.SetCtrlSurfPitch(surface, (curr_amount - ((curr_amount * adjustmentAmount) / 100)));
+                }
+                
             }
            
         }
         private class YawChangeScenario : Scenario
         {
-            int adjust_amount { get; set; }
+            public int adjustmentAmount { get; set; }
             private float curr_amount;
-            public YawChangeScenario(int weight)
+            public YawChangeScenario(int weight, int amount)
             {
+                adjustmentAmount = amount;
                 Weight = weight;
             }
             public override void Run(PartModule surface)
             {
                 curr_amount = ModWrapper.FerramWrapper.GetCtrlSurfYaw(surface);
-                ModWrapper.FerramWrapper.SetCtrlSurfYaw(surface, (curr_amount + (curr_amount * adjust_amount)));
+                int sign = _randomizer.Next(0, 2);
+                if (curr_amount > 90.0f)
+                {
+                    sign = 1;
+                }
+                else if (curr_amount < -90.0f)
+                {
+                    sign = 0;
+                }
+
+                if (sign == 0)
+                {
+                    ModWrapper.FerramWrapper.SetCtrlSurfYaw(surface, (curr_amount + ((curr_amount * adjustmentAmount) / 100)));
+                }
+                else
+                {
+                    ModWrapper.FerramWrapper.SetCtrlSurfYaw(surface, (curr_amount - ((curr_amount * adjustmentAmount) / 100)));
+                }
+               
             }
 
         }
         private class RollChangeScenario : Scenario
         {
-            int adjust_amount { get; set; }
+            public int adjustmentAmount { get; set; }
             private float curr_amount;
-            public RollChangeScenario(int weight)
+            public RollChangeScenario(int weight, int amount)
             {
+                adjustmentAmount = amount;
                 Weight = weight;
             }
             public override void Run(PartModule surface)
             {
                 curr_amount = ModWrapper.FerramWrapper.GetCtrlSurfRoll(surface);
-                ModWrapper.FerramWrapper.SetCtrlSurfRoll(surface, (curr_amount + (curr_amount * adjust_amount)));
+                int sign = _randomizer.Next(0, 2);
+                if (curr_amount > 90.0f) 
+                {
+                    sign = 1;
+                }
+                else if (curr_amount < -90.0f)
+                {
+                    sign = 0;
+                }
+
+                if (sign == 0)
+                {
+                    ModWrapper.FerramWrapper.SetCtrlSurfRoll(surface, (curr_amount + ((curr_amount * adjustmentAmount) / 100)));
+                }
+                else
+                {
+                    ModWrapper.FerramWrapper.SetCtrlSurfRoll(surface, (curr_amount - ((curr_amount * adjustmentAmount) / 100)));
+                }
+                
             }
 
         }
