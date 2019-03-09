@@ -115,3 +115,4 @@ C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Debug\OhScrap.csproj.Co
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Debug\OhScrap.csproj.CopyComplete
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Debug\OhScrap.dll
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Debug\OhScrap.pdb
+C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Debug\OhScrap.csprojAssemblyReference.cache

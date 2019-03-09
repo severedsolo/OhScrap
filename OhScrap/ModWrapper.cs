@@ -150,6 +150,43 @@ namespace OhScrap
                 SetReflectionField<float>(p, "brakeRudder", value);
             }
 
+
+
+
+            //RealChuteLite. 
+            public enum DeploymentStates
+            {
+                NONE,
+                STOWED,
+                PREDEPLOYED,
+                DEPLOYED,
+                CUT
+            }
+
+            public static void CutChute(PartModule p)
+            {
+                p.GetType().GetMethod("Cut").Invoke(p, null);
+            }
+            public static void DeployChute(PartModule p)
+            {
+                float currMinPressure = GetReflectionField<float>(p, "minAirPressureToOpen");
+                SetReflectionField<float>(p, "minAirPressureToOpen", 0.0f); 
+                p.GetType().GetMethod("ActivateRC").Invoke(p, null);
+                SetReflectionField<float>(p, "minAirPressureToOpen", currMinPressure);
+            }
+
+
+
+            public static bool IsDeployed(PartModule p)
+            {
+                DeploymentStates state = GetDeploymentState(p);
+                return (state == DeploymentStates.DEPLOYED);
+            }
+            
+            public static DeploymentStates GetDeploymentState(PartModule p)
+            {
+                return GetReflectionProperty<DeploymentStates>(p, "DeploymentState");
+            }
         }
 
         //Relfection Helpers. 

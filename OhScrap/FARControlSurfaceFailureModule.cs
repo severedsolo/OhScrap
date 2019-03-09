@@ -11,29 +11,41 @@ namespace OhScrap
 
         PartModule FARControlSurface;
         private static System.Random _randomizer = new System.Random();
-
-        
         private int failMode;
-        public float failTimeBrakeRudder { get; set; }
 
-        //Weights for chances of different failures. -Need to load from cfg
+
+        //We have two failures. The Control surface gets stuck (0 control input), or it flails about partialy broken and adjusts your control
+        //input with weighted random amounts. These are the weights.  
+        [KSPField(isPersistant = true, guiActive = false)]
         private const int stuckWeight = 20;
+        [KSPField(isPersistant = true, guiActive = false)]
         private const int hingeWeight = 80;
+
 
         private const int weightTotal = stuckWeight + hingeWeight;
 
-        //Hinge Failure additional random weights. - load from cfg and balance. 
-        private const int hingePitchWeight = 20;
-        private const int hingeYawWeight = hingePitchWeight;
-        private const int hingeRollWeight = hingePitchWeight;
+        //Hinge Failure additional random weights. - Every tick we adjust pitch/yaw/roll input or we reset to the fail time values, or set all to 0. 
+        [KSPField(isPersistant = true, guiActive = false)]
+        private const int hingeAdjustmentWeight = 20;
+        
+        //Its possible to set the chances of pitch/yaw/roll adjustments happening individually. 
+        //May implement future logic - pitch more if your at a certian altitiude for example. 
+        private const int hingePitchWeight = hingeAdjustmentWeight;
+        private const int hingeYawWeight = hingeAdjustmentWeight;
+        private const int hingeRollWeight = hingeAdjustmentWeight;
+
+        [KSPField(isPersistant = true, guiActive = false)]
         private const int hingeResetWeight = 5;
+        [KSPField(isPersistant = true, guiActive = false)]
         private const int hingeStuckWeight = 2;
         
         private const int hingeWeightTotal = (hingePitchWeight * 3) + hingeResetWeight + hingeStuckWeight;
 
         //Upper and lower bounds of how much we adjust the control surface input during a hinge failure. 
         //Different hinge failures will feel more or less severe.
+        [KSPField(isPersistant = true, guiActive = false)]
         private const int minAdjustAmount = 8;
+        [KSPField(isPersistant = true, guiActive = false)]
         private const int maxAdjustAmount = 15;
 
         private StuckScenario stuckScenario;

@@ -35,7 +35,7 @@ namespace OhScrap
         //turns it back on again
         public override void RepairPart()
         {
-            rcs = part.FindModuleImplementing<ModuleRCS>();
+            //rcs = part.FindModuleImplementing<ModuleRCS>();
             rcs.rcsEnabled = true;
         }
     }
