@@ -48,20 +48,24 @@ namespace OhScrap
                 launched = true;
                 Initialise();
             }
-            
-            InvokeRepeating("FailPart", 0.1f, 0.1f);
 
+            FailPart();
+            hasFailed = true;
         }
-        [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = false, guiName = "Repair Forced failure (DEBUG)")]
+        [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = false, guiName = "Force Repair(DEBUG)")]
         public void ForcedRepair()
         {
-            CancelInvoke("FailPart");
+
             hasFailed = false;
-            willFail = false; 
+            willFail = false;
             RepairPart();
             OhScrap.Events["RepairChecks"].active = false;
-            OhScrap.highlight = false;
             OhScrap.Events["ToggleHighlight"].active = false;
+            numberOfRepairs++;
+            Debug.Log("[OhScrap]: " + SYP.ID + " " + moduleName + " was successfully repaired");
+            part.highlightType = Part.HighlightType.OnMouseOver;
+            part.SetHighlightColor(Color.green);
+            part.SetHighlight(false, false);
 
         }
 #endif

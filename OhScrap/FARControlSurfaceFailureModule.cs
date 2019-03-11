@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace OhScrap
 {
+
+    //Control surface failures for Ferram Aerospace. 
     class FARControlSurfaceFailureModule : BaseFailureModule
     {
 
@@ -54,7 +56,6 @@ namespace OhScrap
 
         protected override void Overrides()
         {
-            Debug.Log("[Mike] - Test 1");
             Fields["displayChance"].guiName = "Chance of Control Surface Failure";
             Fields["safetyRating"].guiName = "Control Surface Safety Rating";
             failureType = "Control Surface Failure";
@@ -72,7 +73,6 @@ namespace OhScrap
             }else
             {
                 adjustmentAmount = _randomizer.Next(minAdjustAmount, maxAdjustAmount);
-                Debug.Log("[Mike] - Test 2 - " + adjustmentAmount);
             }
             
             
@@ -103,13 +103,12 @@ namespace OhScrap
             if (!FARControlSurface) return;
             if (!hasFailed) 
             {
-                Debug.Log("[Mike] - Test 3 ");
                 failMode = _randomizer.Next(1, weightTotal + 1);
                 //failTimeBrakeRudder = ModWrapper.FerramWrapper.GetCtrlSurfBrakeRudder(FARControlSurface);
                 resetScenario.failTimeYaw = ModWrapper.FerramWrapper.GetCtrlSurfYaw(FARControlSurface);
                 resetScenario.failTimePitch = ModWrapper.FerramWrapper.GetCtrlSurfPitch(FARControlSurface);
                 resetScenario.failTimeRoll = ModWrapper.FerramWrapper.GetCtrlSurfRoll(FARControlSurface);
-                //Debug.Log("[OhScrap](FAR): " + SYP.ID + " has suffered a control surface failure");
+                
             }
 
 
@@ -146,7 +145,6 @@ namespace OhScrap
                     }
                     counter--;
                 }
-                //Debug.Log("Running S.Run() on " + s.GetType().ToString());
                 s.Run(FARControlSurface);
                 if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             }

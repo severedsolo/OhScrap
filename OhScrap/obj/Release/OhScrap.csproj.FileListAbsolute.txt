@@ -81,3 +81,4 @@ C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Release\OhScrap.csproj.
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Release\OhScrap.csproj.CopyComplete
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Release\OhScrap.dll
 C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Release\OhScrap.pdb
+C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Release\OhScrap.csprojAssemblyReference.cache

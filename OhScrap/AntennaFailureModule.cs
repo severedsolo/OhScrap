@@ -49,7 +49,6 @@ namespace OhScrap
             {
                 originalPower = antenna.antennaPower;
                 Debug.Log("[OhScrap]: " + SYP.ID + " has stopped transmitting");
-                hasFailed = true;
             }
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             antenna.antennaPower = 0;

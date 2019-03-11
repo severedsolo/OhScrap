@@ -43,13 +43,10 @@ namespace OhScrap
 
         public override void FailPart()
         {
-                if (!hasFailed)
-                {
-                    Debug.Log("[OhScrap](RemoteTech): " + SYP.ID + " has stopped transmitting");
-                    hasFailed = true;
-                }
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             ModWrapper.RemoteTechWrapper.SetRTBrokenStatus(antenna, true);
+            if (hasFailed) return;
+            Debug.Log("[OhScrap](RemoteTech): " + SYP.ID + " has stopped transmitting");
         }
         
         public override void RepairPart()

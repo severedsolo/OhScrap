@@ -21,21 +21,19 @@ namespace OhScrap
             Fields["displayChance"].guiName = "Chance of RCS Failure";
             Fields["safetyRating"].guiName = "RCS Safety Rating";
             failureType = "RCS Failure";
+            rcs = part.FindModuleImplementing<ModuleRCS>();
         }
 
         //turns the RCS off.
         public override void FailPart()
         {
-            rcs = part.FindModuleImplementing<ModuleRCS>();
             if (rcs == null) return;
             rcs.rcsEnabled = false;
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
-            if (hasFailed) return;
         }
         //turns it back on again
         public override void RepairPart()
         {
-            //rcs = part.FindModuleImplementing<ModuleRCS>();
             rcs.rcsEnabled = true;
         }
     }

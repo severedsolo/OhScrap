@@ -173,6 +173,7 @@ namespace OhScrap
                 SetReflectionField<float>(p, "minAirPressureToOpen", 0.0f); 
                 p.GetType().GetMethod("ActivateRC").Invoke(p, null);
                 SetReflectionField<float>(p, "minAirPressureToOpen", currMinPressure);
+
             }
 
 
@@ -180,13 +181,14 @@ namespace OhScrap
             public static bool IsDeployed(PartModule p)
             {
                 DeploymentStates state = GetDeploymentState(p);
-                return (state == DeploymentStates.DEPLOYED);
+                return (state == DeploymentStates.DEPLOYED || state == DeploymentStates.PREDEPLOYED);
             }
             
             public static DeploymentStates GetDeploymentState(PartModule p)
             {
                 return GetReflectionProperty<DeploymentStates>(p, "DeploymentState");
             }
+            
         }
 
         //Relfection Helpers. 

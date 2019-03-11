@@ -6,17 +6,14 @@ using UnityEngine;
 
 namespace OhScrap
 {
+    //Failures for parachutes when Ferram Aerospace is installed. FAR uses it's own implementation of realchute. 
     class FARParachuteFailureModule : BaseFailureModule
     {
         PartModule chute;
-        private bool allowSpaceDeploy = true;
-
-
-
+        
         public override bool FailureAllowed()
         {
-            if(vessel.situation = )
-
+           // if (vessel.atmDensity <= 0.001f) return false; 
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ParachuteFailureModuleAllowed;
         }
 
@@ -34,7 +31,7 @@ namespace OhScrap
             }
         }
 
-        //Cuts the chute if it's deployed
+        
         public override void FailPart()
         {
 
@@ -45,12 +42,24 @@ namespace OhScrap
             if (ModWrapper.FerramWrapper.IsDeployed(chute))
             {
                     ModWrapper.FerramWrapper.CutChute(chute);
-            }else
+                   chute.Events["GUIRepack"].active = false;
+            }
+            else
             {
-                    ModWrapper.FerramWrapper.DeployChute(chute);
+                    ModWrapper.FerramWrapper.DeployChute(chute); //Will deploy the chute right away, ignoring chutes min altitude/pressure. 
+                    chute.Events["GUIDisarm"].active = false;
+                    chute.Events["GUIRepack"].active = false;
+                    
+                    
             }
             hasFailed = true;
           
+        }
+
+        public override void RepairPart() //turn off highlight and repack with one of realchutes spares.
+        {
+                chute.Events["GUIDisarm"].active = true;
+                chute.Events["GUIRepack"].active = true;
         }
     }
 }
