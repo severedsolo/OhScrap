@@ -79,7 +79,7 @@ namespace OhScrap
                 get
                 {
                     bool loaded = (FAR != null);
-                    if (!loaded && !tried)
+                    if (!loaded && !tried) 
                     {
                         for (int i = 0; i < AssemblyLoader.loadedAssemblies.Count; i++)
                         {
@@ -96,10 +96,99 @@ namespace OhScrap
                     return loaded;
                 }
             }
-            public static void FailControlSurface(PartModule p)
+            
+            public static float GetCtrlSurfYaw(PartModule p)
             {
-                
+                return (float)GetReflectionField<float>(p, "yawaxis");
             }
+            public static float GetCtrlSurfPitch(PartModule p)
+            {
+                return (float)GetReflectionField<float>(p, "pitchaxis");
+            }
+            public static float GetCtrlSurfRoll(PartModule p)
+            {
+                return (float)GetReflectionField<float>(p, "rollaxis");
+            }
+            public static float GetCtrlSurfMaxDeflect(PartModule p)
+            {
+                return (float)GetReflectionField<float>(p, "maxdeflect");
+            }
+            public static float GetCtrlSurfBrakeRudder(PartModule p)
+            {
+                return (float)GetReflectionField<float>(p, "brakeRudder");
+            }
+
+            public static bool GetCtrlSurfIsSpoiler(PartModule p)
+            {
+                return (bool)GetReflectionField<bool>(p, "isSpoiler");
+            }
+            public static bool GetCtrlSurfIsFlap(PartModule p)
+            {
+                return (bool)GetReflectionField<bool>(p, "isSpoiler");
+            }
+            
+
+
+            public static void SetCtrlSurfYaw(PartModule p, float value)
+            {
+                SetReflectionField<float>(p, "yawaxis", value);
+            }
+            public static void SetCtrlSurfPitch(PartModule p, float value)
+            {
+                SetReflectionField<float>(p, "pitchaxis", value);
+            }
+            public static void SetCtrlSurfRoll(PartModule p, float value)
+            {
+                SetReflectionField<float>(p, "rollaxis", value);
+            }
+            public static void SetCtrlSurfMaxDeflect(PartModule p, float value)
+            {
+                SetReflectionField<float>(p, "maxdeflect", value);
+            }
+            public static void SetCtrlSurfBrakeRudder(PartModule p, float value)
+            {
+                SetReflectionField<float>(p, "brakeRudder", value);
+            }
+
+
+
+
+            //RealChuteLite. 
+            public enum DeploymentStates
+            {
+                NONE,
+                STOWED,
+                PREDEPLOYED,
+                DEPLOYED,
+                CUT
+            }
+
+            public static void CutChute(PartModule p)
+            {
+                p.GetType().GetMethod("Cut").Invoke(p, null);
+            }
+            public static void DeployChute(PartModule p)
+            {
+                float currMinPressure = GetReflectionField<float>(p, "minAirPressureToOpen");
+                SetReflectionField<float>(p, "minAirPressureToOpen", 0.0f); 
+                p.GetType().GetMethod("ActivateRC").Invoke(p, null);
+                SetReflectionField<float>(p, "minAirPressureToOpen", currMinPressure);
+
+            }
+
+
+
+            public static bool IsDeployed(PartModule p)
+            {
+                DeploymentStates state = GetDeploymentState(p);
+                return (state == DeploymentStates.DEPLOYED || state == DeploymentStates.PREDEPLOYED);
+            }
+            
+            public static DeploymentStates GetDeploymentState(PartModule p)
+            {
+                return GetReflectionProperty<DeploymentStates>(p, "DeploymentState");
+            }
+            
         }
 
         //Relfection Helpers. 

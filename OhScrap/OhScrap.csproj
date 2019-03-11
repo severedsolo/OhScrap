@@ -63,6 +63,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AntennaFailureModule.cs" />
+    <Compile Include="FARControlSurfaceFailureModule.cs" />
+    <Compile Include="FARParachuteFailureModule.cs" />
     <Compile Include="ModWrapper.cs" />
     <Compile Include="RTAntennaFailureModule.cs" />
     <Compile Include="BaseFailureModule.cs" />
