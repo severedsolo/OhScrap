@@ -16,40 +16,38 @@ namespace OhScrap
         private int failMode;
 
 
-        //We have two failures. The Control surface gets stuck (0 control input), or it flails about partialy broken and adjusts your control
-        //input with weighted random amounts. These are the weights.  
+        //We have two failures. The Control surface gets stuck (0 control input), or it flails about partialy broken and adjusts your control input with weighted random amounts. These are the weights.  
         [KSPField(isPersistant = true, guiActive = false)]
-        private const int stuckWeight = 20;
+        public int stuckWeight = 20;
         [KSPField(isPersistant = true, guiActive = false)]
-        private const int hingeWeight = 80;
+        public int hingeWeight = 80;
 
+        private int weightTotal; 
 
-        private const int weightTotal = stuckWeight + hingeWeight;
-
-        //Hinge Failure additional random weights. - Every tick we adjust pitch/yaw/roll input or we reset to the fail time values, or set all to 0. 
+        //Hinge Failure additional random weights. - Every tick we adjust pitch/yaw/roll input amount or we reset to the fail time values, or set all to 0. 
         [KSPField(isPersistant = true, guiActive = false)]
-        private const int hingeAdjustmentWeight = 20;
+        public int hingeAdjustmentWeight = 20;  //chance of changing one of pitch,yaw or roll when a hinge failure happens.
         
-        //Its possible to set the chances of pitch/yaw/roll adjustments happening individually. 
-        //May implement future logic - pitch more if your at a certian altitiude for example. 
-        private const int hingePitchWeight = hingeAdjustmentWeight;
-        private const int hingeYawWeight = hingeAdjustmentWeight;
-        private const int hingeRollWeight = hingeAdjustmentWeight;
+        public int hingePitchWeight;
+        public int hingeYawWeight; 
+        public int hingeRollWeight;
 
         [KSPField(isPersistant = true, guiActive = false)]
-        private const int hingeResetWeight = 5;
+        public int hingeResetWeight = 5; //chance of resetting control to fail time amounts during a hinge fail.
         [KSPField(isPersistant = true, guiActive = false)]
-        private const int hingeStuckWeight = 2;
-        
-        private const int hingeWeightTotal = (hingePitchWeight * 3) + hingeResetWeight + hingeStuckWeight;
+        public int hingeStuckWeight = 2; //Chance of setting input to 0 during failure. 
+
+        public int hingeWeightTotal;
 
         //Upper and lower bounds of how much we adjust the control surface input during a hinge failure. 
         //Different hinge failures will feel more or less severe.
         [KSPField(isPersistant = true, guiActive = false)]
-        private const int minAdjustAmount = 8;
+        public int minAdjustAmount = 8;
         [KSPField(isPersistant = true, guiActive = false)]
-        private const int maxAdjustAmount = 15;
+        public int maxAdjustAmount = 15;
 
+
+        private int adjustmentAmount = 0;
         private StuckScenario stuckScenario;
         private ResetScenario resetScenario;
         private List<Scenario> hingeFailureScenarios = new List<Scenario>(); 
@@ -66,20 +64,19 @@ namespace OhScrap
                     FARControlSurface = pm;
                 }
             }
-            int adjustmentAmount = 0;
-            if(minAdjustAmount >= maxAdjustAmount)
-            {
-                adjustmentAmount = minAdjustAmount;
-            }else
-            {
-                adjustmentAmount = _randomizer.Next(minAdjustAmount, maxAdjustAmount);
-            }
-            
             
             //Part is mechanical so can be repaired remotely.
             remoteRepairable = true;
 
             //Setup Weights and references. 
+            CheckValidWeights(); 
+
+            hingePitchWeight = hingeAdjustmentWeight;
+            hingeYawWeight = hingeAdjustmentWeight;
+            hingeRollWeight = hingeAdjustmentWeight;
+            weightTotal = stuckWeight + hingeWeight;
+            hingeWeightTotal = (hingePitchWeight * 3) + hingeResetWeight + hingeStuckWeight;
+
             hingeFailureScenarios.Add(new PitchChangeScenario(hingePitchWeight, adjustmentAmount));
             hingeFailureScenarios.Add(new YawChangeScenario(hingeYawWeight, adjustmentAmount));
             hingeFailureScenarios.Add(new RollChangeScenario(hingeRollWeight, adjustmentAmount));
@@ -111,7 +108,6 @@ namespace OhScrap
                 
             }
 
-
             if (failMode <= stuckWeight) //Stuck Surface.
             {
                 if (!hasFailed)
@@ -126,11 +122,9 @@ namespace OhScrap
             {
                 if (!hasFailed)
                 {
-                    Debug.Log("[OhScrap](FAR): " + SYP.ID + " hinge failure.");
+                    Debug.Log("[OhScrap](FAR): " + SYP.ID + " Control surface hinge failure.");
                     hasFailed = true;
                 }
-
-                //Load from Config? randomize once or every time? 
                 int adjustmentRoll = _randomizer.Next(1, hingeWeightTotal + 1);
                 
                 int counter = hingeFailureScenarios.Count - 1;
@@ -149,6 +143,8 @@ namespace OhScrap
                 if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             }
         }
+       
+        
         //restores control to the control surface
         public override void RepairPart()
         {
@@ -163,7 +159,6 @@ namespace OhScrap
             public abstract void Run(PartModule surface);
         }
 
-    
         private class PitchChangeScenario : Scenario
         {
             public int adjustmentAmount { get; set; }
@@ -197,6 +192,7 @@ namespace OhScrap
             }
            
         }
+
         private class YawChangeScenario : Scenario
         {
             public int adjustmentAmount { get; set; }
@@ -231,6 +227,7 @@ namespace OhScrap
             }
 
         }
+
         private class RollChangeScenario : Scenario
         {
             public int adjustmentAmount { get; set; }
@@ -296,6 +293,28 @@ namespace OhScrap
                 ModWrapper.FerramWrapper.SetCtrlSurfRoll(surface, 0.0f);
                 ModWrapper.FerramWrapper.SetCtrlSurfYaw(surface, 0.0f);
             }
+        }
+
+        private void CheckValidWeights()
+        {
+            removeNegatives(stuckWeight);
+            removeNegatives(hingeWeight);
+            removeNegatives(hingeAdjustmentWeight);
+            removeNegatives(hingeResetWeight);
+            removeNegatives(hingeStuckWeight);
+            if (minAdjustAmount >= maxAdjustAmount)
+            {
+                adjustmentAmount = minAdjustAmount;
+            }
+            else
+            {
+                adjustmentAmount = _randomizer.Next(minAdjustAmount, maxAdjustAmount);
+            }
+        }
+
+        private int removeNegatives(int x)
+        {
+            return x < 0 ? 0 : x;
         }
     }
 

@@ -15,12 +15,12 @@ namespace OhScrap
             Fields["displayChance"].guiName = "Chance of Battery Failure";
             Fields["safetyRating"].guiName = "Battery Safety Rating";
             failureType = "Short Circuit";
+            battery = part.Resources["ElectricCharge"];
         }
 
         // Failure will drain the battery and stop it from recharging.
         public override void FailPart()
         {
-            battery = part.Resources["ElectricCharge"];
             battery.amount = 0;
             battery.flowState = false;
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
@@ -31,8 +31,7 @@ namespace OhScrap
         //Repair allows it to be charged again.
         public override void RepairPart()
         {
-            battery = part.Resources["ElectricCharge"];
-            battery.flowState = true;
+           battery.flowState = true;
         }
 
         public override bool FailureAllowed()

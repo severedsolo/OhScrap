@@ -16,6 +16,7 @@ namespace OhScrap
             Fields["safetyRating"].guiName = "Reaction Wheel Safety Rating";
             failureType = "Reaction Wheel Failure";
             remoteRepairable = true;
+            rw = part.FindModuleImplementing<ModuleReactionWheel>();
         }
 
         public override bool FailureAllowed()
@@ -28,7 +29,7 @@ namespace OhScrap
         // Reaction wheel stops working
         public override void FailPart()
         {
-            rw = part.FindModuleImplementing<ModuleReactionWheel>();
+            if (!rw) return;
             rw.isEnabled = false;
             rw.wheelState = ModuleReactionWheel.WheelState.Broken;
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
@@ -37,7 +38,7 @@ namespace OhScrap
         //Turns it back on again,
         public override void RepairPart()
         {
-            rw = part.FindModuleImplementing<ModuleReactionWheel>();
+            if (!rw) return;
             rw.isEnabled = true;
             rw.wheelState = ModuleReactionWheel.WheelState.Active;
         }

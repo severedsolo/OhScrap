@@ -27,6 +27,7 @@ namespace OhScrap
             Fields["displayChance"].guiName = "Chance of Engine Failure";
             Fields["safetyRating"].guiName = "Engine Safety Rating";
             engine = part.FindModuleImplementing<ModuleEngines>();
+            gimbal = part.FindModuleImplementing<ModuleGimbal>();
             //If the ISP at sea level suggests this is a space engine, change the lifetime and failure rates accordingly
             float staticPressure = (float)(FlightGlobals.GetHomeBody().GetPressure(0) * PhysicsGlobals.KpaToAtmospheres);
             if (engine.atmosphereCurve.Evaluate(staticPressure) <= 100.0f)
@@ -44,17 +45,14 @@ namespace OhScrap
 
         public override void FailPart()
         {
-            engine = part.FindModuleImplementing<ModuleEngines>();
-            gimbal = part.FindModuleImplementing<ModuleGimbal>();
-            if (engine != null)
+            if (!engine) return;
+            //In the event of a fuel line leak, the chance of explosion will be reset if the engine is shut down.
+            if (engine.currentThrottle == 0)
             {
-                //In the event of a fuel line leak, the chance of explosion will be reset if the engine is shut down.
-                if (engine.currentThrottle == 0)
-                {
-                    fuelLineCounter = 5;
-                    return;
-                }
+                fuelLineCounter = 5;
+                return;
             }
+
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             //Randomly pick which failure we will give the player
             if (failureType == "none")
@@ -122,7 +120,6 @@ namespace OhScrap
 
         public override void RepairPart()
         {
-            engine = part.FindModuleImplementing<ModuleEngines>();
             switch (failureType)
             {
                 case "Fuel Flow Failure":
