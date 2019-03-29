@@ -18,6 +18,7 @@ namespace OhScrap
             Fields["displayChance"].guiName = "Chance of Solar Panel Failure";
             Fields["safetyRating"].guiName = "Solar Panel Safety Rating";
             remoteRepairable = true;
+            panel = part.FindModuleImplementing<ModuleDeployableSolarPanel>();
         }
         public override bool FailureAllowed()
         {
@@ -30,7 +31,6 @@ namespace OhScrap
         public override void FailPart()
         {
             //If the part can't retract will always get a sun tracking error, otherwise it will get a retraction or sun tracking at random.
-            panel = part.FindModuleImplementing<ModuleDeployableSolarPanel>();
             if (panel == null) return;
             if (!trackingSet)
             {
@@ -58,7 +58,7 @@ namespace OhScrap
         //returns to original state.
         public override void RepairPart()
         {
-            panel = part.FindModuleImplementing<ModuleDeployableSolarPanel>();
+            if (!panel) return;
             if (originallyRetractable) panel.retractable = true;
             panel.isTracking = true;
         }

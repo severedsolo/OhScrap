@@ -49,6 +49,7 @@ namespace OhScrap
         public override bool FailureAllowed()
         {
             if (cantLeak) return false;
+            if (part.vesselType == VesselType.EVA) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().TankFailureModuleAllowed;
         }
         //Assuming that part has a resource that is not on the blacklist, it will leak.

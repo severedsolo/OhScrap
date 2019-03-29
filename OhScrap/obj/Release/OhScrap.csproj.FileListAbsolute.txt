@@ -66,19 +66,3 @@ D:/OneDrive/Documents/Github/OhScrap/OhScrap/obj/Release/OhScrap.pdb
 /home/martin/Documents/GitHub/OhScrap/OhScrap/obj/Release/OhScrap.pdb
 /home/martin/Documents/GitHub/OhScrap/OhScrap/bin/Release/Assembly-CSharp-firstpass.dll
 /home/martin/Documents/GitHub/OhScrap/OhScrap/bin/Release/Assembly-CSharp.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Release\OhScrap.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Release\OhScrap.pdb
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Release\Assembly-CSharp-firstpass.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Release\Assembly-CSharp.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Release\UnityEngine.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Release\UnityEngine.UI.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Release\KSPTrackIR.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Release\KSPAssets.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Release\Mono.Cecil.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Release\Ionic.Zip.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\bin\Release\TDx.TDxInput.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Release\OhScrap.csproj.CoreCompileInputs.cache
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Release\OhScrap.csproj.CopyComplete
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Release\OhScrap.dll
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Release\OhScrap.pdb
-C:\Users\JeB KerMin\Documents\GitHub\OhScrap\OhScrap\obj\Release\OhScrap.csprojAssemblyReference.cache

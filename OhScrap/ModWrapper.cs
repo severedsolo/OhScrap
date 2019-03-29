@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace OhScrap
 {
-    //Collection of small helper classes used to support other mods via reflection. 
+    //Collection of small classes used to provide basic support for other mods via reflection. 
     public class ModWrapper
     {
         private static readonly BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;

@@ -6,14 +6,17 @@ using UnityEngine;
 
 namespace OhScrap
 {
-    //Failures for parachutes when Ferram Aerospace is installed. FAR uses it's own implementation of realchute. 
+    /*Failures for parachutes when Ferram Aerospace is installed. FAR uses it's own implementation of realchute. 
+     * If chute is stowed, it will arm. If you are in an atmosphere it will deploy. If you are not in an atmosphere, it will
+     * deploy as soon as you enter one. You cannot disarm the chute without repairing the part. You cannot repack the chute without repairing the part. 
+     */
+
     class FARParachuteFailureModule : BaseFailureModule
     {
         PartModule chute;
         
         public override bool FailureAllowed()
         {
-           // if (vessel.atmDensity <= 0.001f) return false; 
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ParachuteFailureModuleAllowed;
         }
 
