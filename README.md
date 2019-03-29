@@ -1,2 +1,2 @@
 # OhScrap
-Adding Support to OhScrap for some other common mods. Remote tech is first, Ferram and Kerbal health will likely follow. 
+Adding Support to OhScrap for remote tech and ferram aerospace. Other mods may be included as-well. 
