@@ -17,6 +17,7 @@ namespace OhScrap
             failureType = "Stuck Control Surface";
             //Part is mechanical so can be repaired remotely.
             remoteRepairable = true;
+            controlSurface = part.FindModuleImplementing<ModuleControlSurface>();
         }
 
         public override bool FailureAllowed()
@@ -28,16 +29,11 @@ namespace OhScrap
         //control surface will stick and not respond to input
         public override void FailPart()
         {
-            if (!controlSurface)
-            {
-                controlSurface = part.FindModuleImplementing<ModuleControlSurface>();
-            }
+            if (!controlSurface) return;
             if(!hasFailed)
             {
                 Debug.Log("[OhScrap]: " + SYP.ID + " has suffered a control surface failure");
-                hasFailed = true;
             }
-
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             controlSurface.ignorePitch = true;
             controlSurface.ignoreRoll = true;
@@ -46,7 +42,6 @@ namespace OhScrap
         //restores control to the control surface
         public override void RepairPart()
         {
-            controlSurface = part.FindModuleImplementing<ModuleControlSurface>();
             controlSurface.ignorePitch = false;
             controlSurface.ignoreRoll = false;
             controlSurface.ignoreYaw = false;

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace OhScrap
 {
-    //Handles Antenna Failures if remote tech is not installed.
+    //Handles Stock Antenna Failures. 
     class AntennaFailureModule : BaseFailureModule
     {
         ModuleDataTransmitter antenna;
@@ -18,7 +18,7 @@ namespace OhScrap
         protected override void Overrides()
         {
             antenna = part.FindModuleImplementing<ModuleDataTransmitter>();
-            if (antenna && antenna.CommType == 0) //We wont fail the part if its an internal antenna. They arn't real antenna.
+            if (antenna && antenna.CommType == 0) 
             {
                 Fields["displayChance"].guiActive = false;
                 Fields["safetyRating"].guiActive = false;
@@ -27,9 +27,7 @@ namespace OhScrap
                 Fields["displayChance"].guiName = "Chance of Antenna Failure";
                 Fields["safetyRating"].guiName = "Antenna Safety Rating";
             }
-            
             failureType = "communication failure";
-            
             deployableAntenna = part.FindModuleImplementing<ModuleDeployableAntenna>();
             remoteRepairable = true;
         }
@@ -51,7 +49,6 @@ namespace OhScrap
             {
                 originalPower = antenna.antennaPower;
                 Debug.Log("[OhScrap]: " + SYP.ID + " has stopped transmitting");
-                hasFailed = true;
             }
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             antenna.antennaPower = 0;

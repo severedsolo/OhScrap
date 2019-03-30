@@ -20,12 +20,13 @@ namespace OhScrap
             Fields["displayChance"].guiName = "Chance of Parachute Failure";
             failureType = "Parachute Failure";
             Fields["safetyRating"].guiName = "Parachute Safety Rating";
+            chute = part.FindModuleImplementing<ModuleParachute>();
         }
 
         //Cuts the chute if it's deployed
         public override void FailPart()
         {
-            chute = part.FindModuleImplementing<ModuleParachute>();
+            
             if (chute == null) return;
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             if (chute.vessel != FlightGlobals.ActiveVessel) return;

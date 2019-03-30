@@ -36,10 +36,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>D:\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>D:\Kerbal Space Program1.6.1\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>D:\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>D:\Kerbal Space Program1.6.1\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="ScrapYard, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -55,14 +55,16 @@
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program - ModDev\GameData\ScrapYard\ScrapYard.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>D:\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>D:\Kerbal Space Program1.6.1\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>D:\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>D:\Kerbal Space Program1.6.1\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AntennaFailureModule.cs" />
+    <Compile Include="FARControlSurfaceFailureModule.cs" />
+    <Compile Include="FARParachuteFailureModule.cs" />
     <Compile Include="ModWrapper.cs" />
     <Compile Include="RTAntennaFailureModule.cs" />
     <Compile Include="BaseFailureModule.cs" />
