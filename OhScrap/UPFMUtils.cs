@@ -84,7 +84,6 @@ namespace OhScrap
         {
             GameEvents.onPartDie.Add(OnPartDie);
             GameEvents.onGUIApplicationLauncherReady.Add(GUIReady);
-            GameEvents.onEditorShipModified.Add(onEditorShipModified);
             GameEvents.OnFlightGlobalsReady.Add(OnFlightGlobalsReady);
             GameEvents.onVesselSituationChange.Add(SituationChange);
             //Remembers if the player had the windows opened for closed last time they loaded this scene.
@@ -257,32 +256,7 @@ namespace OhScrap
             generations.Add(id, i);
             return i;
         }
-        //When the Editor Vessel is modified check the safety ratings and update the UI
-        private void onEditorShipModified(ShipConstruct shipConstruct)
-        {
-            vesselSafetyRating = 0;
-            float worstPartChance = 1;
-            int bfmCount = 0;
-            editorConstruct = shipConstruct;
-            for (int i = 0; i < shipConstruct.parts.Count(); i++)
-            {
-                Part p = shipConstruct.parts.ElementAt(i);
-                List<BaseFailureModule> bfmList = p.FindModulesImplementing<BaseFailureModule>();
-                for (int b = 0; b < bfmList.Count(); b++)
-                {
-                    BaseFailureModule bfm = bfmList.ElementAt(b);
-                    if (bfm == null) continue;
-                    if (bfm.chanceOfFailure > worstPartChance && !bfm.isSRB && !bfm.hasFailed)
-                    {
-                        worstPart = p;
-                        worstPartChance = bfm.chanceOfFailure;
-                    }
-                    vesselSafetyRating += bfm.safetyRating;
-                    bfmCount++;
-                }
-            }
-            vesselSafetyRating = vesselSafetyRating / bfmCount;
-        }
+
         //This is mostly for use in the flight scene, will only run once assuming everything goes ok.
         void Update()
         {
@@ -312,8 +286,9 @@ namespace OhScrap
                         }
                     }
                 }
-                if (HighLogic.LoadedSceneIsEditor && editorConstruct != null)
+                if (HighLogic.LoadedSceneIsEditor)
                 {
+                    if (editorConstruct == null) editorConstruct = EditorLogic.fetch.ship;
                     for (int i = 0; i < editorConstruct.parts.Count(); i++)
                     {
                         Part p = editorConstruct.parts.ElementAt(i);
