@@ -64,3 +64,4 @@ C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Release\OhScrap.csproj.CoreCompi
 C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Release\OhScrap.csproj.CopyComplete
 C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Release\OhScrap.dll
 C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Release\OhScrap.pdb
+C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Release\OhScrap.csprojAssemblyReference.cache
