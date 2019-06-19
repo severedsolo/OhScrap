@@ -61,6 +61,8 @@
     <Compile Include="AntennaFailureModule.cs" />
     <Compile Include="FARControlSurfaceFailureModule.cs" />
     <Compile Include="FARParachuteFailureModule.cs" />
+    <Compile Include="HeatControl.cs" />
+    <Compile Include="HeatControlFailure.cs" />
     <Compile Include="ModWrapper.cs" />
     <Compile Include="RTAntennaFailureModule.cs" />
     <Compile Include="BaseFailureModule.cs" />
