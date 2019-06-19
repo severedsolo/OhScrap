@@ -416,8 +416,11 @@ namespace OhScrap
             }
             if(vesselSafetyRating == -1 || editorConstruct == null || editorConstruct.parts.Count() == 0)
             {
-                GUILayout.Label("No parts detected. Place or right click on a part");
-                return;
+                if (HighLogic.LoadedSceneIsEditor || vesselSafetyRating == -1)
+                {
+                    GUILayout.Label("No parts detected. Place or right click on a part");
+                    return;
+                }
             }
             GUILayout.Label("Vessel Safety Rating: " + vesselSafetyRating + " " + s);
             advancedDisplay = File.Exists(KSPUtil.ApplicationRootPath + "GameData/Severedsolo/OhScrap/debug.txt");
