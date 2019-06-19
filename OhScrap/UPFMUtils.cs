@@ -288,7 +288,7 @@ namespace OhScrap
                 }
                 if (HighLogic.LoadedSceneIsEditor)
                 {
-                    if (editorConstruct == null) editorConstruct = EditorLogic.fetch.ship;
+                    if (editorConstruct == null || editorConstruct.parts.Count() == 0) editorConstruct = EditorLogic.fetch.ship;
                     for (int i = 0; i < editorConstruct.parts.Count(); i++)
                     {
                         Part p = editorConstruct.parts.ElementAt(i);
@@ -414,7 +414,7 @@ namespace OhScrap
                     s = "(Invalid)";
                     break;
             }
-            if(vesselSafetyRating == -1)
+            if(vesselSafetyRating == -1 || editorConstruct == null || editorConstruct.parts.Count() == 0)
             {
                 GUILayout.Label("No parts detected. Place or right click on a part");
                 return;
