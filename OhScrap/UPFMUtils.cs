@@ -307,6 +307,7 @@ namespace OhScrap
                             bfmCount++;
                         }
                     }
+                    if (bfmCount == 0) editorConstruct = null;
                 }
                 vesselSafetyRating = vesselSafetyRating / bfmCount;
             }
