@@ -15,14 +15,16 @@ namespace OhScrap
         public bool willFail = false;
         [KSPField(isPersistant = true, guiActive = false)]
         public bool launched = false;
-        [KSPField(isPersistant = true, guiActive = false)]
-        public bool endOfLife = false;
+        [KSPField(isPersistant = true, guiActive = true)]
+        public double usedTime;
+        [KSPField(isPersistant = true, guiActive = true)]
+        public double lastCheckedTime = 0;
         [KSPField(isPersistant = true, guiActive = false)]
         public bool hasFailed = false;
         [KSPField(isPersistant = true, guiActive = false)]
         public string failureType = "none";
         [KSPField(isPersistant = true, guiActive = false)]
-        public int expectedLifetime = 2;
+        public double ratedTime = 1800;
         public ModuleSYPartTracker SYP;
         [KSPField(isPersistant = true, guiActive = false)]
         public float chanceOfFailure = 0.1f;
@@ -38,6 +40,7 @@ namespace OhScrap
         public bool remoteRepairable = false;
         public bool isSRB = false;
         public bool excluded = false;
+
 
 #if DEBUG
         [KSPEvent(active = true, guiActive = true, guiActiveUnfocused = true, unfocusedRange = 5.0f, externalToEVAOnly = false, guiName = "Force Failure (DEBUG)")]
@@ -222,6 +225,7 @@ namespace OhScrap
         public virtual void RepairPart() { }
         //this should read from the Difficulty Settings.
         public virtual bool FailureAllowed() { return false; }
+        public virtual bool IsActive() { return false; }
 
         private void FixedUpdate()
         {
