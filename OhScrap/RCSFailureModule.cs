@@ -12,7 +12,7 @@ namespace OhScrap
 
         public override bool FailureAllowed()
         {
-            if(vessel.ActionGroups[KSPActionGroup.RCS]) return false;
+            if(!vessel.ActionGroups[KSPActionGroup.RCS]) return false;
              return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().RCSFailureModuleAllowed;
         }
 
