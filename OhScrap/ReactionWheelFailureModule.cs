@@ -21,7 +21,7 @@ namespace OhScrap
 
         public override bool FailureAllowed()
         {
-            rw = part.FindModuleImplementing<ModuleReactionWheel>();
+            if (rw == null) return false;
             if (!rw.isEnabled && rw.wheelState != ModuleReactionWheel.WheelState.Active) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ReactionWheelFailureModuleAllowed;
         }

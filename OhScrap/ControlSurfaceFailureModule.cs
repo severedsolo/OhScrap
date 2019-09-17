@@ -23,6 +23,7 @@ namespace OhScrap
         public override bool FailureAllowed()
         {
             if (part.vessel.atmDensity == 0) return false;
+            if (controlSurface == null) return false;
             return (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ControlSurfaceFailureModuleAllowed
             &&  !ModWrapper.FerramWrapper.available); 
         }

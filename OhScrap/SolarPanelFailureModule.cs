@@ -22,7 +22,6 @@ namespace OhScrap
         }
         public override bool FailureAllowed()
         {
-            panel = part.FindModuleImplementing<ModuleDeployableSolarPanel>();
             if (panel == null) return false;
             if (!panel.isTracking) return false;
             if (panel.deployState != ModuleDeployablePart.DeployState.EXTENDED) return false;

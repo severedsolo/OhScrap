@@ -25,6 +25,7 @@ namespace OhScrap
 
         public override bool FailureAllowed()
         {
+            if (engine == null) return false;
             if (KRASHWrapper.simulationActive()) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().SRBFailureModuleAllowed;
         }
