@@ -44,7 +44,8 @@ namespace OhScrap
         public float minimumFailureChance = 0.01f;
         int timeBetweenChecksPlanes = 10;
         int timeBetweenChecksRocketsAtmosphere = 10;
-        int timeBetweenChecksRocketsSpace = 1800;
+        int timeBetweenChecksRocketsLocalSpace = 1800;
+        int timeBetweenChecksRocketsDeepSpace = 25400;
         public bool ready = false;
         public bool debugMode = false;
         bool advancedDisplay = false;
@@ -72,11 +73,19 @@ namespace OhScrap
                 return;
             }
             float.TryParse(cn.GetValue("minimumFailureChance"), out minimumFailureChance);
+            Debug.Log("[OhScrap]: minimumFailureChance: "+minimumFailureChance);
             int.TryParse(cn.GetValue("timeBetweenChecksPlanes"), out timeBetweenChecksPlanes);
+            Debug.Log("[OhScrap]: timeBetweenChecksPlanes: "+timeBetweenChecksPlanes);
             int.TryParse(cn.GetValue("timeBetweenChecksRocketsAtmosphere"), out timeBetweenChecksRocketsAtmosphere);
-            int.TryParse(cn.GetValue("timeBetweenChecksRocketsSpace"), out timeBetweenChecksRocketsSpace);
+            Debug.Log("[OhScrap]: timeBetweenChecksRocketsAtmosphere: "+timeBetweenChecksRocketsAtmosphere);
+            int.TryParse(cn.GetValue("timeBetweenChecksRocketsLocalSpace"), out timeBetweenChecksRocketsLocalSpace);
+            Debug.Log("[OhScrap]: timeBetweenChecksRocketsLocalSpace: "+timeBetweenChecksRocketsLocalSpace);
+            int.TryParse(cn.GetValue("timeBetweenChecksRocketsDeepSpace"), out timeBetweenChecksRocketsDeepSpace);
+            Debug.Log("[OhScrap]: timeBetweenChecksRocketsDeepSpace: "+timeBetweenChecksRocketsDeepSpace);
             double.TryParse(cn.GetValue("timeToOrbit"), out timeToOrbit);
+            Debug.Log("[OhScrap]: timeToOrbit: "+timeToOrbit);
             bool.TryParse(cn.GetValue("debugMode"), out debugMode);
+            Debug.Log("[OhScrap]: debugMode: "+debugMode);
             ready = true;
         }
 
@@ -150,7 +159,6 @@ namespace OhScrap
             if (counter < 0)
             {
                 Logger.instance.Log("No parts failed this time. Aborted failure");
-                return;
             }
         }
 
@@ -191,10 +199,16 @@ namespace OhScrap
                     sampleTime = "15 minutes";
                 }
             }
+            else if (VesselIsInLocalSpace())
+            {
+                nextFailureCheck = timeBetweenChecksRocketsLocalSpace;
+                failureMode = "Local Space";
+                sampleTime = "7 days";
+            }
             else
             {
-                nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsSpace;
-                failureMode = "Space/Landed";
+                nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsDeepSpace;
+                failureMode = "Deep Space";
                 sampleTime = "30 days";
             }
             switch(failureMode)
@@ -205,8 +219,11 @@ namespace OhScrap
                 case "Plane":
                     exponent = 900 / timeBetweenChecksPlanes;
                     break;
-                case "Space/Landed":
-                    exponent = 648000 / timeBetweenChecksRocketsSpace;
+                case "Local Space":
+                    exponent = 25200 / timeBetweenChecksRocketsLocalSpace;
+                    break;
+                case "Deep Space":
+                    exponent = 648000 / timeBetweenChecksRocketsDeepSpace;
                     break;
             }
             preparedNumber = vesselSafetyRating * 0.01;
@@ -216,6 +233,21 @@ namespace OhScrap
             chanceOfEvent = 1 - preparedNumber;
             displayFailureChance = Math.Round(chanceOfEvent * chanceOfIndividualFailure * 100,0);
             if (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().logging) Logger.instance.Log("[OhScrap]: Calculated chance of failure in next " + sampleTime + " is " + displayFailureChance + "%");
+        }
+
+        private bool VesselIsInLocalSpace()
+        {
+            CelestialBody cb = FlightGlobals.ActiveVessel.mainBody;
+            CelestialBody homeworld = FlightGlobals.GetHomeBody();
+            if (cb == homeworld) return true;
+            List<CelestialBody> children = homeworld.orbitingBodies;
+            CelestialBody child;
+            for (int i = 0; i < children.Count; i++)
+            {
+                child = children.ElementAt(i);
+                if (child == cb) return true;
+            }
+            return false;
         }
 
         private void StartFailure(BaseFailureModule failedModule)
