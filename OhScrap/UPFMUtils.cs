@@ -190,7 +190,6 @@ namespace OhScrap
                     nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsAtmosphere;
                     failureMode = "Atmosphere";
                     sampleTime = timeToOrbit/60+" minutes";
-                    nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsAtmosphere;
                 }
                 else
                 {
@@ -201,7 +200,7 @@ namespace OhScrap
             }
             else if (VesselIsInLocalSpace())
             {
-                nextFailureCheck = timeBetweenChecksRocketsLocalSpace;
+                nextFailureCheck = Planetarium.GetUniversalTime()+timeBetweenChecksRocketsLocalSpace;
                 failureMode = "Local Space";
                 sampleTime = "7 days";
             }
@@ -232,7 +231,11 @@ namespace OhScrap
             preparedNumber = Math.Pow(preparedNumber, exponent);
             chanceOfEvent = 1 - preparedNumber;
             displayFailureChance = Math.Round(chanceOfEvent * chanceOfIndividualFailure * 100,0);
-            if (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().logging) Logger.instance.Log("[OhScrap]: Calculated chance of failure in next " + sampleTime + " is " + displayFailureChance + "%");
+            if (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().logging)
+            {
+                Logger.instance.Log("[OhScrap]: Next Failure Check in "+(nextFailureCheck-Planetarium.GetUniversalTime()));
+                Logger.instance.Log("[OhScrap]: Calculated chance of failure in next " + sampleTime + " is " + displayFailureChance + "%");
+            }
         }
 
         private bool VesselIsInLocalSpace()
