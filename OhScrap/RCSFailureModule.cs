@@ -12,8 +12,8 @@ namespace OhScrap
 
         public override bool FailureAllowed()
         {
-            if (!part.FindModuleImplementing<ModuleRCS>().rcsEnabled) return false;
-            return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().RCSFailureModuleAllowed;
+            if(vessel.ActionGroups[KSPActionGroup.RCS]) return false;
+             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().RCSFailureModuleAllowed;
         }
 
         protected override void Overrides()

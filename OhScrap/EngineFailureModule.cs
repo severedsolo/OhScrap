@@ -39,7 +39,7 @@ namespace OhScrap
 
         public override bool FailureAllowed()
         {
-            if (part.FindModuleImplementing<ModuleEngines>().currentThrottle == 0) return false;
+            if (engine.currentThrottle == 0) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().EngineFailureModuleAllowed;
         }
 

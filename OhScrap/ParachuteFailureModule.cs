@@ -12,6 +12,8 @@ namespace OhScrap
 
         public override bool FailureAllowed()
         {
+            if (chute.deploymentState != ModuleParachute.deploymentStates.DEPLOYED) return false;
+            if (chute.deploymentState != ModuleParachute.deploymentStates.SEMIDEPLOYED) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().ParachuteFailureModuleAllowed;
         }
 
