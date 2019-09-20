@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using System.Runtime.CompilerServices;
+using KSP.UI.Screens;
 
 namespace OhScrap
 {
@@ -43,8 +44,16 @@ namespace OhScrap
                 if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage(part.partInfo.title + " has failed to ignite");
                 message = true;
             }
+            StringBuilder msg = new StringBuilder();
+            msg.AppendLine(part.vessel.vesselName);
+            msg.AppendLine("");
+            msg.AppendLine(part.partInfo.title + " has suffered an " + failureType);
+            msg.AppendLine("");
+            MessageSystem.Message m = new MessageSystem.Message("OhScrap", msg.ToString(), MessageSystemButton.MessageButtonColor.ORANGE, MessageSystemButton.ButtonIcons.ALERT);
+            MessageSystem.Instance.AddMessage(m);
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             CancelInvoke("FailPart");
+            Debug.Log("[OhScrap]: "+part.partInfo.title+" has failed to ignite");
         }
        
         //SRBs cant be repaired.
@@ -53,7 +62,6 @@ namespace OhScrap
             ScreenMessages.PostScreenMessage("Igniting an SRB manually doesn't seem like a good idea");
             ModuleUPFMEvents UPFM = part.FindModuleImplementing<ModuleUPFMEvents>();
             UPFM.customFailureEvent = true;
-            return;
         }
     }
 }
