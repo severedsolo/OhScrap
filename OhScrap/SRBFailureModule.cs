@@ -53,7 +53,7 @@ namespace OhScrap
             MessageSystem.Instance.AddMessage(m);
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             CancelInvoke("FailPart");
-            Debug.Log("[OhScrap]: "+part.partInfo.title+" has failed to ignite");
+            Logger.instance.Log("[OhScrap]: "+part.partInfo.title+" has failed to ignite");
         }
        
         //SRBs cant be repaired.
