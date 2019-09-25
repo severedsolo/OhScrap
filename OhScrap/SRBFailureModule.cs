@@ -41,16 +41,19 @@ namespace OhScrap
             engine.Shutdown();
             if (!message)
             {
-                if(vessel.vesselType != VesselType.Debris) ScreenMessages.PostScreenMessage(part.partInfo.title + " has failed to ignite");
+                if (vessel.vesselType != VesselType.Debris)
+                    ScreenMessages.PostScreenMessage(part.partInfo.title + " has failed to ignite");
+                StringBuilder msg = new StringBuilder();
+                msg.AppendLine(part.vessel.vesselName);
+                msg.AppendLine("");
+                msg.AppendLine(part.partInfo.title + " has suffered an " + failureType);
+                msg.AppendLine("");
+                MessageSystem.Message m = new MessageSystem.Message("OhScrap", msg.ToString(),
+                    MessageSystemButton.MessageButtonColor.ORANGE, MessageSystemButton.ButtonIcons.ALERT);
+                MessageSystem.Instance.AddMessage(m);
                 message = true;
             }
-            StringBuilder msg = new StringBuilder();
-            msg.AppendLine(part.vessel.vesselName);
-            msg.AppendLine("");
-            msg.AppendLine(part.partInfo.title + " has suffered an " + failureType);
-            msg.AppendLine("");
-            MessageSystem.Message m = new MessageSystem.Message("OhScrap", msg.ToString(), MessageSystemButton.MessageButtonColor.ORANGE, MessageSystemButton.ButtonIcons.ALERT);
-            MessageSystem.Instance.AddMessage(m);
+
             if (OhScrap.highlight) OhScrap.SetFailedHighlight();
             CancelInvoke("FailPart");
             Logger.instance.Log("[OhScrap]: "+part.partInfo.title+" has failed to ignite");
