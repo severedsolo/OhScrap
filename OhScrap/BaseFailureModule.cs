@@ -149,8 +149,10 @@ namespace OhScrap
             // This is where we "initialise" the failure module and get everything ready
             public void Initialise()
             {
+#if DEBUG
                 Events["ForceFailure"].guiName = moduleName + "Force Failure (DEBUG)";
                 Events["ForcedRepair"].guiName = moduleName + "Force Repair (DEBUG)";
+#endif
                 //ScrapYard isn't always ready when OhScrap is so we check to see if it's returning an ID yet. If not, return and wait until it does.
                 if (SYP.ID == 0 || !UPFMUtils.instance.ready) ready = false;
                 else ready = true;
