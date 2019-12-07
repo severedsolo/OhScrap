@@ -26,7 +26,7 @@ namespace OhScrap
         public override bool FailureAllowed()
         {
             if (_alternator == null) return false;
-            if (_alternator.outputRate < 1.0f) return false;
+            if (_alternator.outputRate < 0.1f) return false;
             return HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().AlternatorFailureModuleAllowed;
         }
     }
