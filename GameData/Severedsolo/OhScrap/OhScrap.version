@@ -32,4 +32,11 @@
         "MINOR" : 7,
         "PATCH" : 99
     }
+
+
+    "INSTALL_LOC":
+    {
+        "NAME":         "OhScrap",
+        "DIRECTORY":    "Severedsolo/OhScrap"
+    }
 }
