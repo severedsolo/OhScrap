@@ -26,6 +26,8 @@ namespace OhScrap
         public bool overrideStageRecovery = false;
         [GameParameters.CustomParameterUI("Extra Logging")]
         public bool logging = false;
+        [GameParameters.CustomParameterUI("Alernators")]
+        public bool AlternatorFailureModuleAllowed = true;
         [GameParameters.CustomParameterUI("Antenna")]
         public bool AntennaFailureModuleAllowed = true;
         [GameParameters.CustomParameterUI("Battery")]
@@ -34,6 +36,8 @@ namespace OhScrap
         public bool ControlSurfaceFailureModuleAllowed = true;
         [GameParameters.CustomParameterUI("Engine")]
         public bool EngineFailureModuleAllowed = true;
+        [GameParameters.CustomParameterUI("Landing Gear")]
+        public bool LandingGearFailureModuleAllowed = true;
         [GameParameters.CustomParameterUI("Parachutes")]
         public bool ParachuteFailureModuleAllowed = true;
         [GameParameters.CustomParameterUI("RCS")]

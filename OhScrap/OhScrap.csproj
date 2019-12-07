@@ -70,9 +70,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlternatorFailureModule.cs" />
     <Compile Include="AntennaFailureModule.cs" />
     <Compile Include="FARControlSurfaceFailureModule.cs" />
     <Compile Include="FARParachuteFailureModule.cs" />
+    <Compile Include="LandingGearFailureModule.cs" />
     <Compile Include="ModWrapper.cs" />
     <Compile Include="RTAntennaFailureModule.cs" />
     <Compile Include="BaseFailureModule.cs" />
