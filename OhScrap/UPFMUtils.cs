@@ -125,7 +125,7 @@ namespace OhScrap
             if (vesselSafetyRating == -1) return;
             List<BaseFailureModule> failureModules = FlightGlobals.ActiveVessel.FindPartModulesImplementing<BaseFailureModule>();
             if (failureModules.Count == 0) return;
-            if (failureModules.ElementAt(0).launched == false) return;
+            if (!VesselIsLaunched()) return;
             chanceOfFailure = 0.11-(vesselSafetyRating*0.01);
             if (chanceOfFailure < minimumFailureChance) chanceOfFailure = minimumFailureChance;
             SetNextCheck(failureModules);
@@ -160,6 +160,16 @@ namespace OhScrap
             {
                 Logger.instance.Log("No parts failed this time. Aborted failure");
             }
+        }
+
+        private bool VesselIsLaunched()
+        {
+            List<BaseFailureModule> modules = FlightGlobals.ActiveVessel.FindPartModulesImplementing<BaseFailureModule>();
+            for (int i = 0; i < modules.Count; i++)
+            {
+                if (!modules.ElementAt(i).launched) return false;
+            }
+            return true;
         }
 
         private void SetNextCheck(List<BaseFailureModule> failureModules)
