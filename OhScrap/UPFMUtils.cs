@@ -65,7 +65,7 @@ namespace OhScrap
 
         private void ReadDefaultCfg()
         {
-            ConfigNode cn = ConfigNode.Load(KSPUtil.ApplicationRootPath + "/GameData/Severedsolo/OhScrap/PluginData/DefaultSettings.cfg");
+            ConfigNode cn = ConfigNode.Load(KSPUtil.ApplicationRootPath + "/GameData/OhScrap/PluginData/DefaultSettings.cfg");
             if(cn == null)
             {
                 Debug.Log("[OhScrap]: Default Settings file is missing. Using hardcoded defaults");
@@ -394,7 +394,7 @@ namespace OhScrap
         //Add the toolbar button to the GUI
         public void GUIReady()
         {
-            ToolbarButton = ApplicationLauncher.Instance.AddModApplication(GUISwitch, GUISwitch, null, null, null, null, ApplicationLauncher.AppScenes.ALWAYS, GameDatabase.Instance.GetTexture("Severedsolo/OhScrap/Icon", false));
+            ToolbarButton = ApplicationLauncher.Instance.AddModApplication(GUISwitch, GUISwitch, null, null, null, null, ApplicationLauncher.AppScenes.ALWAYS, GameDatabase.Instance.GetTexture("OhScrap/Plugins/Icon", false));
         }
         //switch the UI on/off
         public void GUISwitch()
@@ -469,7 +469,7 @@ namespace OhScrap
                 }
             }
             GUILayout.Label("Vessel Safety Rating: " + vesselSafetyRating + " " + s);
-            advancedDisplay = File.Exists(KSPUtil.ApplicationRootPath + "GameData/Severedsolo/OhScrap/debug.txt");
+            advancedDisplay = File.Exists(KSPUtil.ApplicationRootPath + "GameData/OhScrap/debug.txt");
             if (advancedDisplay)
             {
                 GUILayout.Label("WARNING! CALCULATIONS ARE EXPERIMENTAL");

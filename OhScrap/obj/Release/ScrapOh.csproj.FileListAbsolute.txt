@@ -1,8 +1,0 @@
-C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Release\Assembly-CSharp-firstpass.dll
-C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Release\ScrapYard.dll
-C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Release\UnityEngine.dll
-C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Release\ScrapOh.csproj.CoreCompileInputs.cache
-C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Release\zScrapOh.dll
-C:\Users\evilp\source\repos\OhScrap\OhScrap\bin\Release\zScrapOh.pdb
-C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Release\zScrapOh.dll
-C:\Users\evilp\source\repos\OhScrap\OhScrap\obj\Release\zScrapOh.pdb
