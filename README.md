@@ -74,3 +74,5 @@ supported:
     RemoteTech
     FAR
     KRASH
+    
+![Validate AVC .version files](https://github.com/zer0Kerbal/OhScrap/workflows/Validate%20AVC%20.version%20files/badge.svg)
