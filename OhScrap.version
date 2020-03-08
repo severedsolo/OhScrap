@@ -1,6 +1,6 @@
 {
     "NAME"     : "Oh Scrap",
-    "URL"      : "https://github.com/zer0Kerbal/OhScrap/blob/master/GameData/zer0Kerbal/OhScrap/OhScrap.version",
+    "URL"      : "https://raw.githubusercontent.com/zer0Kerbal/OhScrap/2.1.0.Dirk/OhScrap.version",
     "DOWNLOAD" : "https://github.com/zer0Kerbal/OhScrap/releases/latest/",
 	"CHANGE_LOG_URL": "https://raw.githubusercontent.com/zer0Kerbal/OhScrap/master/Changelog.cfg",
     "GITHUB" :
