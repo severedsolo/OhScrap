@@ -1,12 +1,12 @@
 {
-    "NAME"     : "Oh Scrap",
-    "URL"      : "https://github.com/zer0Kerbal/OhScrap/raw/master/OhScrap.version",
-    "DOWNLOAD" : "https://github.com/zer0Kerbal/OhScrap/releases/latest/",
-	"CHANGE_LOG_URL": "https://github.com/zer0Kerbal/OhScrap/raw/master/Changelog.cfg",
+    "NAME"          : "Oh Scrap",
+    "URL"           : "https://github.com/zer0Kerbal/OhScrap/raw/master/OhScrap.version",
+    "DOWNLOAD"      : "https://github.com/zer0Kerbal/OhScrap/releases/latest/",
+    "CHANGE_LOG_URL": "https://github.com/zer0Kerbal/OhScrap/raw/master/Changelog.cfg",
     "GITHUB" :
     {
-        "USERNAME" :         "zer0Kerbal",
-        "REPOSITORY" :       "OhScrap",
+        "USERNAME"         : "zer0Kerbal",
+        "REPOSITORY"       :"OhScrap",
         "ALLOW_PRE_RELEASE": false
     },
     "VERSION" :
@@ -34,7 +34,7 @@
         "MINOR" : 9,
         "PATCH" : 99
     },
-    "INSTALL_LOC":
+    "INSTALL_LOC" :
     {
         "NAME":         "OhScrap",
         "DIRECTORY":    "OhScrap"
