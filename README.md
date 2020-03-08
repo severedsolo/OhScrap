@@ -56,3 +56,21 @@ A note to CKAN USERS:
 
     When I make a serious save / mod breaking change, CKAN will happily update you without you ever seeing a changelog. This means you could happily load your save, not notice the major version number has changed, and seriously break something. I do not like this. So CKAN users must use Kerbal Changelog, because that way nobody can say they weren't warned :).
 ![](https://i.imgur.com/OO5d907.png)
+
+ What mods are:
+
+conflicting/not supported
+
+    None as far as I know
+
+suggested/benefit from
+
+    ScrapYard is required
+    KCT is recommended
+
+supported:
+
+    Kerbal Change Log (required dependency for CKAN users)
+    RemoteTech
+    FAR
+    KRASH
