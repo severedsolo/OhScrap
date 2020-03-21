@@ -49,9 +49,9 @@ Features
 
 ### Requires:
 - [Kerbal Space Program](https://kerbalspaceprogram.com) v1.9.1, ***may*** work on earlier versions (YMMV)
-- [ScrapYard](https://forum.kerbalspaceprogram.com/index.php?/topic/178641-*)  to keep track of how many times a part has been built/recovered so that is a hard dependency. (obtained separately)
 
 ### Depends:
+- [ScrapYard](https://forum.kerbalspaceprogram.com/index.php?/topic/178641-*)  to keep track of how many times a part has been built/recovered so that is a hard dependency. (obtained separately)
 - [Module Manager](https://forum.kerbalspaceprogram.com/index.php?/topic/50533-*) is required if you want the mod to actually do anything. (obtained separately)
 
 ### Recomends:
@@ -62,8 +62,8 @@ Features
 
 ### Suggests:
 - [FAR](https://forum.kerbalspaceprogram.com/index.php?/topic/179445-*)
-- [RemoteTech](http://remotetechnologiesgroup.github.io/RemoteTech/)
-zer0Kerbal's Stuff
+- [RemoteTech](http://remotetechnologiesgroup.github.io/RemoteTech/)  
+zer0Kerbal's Stuff  
 - [Docking Port Descriptions](https://github.com/zer0Kerbal/KGEx/MM-Patches/DockingPortDescriptions)
 - [On Demand Fuel Cells (Refueled)](https://forum.kerbalspaceprogram.com/index.php?/topic/187625-*)
 - [SimpleLife](https://forum.kerbalspaceprogram.com/index.php?/topic/191526-*)
