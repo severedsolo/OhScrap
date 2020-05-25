@@ -51,12 +51,30 @@ Temporary Items
 *.pdb
 *.cache
 *.mdb
-*.zip
 *.lock
 *.ide
 *.ide-shm
 *.ide-wal
 *.CopyComplete
+
+*.psd
+.markdown
+Debug/
+Release/
+.vs/
+obj/
+bin/
+OhScrap/obj/
+
+# archives
+*.zip
+*.rar
+*.7z
+
+.vs/
+obj\
+bin/
+
 UPFM/Untitled Part Failure Mod/obj/Debug/Untitled Part Failure Mod.csproj.FileListAbsolute.txt
 UPFM/Untitled Part Failure Mod/obj/Release/Untitled Part Failure Mod.csproj.FileListAbsolute.txt
 UPFM/Untitled Part Failure Mod/obj/Release/build.force
@@ -67,3 +85,7 @@ OhScrap/obj/Debug/OhScrap.csproj.FileListAbsolute.txt
 OhScrap/obj/Release/OhScrap.csproj.FileListAbsolute.txt
 *.log
 OhScrap/obj/Release/OhScrap.csproj.FileListAbsolute.txt
+images.txt
+OhScrap/obj/Debug/OhScrap.csproj.FileListAbsolute.txt
+OhScrap/obj/Release/OhScrap.csproj.FileListAbsolute.txt
+shields.md
