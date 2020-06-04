@@ -29,7 +29,7 @@ namespace OhScrap
         public Dictionary<uint, int> generations = new Dictionary<uint, int>();
         public List<uint> testedParts = new List<uint>();
         public int vesselSafetyRating = -1;
-        double nextFailureCheck = 0;
+        public double NextFailureCheck = 0;
         Part worstPart;
         public bool display = false;
         bool dontBother = false;
@@ -110,10 +110,10 @@ namespace OhScrap
         private void SituationChange(GameEvents.HostedFromToAction<Vessel, Vessel.Situations> data)
         {
             if (data.host != FlightGlobals.ActiveVessel) return;
-            nextFailureCheck = 0;
+            NextFailureCheck = 0;
         }
 
-        private void CheckForFailures()
+        public void CheckForFailures()
         {
             if (!FlightGlobals.ready) return;
             if (KRASHWrapper.simulationActive()) return;
@@ -121,7 +121,7 @@ namespace OhScrap
             {
                 if(FlightGlobals.ActiveVessel.FindPartModuleImplementing<ModuleUPFMEvents>().tested == false) return;
             }
-            if (Planetarium.GetUniversalTime() < nextFailureCheck) return;
+            if (Planetarium.GetUniversalTime() < NextFailureCheck && FlightGlobals.ActiveVessel.FindPartModuleImplementing<ModuleUPFMEvents>().nextUpdateDue > Planetarium.GetUniversalTime()) return;
             if (vesselSafetyRating == -1) return;
             List<BaseFailureModule> failureModules = FlightGlobals.ActiveVessel.FindPartModulesImplementing<BaseFailureModule>();
             if (failureModules.Count == 0) return;
@@ -197,26 +197,46 @@ namespace OhScrap
             {
                 if (FlightGlobals.ActiveVessel.missionTime < timeToOrbit)
                 {
-                    nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsAtmosphere;
+                    NextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsAtmosphere;
+                    if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<ModuleUPFMEvents>().nextUpdateDue < Planetarium.GetUniversalTime())
+                    {
+                        SetNextUpdate(timeBetweenChecksRocketsAtmosphere, true);
+                    }
+                    else SetNextUpdate(timeBetweenChecksRocketsAtmosphere, false);
                     failureMode = "Atmosphere";
                     sampleTime = timeToOrbit/60+" minutes";
                 }
                 else
                 {
-                    nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksPlanes;
+                    NextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksPlanes;
+                    if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<ModuleUPFMEvents>().nextUpdateDue < Planetarium.GetUniversalTime())
+                    {
+                        SetNextUpdate(timeBetweenChecksPlanes, true);
+                    }
+                    else SetNextUpdate(timeBetweenChecksPlanes, false);
                     failureMode = "Plane";
                     sampleTime = "15 minutes";
                 }
             }
             else if (VesselIsInLocalSpace())
             {
-                nextFailureCheck = Planetarium.GetUniversalTime()+timeBetweenChecksRocketsLocalSpace;
+                NextFailureCheck = Planetarium.GetUniversalTime()+timeBetweenChecksRocketsLocalSpace;
+                if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<ModuleUPFMEvents>().nextUpdateDue < Planetarium.GetUniversalTime())
+                {
+                    SetNextUpdate(timeBetweenChecksRocketsLocalSpace, true);
+                }
+                else SetNextUpdate(timeBetweenChecksRocketsLocalSpace, false);
                 failureMode = "Local Space";
                 sampleTime = "7 days";
             }
             else
             {
-                nextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsDeepSpace;
+                NextFailureCheck = Planetarium.GetUniversalTime() + timeBetweenChecksRocketsDeepSpace;
+                if (FlightGlobals.ActiveVessel.FindPartModuleImplementing<ModuleUPFMEvents>().nextUpdateDue < Planetarium.GetUniversalTime())
+                {
+                    SetNextUpdate(timeBetweenChecksRocketsDeepSpace, true);
+                }
+                else SetNextUpdate(timeBetweenChecksRocketsDeepSpace, false);
                 failureMode = "Deep Space";
                 sampleTime = "3 years";
             }
@@ -243,8 +263,18 @@ namespace OhScrap
             displayFailureChance = Math.Round(chanceOfEvent * chanceOfIndividualFailure * 100,0);
             if (HighLogic.CurrentGame.Parameters.CustomParams<UPFMSettings>().logging)
             {
-                Logger.instance.Log("[OhScrap]: Next Failure Check in "+(nextFailureCheck-Planetarium.GetUniversalTime()));
+                Logger.instance.Log("[OhScrap]: Next Failure Check in "+(NextFailureCheck-Planetarium.GetUniversalTime()));
                 Logger.instance.Log("[OhScrap]: Calculated chance of failure in next " + sampleTime + " is " + displayFailureChance + "%");
+            }
+        }
+
+        private void SetNextUpdate(double nextUpdate, bool catchup)
+        {
+            for (int i = 0; i < FlightGlobals.ActiveVessel.FindPartModulesImplementing<ModuleUPFMEvents>().Count; i++)
+            {
+                ModuleUPFMEvents e = FlightGlobals.ActiveVessel.FindPartModulesImplementing<ModuleUPFMEvents>().ElementAt(i);
+                if (catchup) e.nextUpdateDue += nextUpdate;
+                else e.nextUpdateDue = Planetarium.GetUniversalTime() + nextUpdate;
             }
         }
 
