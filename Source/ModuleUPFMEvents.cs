@@ -24,24 +24,14 @@ namespace OhScrap
         public bool customFailureEvent = false;
         public bool highlightOverride = false;
         public bool repairTried = false;
-        [KSPField(isPersistant = true, guiActive = false)]
-        public double nextUpdateDue = 0;
 
         private void Start()
         {
-            if (nextUpdateDue == 0) nextUpdateDue = Planetarium.GetUniversalTime();
             SYP = part.FindModuleImplementing<ModuleSYPartTracker>();
 #if DEBUG
             Debug.Log("[UPFM]: UPFMEvents.Start" + SYP.ID);
 #endif
-            GameEvents.OnVesselRollout.Add(OnVesselRollout);
         }
-
-        private void OnVesselRollout(ShipConstruct data)
-        {
-            nextUpdateDue = Planetarium.GetUniversalTime();
-        }
-
         //forces ScrapYard to refresh the part if it's needed.
         public void RefreshPart()
         {
