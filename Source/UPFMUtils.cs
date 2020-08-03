@@ -271,7 +271,7 @@ namespace OhScrap
         private void SetNextUpdate(double nextUpdate, bool catchup)
         {
             for (int i = 0; i < FlightGlobals.ActiveVessel.FindPartModulesImplementing<ModuleUPFMEvents>().Count; i++)
-            {
+           {
                 ModuleUPFMEvents e = FlightGlobals.ActiveVessel.FindPartModulesImplementing<ModuleUPFMEvents>().ElementAt(i);
                 if (catchup) e.nextUpdateDue += nextUpdate;
                 else e.nextUpdateDue = Planetarium.GetUniversalTime() + nextUpdate;
