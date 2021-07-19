@@ -1,12 +1,12 @@
 {
     "NAME"          : "Oh Scrap!",
-    "URL"           : "https://raw.githubusercontent.com/zer0Kerbal/OhScrap/master/OhScrap.version",
+    "URL"           : "https://raw.githubusercontent.com/zer0Kerbal/OhScrap/base/OhScrap.version",
     "DOWNLOAD"      : "https://github.com/zer0Kerbal/OhScrap/releases/latest/",
     "CHANGE_LOG_URL": "https://raw,githubusercontent.com/zer0Kerbal/OhScrap/master/Changelog.cfg",
     "GITHUB" :
     {
         "USERNAME"         : "zer0Kerbal",
-        "REPOSITORY"       :"OhScrap",
+        "REPOSITORY"       : "OhScrap",
         "ALLOW_PRE_RELEASE": false
     },
     "VERSION" :
