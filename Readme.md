@@ -8,7 +8,7 @@ updated: 2020 03 12 -->
 
 # Oy Scrap! (OHS) (formerly UPFM)
 ![Mod Version][SHIELD:mod:latest] ![KSP version][SHIELD:ksp] ![KSP-AVC][SHIELD:kspavc] ![License MIT][SHIELD:license] ![LOGO:mit]  
-![SpaceDock][SHIELD:spacedock] ![CKAN][SHIELD:ckan] ![GitHub][SHIELD:github] ![Curseforge][SHIELD:curseforge]  
+![SpaceDock][SHIELD:curseforge] ![CKAN][SHIELD:ckan] ![GitHub][SHIELD:github] ![Curseforge][SHIELD:spacedock]  
 ![Validate AVC .version files][SHIELD:avcvalid]   
   
 > Poor Val, she's not having a good day. There she was on her way back from orbit, and this happened: 
@@ -125,16 +125,20 @@ License: ![License: MIT](https://img.shields.io/endpoint?url=https://raw.githubu
 [MOD:changelog]:       https://github.com/zer0Kerbal/OhScrap/Changelog.cfg
 
 [SHIELD:mod:latest]: https://img.shields.io/github/v/release/zer0Kerbal/OhScrap?include_prereleases?style=plastic
-[SHIELD:mod]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/master/json/mod.json
-[SHIELD:ksp]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/master/json/ksp.json
-[SHIELD:license]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/master/json/license.json
-[LOGO:mit]: https://i.postimg.cc/bvjfsMP5/MIT-17x17.png
-[SHIELD:kspavc]:     https://img.shields.io/badge/KSP-AVC--supported-brightgreen.svg?style=plastic
+[SHIELD:mod]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/base/json/mod.json
+[SHIELD:ksp]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/base/json/ksp.json
+[SHIELD:license]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/base/json/license.json
+[LOGO:mit]: https://i.postimg.cc/bvjfsMP5/MIT-17x17.png  
+
 [SHIELD:spacedock]:  https://img.shields.io/badge/SpaceDock-Listed-blue.svg?style=plastic
 [SHIELD:ckan]:       https://img.shields.io/badge/CKAN-Indexed-blue.svg?style=plastic
 [SHIELD:github]:     https://img.shields.io/badge/Github-Indexed-blue.svg?style=plastic
 [SHIELD:curseforge]: https://img.shields.io/badge/CurseForge-Listed-blue.svg?style=plastic
-[SHIELD:avcvalid]:    https://github.com/zer0Kerbal/ScarpYard/workflows/Validate%20AVC%20.version%20files/badge.svg
+
+[SHIELD:kspavc]:   https://img.shields.io/badge/KSP-AVC--supported-brightgreen.svg?style=plastic  
+[SHIELD:avcvalid]: https://github.com/zer0Kerbal/ScrapYard/actions/workflows/AVC-VersionFileValidator.yml/badge.svg?branch=base "https://github.com/zer0Kerbal/ScrapYard/actions/workflows/AVC-VersionFileValidator.yml"
+
+
 
 [LINK:magico13]:       https://forum.kerbalspaceprogram.com/index.php?/profile/73338-magico13/
 [LINK:severedsolo]:    https://forum.kerbalspaceprogram.com/index.php?/profile/80345-severedsolo/
