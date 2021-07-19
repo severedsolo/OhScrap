@@ -130,10 +130,10 @@ License: ![License: MIT](https://img.shields.io/endpoint?url=https://raw.githubu
 [SHIELD:license]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/master/json/license.json
 [LOGO:mit]: https://i.postimg.cc/bvjfsMP5/MIT-17x17.png
 [SHIELD:kspavc]:     https://img.shields.io/badge/KSP-AVC--supported-brightgreen.svg?style=plastic
-[SHIELD:spacedock]:  https://img.shields.io/badge/SpaceDock-listed-blue.svg?style=plastic
+[SHIELD:spacedock]:  https://img.shields.io/badge/SpaceDock-Listed-blue.svg?style=plastic
 [SHIELD:ckan]:       https://img.shields.io/badge/CKAN-Indexed-blue.svg?style=plastic
 [SHIELD:github]:     https://img.shields.io/badge/Github-Indexed-blue.svg?style=plastic
-[SHIELD:curseforge]: https://img.shields.io/badge/CurseForge-listed-blue.svg?style=plastic
+[SHIELD:curseforge]: https://img.shields.io/badge/CurseForge-Listed-blue.svg?style=plastic
 [SHIELD:avcvalid]:    https://github.com/zer0Kerbal/ScarpYard/workflows/Validate%20AVC%20.version%20files/badge.svg
 
 [LINK:magico13]:       https://forum.kerbalspaceprogram.com/index.php?/profile/73338-magico13/
