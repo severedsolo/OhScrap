@@ -92,7 +92,7 @@ zer0Kerbal's Stuff
 ### License
 #### aka Legal Mumbo Jumbo
 Source: [GitHub](https://github.com/zer0Kerbal/OhScrap)  
-License: ![License: MIT](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/master/json/license.json?style=plastic) ![MIT-17x17.png](https://i.postimg.cc/bvjfsMP5/MIT-17x17.png)<br>
+License: ![License: MIT](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/base/json/license.json?style=plastic) ![MIT-17x17.png](https://i.postimg.cc/bvjfsMP5/MIT-17x17.png)<br>
 
 - ***All bundled mods are distributed under their own licenses***<br>
 - ***All art assets (textures, models, animations) are distributed under their own licenses*** 
@@ -100,7 +100,7 @@ License: ![License: MIT](https://img.shields.io/endpoint?url=https://raw.githubu
 ### Original
 Download [Here](https://github.com/zer0Kerbal/OhScrap/releases/latest/)  
 Source: [GitHub](https://github.com/zer0Kerbal/OhScrap/releases/latest/ "GitHub")  
-License: ![License: MIT](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/master/json/license.json?style=plastic) ![MIT-17x17.png](https://i.postimg.cc/bvjfsMP5/MIT-17x17.png)  
+License: ![License: MIT](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/base/json/license.json?style=plastic) ![MIT-17x17.png](https://i.postimg.cc/bvjfsMP5/MIT-17x17.png)  
 
 ***
 
