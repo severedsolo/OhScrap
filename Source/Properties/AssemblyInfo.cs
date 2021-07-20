@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("OhScrap")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Scrapyard based Part Failure addin for Kerbal Space Program.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("KGEx")]
 [assembly: AssemblyProduct("OhScrap")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
