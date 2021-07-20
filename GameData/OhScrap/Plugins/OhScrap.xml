@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OhScrap</name>
+    </assembly>
+    <members>
+        <member name="P:OhScrap.StageRecoveryWrapper.StageRecoveryAvailable">
+            <summary>
+            Check this to see if the addon is available. If this returns false, no additional API calls should be made!
+            </summary>
+        </member>
+        <member name="P:OhScrap.StageRecoveryWrapper.StageRecoveryEnabled">
+            <summary>
+            Check to see if StageRecovery is enabled. Returns false if unavailable or if user settings prevent SR from activating.
+            </summary>
+        </member>
+        <member name="M:OhScrap.StageRecoveryWrapper.AddRecoverySuccessEvent(System.Action{Vessel,System.Single[],System.String})">
+            <summary>
+            Adds a listener to the Recovery Success Event. When a vessel is recovered by StageRecovery the method will 
+             be invoked with the Vessel; an array of floats representing the percent returned after damage, funds returned,
+            and science returned; and a string representing the reason for failure(SUCCESS, SPEED, or BURNUP)
+            </summary>
+            <param name="method">The method to invoke when the event fires</param>
+        </member>
+        <member name="M:OhScrap.StageRecoveryWrapper.RemoveRecoverySuccessEvent(System.Action{Vessel,System.Single[],System.String})">
+            <summary>
+            Removes a listener from the Recovery Success Event
+            </summary>
+            <param name="method">The method to remove</param>
+        </member>
+        <member name="M:OhScrap.StageRecoveryWrapper.AddRecoveryFailureEvent(System.Action{Vessel,System.Single[],System.String})">
+            <summary>
+            Adds a listener to the Recovery Failure Event. When a vessel fails to be recovered, the method will be invoked 
+            with the Vessel; an array of floats representing the percent returned after damage, funds returned,
+            and science returned; and a string representing the reason for failure(SUCCESS, SPEED, or BURNUP)
+            </summary>
+            <param name="method">The method to invoke when the event fires</param>
+        </member>
+        <member name="M:OhScrap.StageRecoveryWrapper.RemoveRecoveryFailureEvent(System.Action{Vessel,System.Single[],System.String})">
+            <summary>
+             Removes a listener from the Recovery Failure Event
+            </summary>
+            <param name="method">The method to remove</param>
+        </member>
+        <member name="M:OhScrap.StageRecoveryWrapper.AddRecoveryProcessingStartListener(System.Action{Vessel})">
+            <summary>
+            Adds a listener to the OnRecoveryProcessingStart Event. When processing of the recovery status of a vessel starts 
+            the event will fire before any serious processing occurs.
+            </summary>
+            <param name="method">The method to invoke when the event fires</param>
+        </member>
+        <member name="M:OhScrap.StageRecoveryWrapper.RemoveRecoveryProcessingStartListener(System.Action{Vessel})">
+            <summary>
+            Removes a listener from the OnRecoveryProcessingStart Event
+            </summary>
+            <param name="method">The method to remove</param>
+        </member>
+        <member name="M:OhScrap.StageRecoveryWrapper.AddRecoveryProcessingFinishListener(System.Action{Vessel})">
+            <summary>
+            Adds a listener to the OnRecoveryProcessingStart Event. When processing of the recovery status of a vessel starts 
+            the event will fire before any serious processing occurs
+            </summary>
+            <param name="method">The method to invoke when the event fires</param>
+        </member>
+        <member name="M:OhScrap.StageRecoveryWrapper.RemoveRecoveryProcessingFinishListener(System.Action{Vessel})">
+            <summary>
+            Removes a listener from the OnRecoveryProcessingFinish Event
+            </summary>
+            <param name="method">The method to remove</param>
+        </member>
+        <member name="M:OhScrap.StageRecoveryWrapper.ComputeTerminalVelocity(System.Collections.Generic.List{ProtoPartSnapshot})">
+            <summary>
+            Computes the terminal velocity at sea level on the home planet (Kerbin/Earth) for the provided parts
+            </summary>
+            <param name="partList">The list of <see cref="T:ProtoPartSnapshot"/>s to compute the terminal velocity for</param>
+            <returns>The terminal velocity as a scalar (speed)</returns>
+        </member>
+        <member name="M:OhScrap.StageRecoveryWrapper.ComputeTerminalVelocity(System.Collections.Generic.List{Part})">
+            <summary>
+            Computes the terminal velocity at sea level on the home planet (Kerbin/Earth) for the provided parts
+            </summary>
+            <param name="partList">The list of <see cref="T:Part"/>s to compute the terminal velocity for</param>
+            <returns>The terminal velocity as a scalar (speed)</returns>
+        </member>
+        <member name="P:OhScrap.StageRecoveryWrapper.Instance">
+            <summary>
+            The APIManager instance
+            </summary>
+        </member>
+        <member name="M:OhScrap.StageRecoveryWrapper.GetMemberInfoValue(System.Reflection.MemberInfo,System.Object)">
+            <summary>
+            A helper function I use since I'm bad at reflection. It's for getting the value of a MemberInfo
+            </summary>
+            <param name="member"></param>
+            <param name="sourceObject"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

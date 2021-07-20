@@ -1,453 +1,22 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title></title>
-    <style>
-		body {
-		  font-family: Helvetica, arial, sans-serif;
-		  font-size: 14px;
-		  line-height: 1.6;
-		  padding-top: 10px;
-		  padding-bottom: 10px;
-		  background-color: white;
-		  padding: 30px;
-		  color: #333;
-		}
-
-		body > *:first-child {
-		  margin-top: 0 !important;
-		}
-
-		body > *:last-child {
-		  margin-bottom: 0 !important;
-		}
-
-		a {
-		  color: #4183C4;
-		  text-decoration: none;
-		}
-
-		a.absent {
-		  color: #cc0000;
-		}
-
-		a.anchor {
-		  display: block;
-		  padding-left: 30px;
-		  margin-left: -30px;
-		  cursor: pointer;
-		  position: absolute;
-		  top: 0;
-		  left: 0;
-		  bottom: 0;
-		}
-
-		h1, h2, h3, h4, h5, h6 {
-		  margin: 20px 0 10px;
-		  padding: 0;
-		  font-weight: bold;
-		  -webkit-font-smoothing: antialiased;
-		  cursor: text;
-		  position: relative;
-		}
-
-		h2:first-child, h1:first-child, h1:first-child + h2, h3:first-child, h4:first-child, h5:first-child, h6:first-child {
-		  margin-top: 0;
-		  padding-top: 0;
-		}
-
-		h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
-		  text-decoration: none;
-		}
-
-		h1 tt, h1 code {
-		  font-size: inherit;
-		}
-
-		h2 tt, h2 code {
-		  font-size: inherit;
-		}
-
-		h3 tt, h3 code {
-		  font-size: inherit;
-		}
-
-		h4 tt, h4 code {
-		  font-size: inherit;
-		}
-
-		h5 tt, h5 code {
-		  font-size: inherit;
-		}
-
-		h6 tt, h6 code {
-		  font-size: inherit;
-		}
-
-		h1 {
-		  font-size: 28px;
-		  color: black;
-		}
-
-		h2 {
-		  font-size: 24px;
-		  border-bottom: 1px solid #cccccc;
-		  color: black;
-		}
-
-		h3 {
-		  font-size: 18px;
-		}
-
-		h4 {
-		  font-size: 16px;
-		}
-
-		h5 {
-		  font-size: 14px;
-		}
-
-		h6 {
-		  color: #777777;
-		  font-size: 14px;
-		}
-
-		p, blockquote, ul, ol, dl, li, table, pre {
-		  margin: 15px 0;
-		}
-
-		hr {
-          margin-top: 20px;
-          margin-bottom: 20px;
-          border: 0;
-          border-top: 1px solid #eee;		 
-		}
-
-		body > h2:first-child {
-		  margin-top: 0;
-		  padding-top: 0;
-		}
-
-		body > h1:first-child {
-		  margin-top: 0;
-		  padding-top: 0;
-		}
-
-		body > h1:first-child + h2 {
-		  margin-top: 0;
-		  padding-top: 0;
-		}
-
-		body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
-		  margin-top: 0;
-		  padding-top: 0;
-		}
-
-		a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
-		  margin-top: 0;
-		  padding-top: 0;
-		}
-
-		h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
-		  margin-top: 0;
-		}
-
-		li p.first {
-		  display: inline-block;
-		}
-
-		ul, ol {
-		  padding-left: 30px;
-		}
-
-		ul :first-child, ol :first-child {
-		  margin-top: 0;
-		}
-
-		ul :last-child, ol :last-child {
-		  margin-bottom: 0;
-		}
-
-		dl {
-		  padding: 0;
-		}
-
-		dl dt {
-		  font-size: 14px;
-		  font-weight: bold;
-		  font-style: italic;
-		  padding: 0;
-		  margin: 15px 0 5px;
-		}
-
-		dl dt:first-child {
-		  padding: 0;
-		}
-
-		dl dt > :first-child {
-		  margin-top: 0;
-		}
-
-		dl dt > :last-child {
-		  margin-bottom: 0;
-		}
-
-		dl dd {
-		  margin: 0 0 15px;
-		  padding: 0 15px;
-		}
-
-		dl dd > :first-child {
-		  margin-top: 0;
-		}
-
-		dl dd > :last-child {
-		  margin-bottom: 0;
-		}
-
-		blockquote {
-		  border-left: 4px solid #dddddd;
-		  padding: 0 15px;
-		  color: #777777;
-		}
-
-		blockquote > :first-child {
-		  margin-top: 0;
-		}
-
-		blockquote > :last-child {
-		  margin-bottom: 0;
-		}
-
-		table {
-		  padding: 0;
-		}
-		table tr {
-		  border-top: 1px solid #cccccc;
-		  background-color: white;
-		  margin: 0;
-		  padding: 0;
-		}
-
-		table tr:nth-child(2n) {
-		  background-color: #f8f8f8;
-		}
-
-		table tr th {
-		  font-weight: bold;
-		  border: 1px solid #cccccc;
-		  text-align: left;
-		  margin: 0;
-		  padding: 6px 13px;
-		}
-
-		table tr td {
-		  border: 1px solid #cccccc;
-		  text-align: left;
-		  margin: 0;
-		  padding: 6px 13px;
-		}
-
-		table tr th :first-child, table tr td :first-child {
-		  margin-top: 0;
-		}
-
-		table tr th :last-child, table tr td :last-child {
-		  margin-bottom: 0;
-		}
-
-		img {
-		  max-width: 100%;
-		}
-
-		span.frame {
-		  display: block;
-		  overflow: hidden;
-		}
-
-		span.frame > span {
-		  border: 1px solid #dddddd;
-		  display: block;
-		  float: left;
-		  overflow: hidden;
-		  margin: 13px 0 0;
-		  padding: 7px;
-		  width: auto;
-		}
-
-		span.frame span img {
-		  display: block;
-		  float: left;
-		}
-
-		span.frame span span {
-		  clear: both;
-		  color: #333333;
-		  display: block;
-		  padding: 5px 0 0;
-		}
-
-		span.align-center {
-		  display: block;
-		  overflow: hidden;
-		  clear: both;
-		}
-
-		span.align-center > span {
-		  display: block;
-		  overflow: hidden;
-		  margin: 13px auto 0;
-		  text-align: center;
-		}
-
-		span.align-center span img {
-		  margin: 0 auto;
-		  text-align: center;
-		}
-
-		span.align-right {
-		  display: block;
-		  overflow: hidden;
-		  clear: both;
-		}
-
-		span.align-right > span {
-		  display: block;
-		  overflow: hidden;
-		  margin: 13px 0 0;
-		  text-align: right;
-		}
-
-		span.align-right span img {
-		  margin: 0;
-		  text-align: right;
-		}
-
-		span.float-left {
-		  display: block;
-		  margin-right: 13px;
-		  overflow: hidden;
-		  float: left;
-		}
-
-		span.float-left span {
-		  margin: 13px 0 0;
-		}
-
-		span.float-right {
-		  display: block;
-		  margin-left: 13px;
-		  overflow: hidden;
-		  float: right;
-		}
-
-		span.float-right > span {
-		  display: block;
-		  overflow: hidden;
-		  margin: 13px auto 0;
-		  text-align: right;
-		}
-
-		code, tt {
-		  margin: 0 2px;
-		  padding: 0 5px;
-		  white-space: nowrap;
-		  border: 1px solid #eaeaea;
-		  background-color: #f8f8f8;
-		  border-radius: 3px;
-		}
-
-		pre code {
-		  margin: 0;
-		  padding: 0;
-		  white-space: pre;
-		  border: none;
-		  background: transparent;
-		}
-
-		.highlight pre {
-		  background-color: #f8f8f8;
-		  border: 1px solid #cccccc;
-		  font-size: 13px;
-		  line-height: 19px;
-		  overflow: auto;
-		  padding: 6px 10px;
-		  border-radius: 3px;
-		}
-
-		pre {
-		  background-color: #f8f8f8;
-		  border: 1px solid #cccccc;
-		  font-size: 13px;
-		  line-height: 19px;
-		  overflow: auto;
-		  padding: 6px 10px;
-		  border-radius: 3px;
-		}
-
-		pre code, pre tt {
-		  background-color: transparent;
-		  border: none;
-		}
-
-        @media print {
-            h1 {
-                page-break-inside: avoid;
-                page-break-after: avoid;
-            }
-
-            h2, h3, h4, h5, h6 {
-                page-break-inside: avoid;
-                page-break-after: avoid;
-            }
-
-            p {
-                page-break-inside: avoid;
-            }
-
-            img {
-                page-break-inside: avoid;
-                max-width: 100%;
-                height: auto;
-            }
-
-            pre, blockquote {
-                page-break-inside: avoid;
-                white-space: pre-wrap;
-            }
-        }
-    </style>
-
-	<style>
-		body {
-		  padding-top: 10px;
-		  padding-left: 10px;
-		  padding-right: 10px;
-		  padding-bottom: 10px;
-		  position:relative;
-		}	
-	</style>
-	
-  </head>
-  <body>
-    <!-- Readme.md v1.0.1.0
+<!-- Readme.md v1.0.1.0
 Oy Scrap! OHS) (formerly UPFM)
 created: 01 Oct 19
 updated: 2020 03 12 -->
+
 <!-- # KerbGuise Experimental engineering (KGEx)
 #### Brings you: -->
+
 <!-- Download on SpaceDock or Github or Curseforge. Also available on CKAN. -->
-<h1>Oy Scrap! (OHS) (formerly UPFM)</h1>
-<p><img src="https://img.shields.io/github/v/release/zer0Kerbal/OhScrap?include_prereleases?style=plastic" alt="Mod Version" /> <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/master/json/ksp.json" alt="KSP version" /> <img src="https://img.shields.io/badge/KSP-AVC--supported-brightgreen.svg?style=plastic" alt="KSP-AVC" /> <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/master/json/license.json" alt="License MIT" /> <img src="https://i.postimg.cc/bvjfsMP5/MIT-17x17.png" alt="LOGO:mit" /><br />
-<img src="https://img.shields.io/badge/SpaceDock-listed-blue.svg?style=plastic" alt="SpaceDock" /> <img src="https://img.shields.io/badge/CKAN-Indexed-blue.svg?style=plastic" alt="CKAN" /> <img src="https://img.shields.io/badge/Github-Indexed-blue.svg?style=plastic" alt="GitHub" /> <img src="https://img.shields.io/badge/CurseForge-listed-blue.svg?style=plastic" alt="Curseforge" /><br />
-<img src="https://github.com/zer0Kerbal/ScarpYard/workflows/Validate%20AVC%20.version%20files/badge.svg" alt="Validate AVC .version files" />   </p>
+
+<h1 id="oy-scrap-ohs-formerly-upfm">Oy Scrap! (OHS) (formerly UPFM)</h1>
+<p><img src="https://img.shields.io/github/v/release/zer0Kerbal/OhScrap?include_prereleases?style=plastic" alt="Mod Version" /> <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/base/json/ksp.json" alt="KSP version" /> <img src="https://img.shields.io/badge/KSP-AVC--supported-brightgreen.svg?style=plastic" alt="KSP-AVC" /> <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/base/json/license.json" alt="License MIT" /> <img src="https://i.postimg.cc/bvjfsMP5/MIT-17x17.png" alt="LOGO:mit" /><br />
+<img src="https://img.shields.io/badge/CurseForge-Listed-blue.svg?style=plastic" alt="SpaceDock" /> <img src="https://img.shields.io/badge/CKAN-Indexed-blue.svg?style=plastic" alt="CKAN" /> <img src="https://img.shields.io/badge/Github-Indexed-blue.svg?style=plastic" alt="GitHub" /> <img src="https://img.shields.io/badge/SpaceDock-Listed-blue.svg?style=plastic" alt="Curseforge" /><br />
+<img src="https://github.com/zer0Kerbal/ScrapYard/actions/workflows/AVC-VersionFileValidator.yml/badge.svg?branch=base" title="https://github.com/zer0Kerbal/ScrapYard/actions/workflows/AVC-VersionFileValidator.yml" alt="Validate AVC .version files" /></p>
 <blockquote>
-<p>Poor Val, she's not having a good day. There she was on her way back from orbit, and this happened: </p>
-<p><img src="https://i.imgur.com/2V0F5DT.png" alt="A bad day for Val" />  
-</p>
+<p>Poor Val, she's not having a good day. There she was on her way back from orbit, and this happened:</p>
+<p><img src="https://i.imgur.com/2V0F5DT.png" alt="A bad day for Val" /></p>
+</blockquote>
+<blockquote>
 <p>You see, I forgot to take her shiny new ship for a test flight before sending it to space, so the reaction wheels failed. Then her oxygen started venting into space. So she quickly burned retrograde and started her re-entry. Except that as she came into land, the parachute failed too. Like I said, not a good day.</p>
 </blockquote>
 <p>Sound exciting? Then why don't you install Oh Scrap! today.</p>
@@ -455,51 +24,52 @@ updated: 2020 03 12 -->
 <ul>
 <li>Part Failures: Parachutes, Engines, Gimbals, Resources, Batteries, Reaction Wheels, Control Surfaces - all these failures can make your day turn out like Vals. (all can be disabled or enabled through the difficulty settings menu)</li>
 <li>Failures follow the <a href="https://en.wikipedia.org/wiki/Bathtub_curve">bathtub curve</a> - brand new untested parts are more likely to fail than pre-tested models. If you re-use a part too many times though, it will reach the end of it's shelf-life and be more prone to failure.</li>
-<li>Subsequent &quot;new models&quot; of parts become more reliable than their earlier counterparts. Ie, a part you've just researched is more likely to fail than a part that has been tried and tested many times - even if it's brand new.</li>
+<li>Subsequent "new models" of parts become more reliable than their earlier counterparts. Ie, a part you've just researched is more likely to fail than a part that has been tried and tested many times - even if it's brand new.</li>
 <li>Repairs - some parts can be repaired remotely, some need an EVA. You always have a better chance of repairing a part on EVA</li>
 </ul>
-<h3>Eye candy of a really awesome Static Test that someone set up on facebook</h3>
-<h4>(used with permission):</h4>
-<p><img src="https://i.imgur.com/eWRLoBR.jpg" /><br />
-<img src="https://i.imgur.com/EyWm9e9.jpg" />  </p>
-<h3>Special Thanks</h3>
+<h3 id="eye-candy-of-a-really-awesome-static-test-that-someone-set-up-on-facebook">Eye candy of a really awesome Static Test that someone set up on facebook</h3>
+<p>####(used with permission): <img src="https://i.imgur.com/eWRLoBR.jpg" /><br />
+<img src="https://i.imgur.com/EyWm9e9.jpg" /></p>
+<h3 id="special-thanks">Special Thanks</h3>
 <ul>
 <li><a href="https://forum.kerbalspaceprogram.com/index.php?/profile/73338-magico13/">@magico13</a> both for ScrapYard, and helping [me] with all my questions issues while making this.</li>
 <li><a href="https://forum.kerbalspaceprogram.com/index.php?/profile/80345-severedsolo/">@severedsolo</a></li>
 <li>The maintainers/authors of DangIt - most of this would never have happened without looking at your code to figure out how to make stuff work.</li>
 </ul>
-<h4>Installation Directions:</h4>
+<h4 id="installation-directions">Installation Directions:</h4>
 <ul>
 <li>Use CKAN</li>
 </ul>
 <blockquote>
-<p><strong><em>A note to CKAN USERS:</em></strong>
-- Kerbal Changelog is not a hard dependency, in that &quot;Oh Scrap will load just fine without it&quot;.
-- However, on CKAN it is a dependency.
-- When I make a serious save / mod breaking change, CKAN will happily update you without you ever seeing a changelog. This means you could happily load your save, not notice the major version number has changed, and seriously break something. I do not like this. So CKAN users must use Kerbal Changelog, because that way nobody can say they weren't warned :).</p>
-</blockquote>
-<h3>Changelog Summary</h3>
-<p><em>See <a href="https://github.com/zer0Kerbal/OhScrap/Changelog.cfg">ChangeLog</a> for full details of mod changes</em></p>
-<h3>Requires:</h3>
+<p><em><strong>A note to CKAN USERS:</strong></em></p>
 <ul>
-<li><a href="https://kerbalspaceprogram.com">Kerbal Space Program</a> v1.9.1, <strong><em>may</em></strong> work on earlier versions (YMMV)</li>
-<li><a href="https://forum.kerbalspaceprogram.com/index.php?/topic/178641-*">ScrapYard</a>  to keep track of how many times a part has been built/recovered so that is a hard dependency. (obtained separately)</li>
+<li>Kerbal Changelog is not a hard dependency, in that "Oh Scrap will load just fine without it".</li>
+<li>However, on CKAN it is a dependency.</li>
+<li>When I make a serious save / mod breaking change, CKAN will happily update you without you ever seeing a changelog. This means you could happily load your save, not notice the major version number has changed, and seriously break something. I do not like this. So CKAN users must use Kerbal Changelog, because that way nobody can say they weren't warned :).</li>
 </ul>
-<h3>Depends:</h3>
+</blockquote>
+<h3 id="changelog-summary">Changelog Summary</h3>
+<p><em>See <a href="https://github.com/zer0Kerbal/OhScrap/Changelog.cfg">ChangeLog</a> for full details of mod changes</em></p>
+<h3 id="requires">Requires:</h3>
 <ul>
+<li><a href="https://kerbalspaceprogram.com">Kerbal Space Program</a> v1.9.1, <em><strong>may</strong></em> work on earlier versions (YMMV)</li>
+</ul>
+<h3 id="depends">Depends:</h3>
+<ul>
+<li><a href="https://forum.kerbalspaceprogram.com/index.php?/topic/178641-*">ScrapYard</a> to keep track of how many times a part has been built/recovered so that is a hard dependency. (obtained separately)</li>
 <li><a href="https://forum.kerbalspaceprogram.com/index.php?/topic/50533-*">Module Manager</a> is required if you want the mod to actually do anything. (obtained separately)</li>
 </ul>
-<h3>Recomends:</h3>
+<h3 id="recomends">Recomends:</h3>
 <ul>
 <li><a href="https://forum.kerbalspaceprogram.com/index.php?/topic/179207-*">Kerbal Changelog</a></li>
 <li><a href="https://forum.kerbalspaceprogram.com/index.php?/topic/182877-*">Kerbal Construction Time</a> designed with this with in mind, so would recommend that mod (make sure you use the latest dev version)</li>
 <li><a href="https://forum.kerbalspaceprogram.com/index.php?/topic/179306-*">StageRecovery</a> If you plan to actually re-use your parts (and have them fail), you'll probably want StageRecovery too</li>
 <li><a href="http://forum.kerbalspaceprogram.com/index.php?/topic/133082-*">KRASH</a></li>
 </ul>
-<h3>Suggests:</h3>
+<h3 id="suggests">Suggests:</h3>
 <ul>
 <li><a href="https://forum.kerbalspaceprogram.com/index.php?/topic/179445-*">FAR</a></li>
-<li><a href="http://remotetechnologiesgroup.github.io/RemoteTech/">RemoteTech</a>
+<li><a href="http://remotetechnologiesgroup.github.io/RemoteTech/">RemoteTech</a><br />
 zer0Kerbal's Stuff</li>
 <li><a href="https://github.com/zer0Kerbal/KGEx/MM-Patches/DockingPortDescriptions">Docking Port Descriptions</a></li>
 <li><a href="https://forum.kerbalspaceprogram.com/index.php?/topic/187625-*">On Demand Fuel Cells (Refueled)</a></li>
@@ -515,40 +85,35 @@ zer0Kerbal's Stuff</li>
 <li><a href="https://spacedock.info/mod/2340">DaMichel's Fuselage</a></li>
 <li><a href="https://spacedock.info/mod/2342">DaMichel's SphericalTanks</a></li>
 </ul>
-<h3>Supports:</h3>
+<h3 id="supports">Supports:</h3>
 <ul>
 <li><a href="http://forum.kerbalspaceprogram.com/index.php?/topic/154587-*">USI MKS</a></li>
 </ul>
-<h3>Conflicts:</h3>
+<h3 id="conflicts">Conflicts:</h3>
 <ul>
 <li><a href="">no known conflights (NKC)</a></li>
 </ul>
-<h3>Replaces:</h3>
+<h3 id="replaces">Replaces:</h3>
 <ul>
 <li><a href="">none</a></li>
 </ul>
 <p><a href="https://forum.kerbalspaceprogram.com/index.php?/topic/83212-*" target="_blank"><img src="https://i.imgur.com/YdYfStN.jpg"/></a></p>
-<h3>License</h3>
-<h4>aka Legal Mumbo Jumbo</h4>
+<h3 id="license">License</h3>
+<h4 id="aka-legal-mumbo-jumbo">aka Legal Mumbo Jumbo</h4>
 <p>Source: <a href="https://github.com/zer0Kerbal/OhScrap">GitHub</a><br />
-License: <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/master/json/license.json?style=plastic" alt="License: MIT" /> <img src="https://i.postimg.cc/bvjfsMP5/MIT-17x17.png" alt="MIT-17x17.png" /><br></p>
+License: <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/base/json/license.json?style=plastic" alt="License: MIT" /> <img src="https://i.postimg.cc/bvjfsMP5/MIT-17x17.png" alt="MIT-17x17.png" /><br></p>
 <ul>
-<li><strong><em>All bundled mods are distributed under their own licenses</em></strong><br></li>
-<li><strong><em>All art assets (textures, models, animations) are distributed under their own licenses</em></strong> </li>
+<li><em><strong>All bundled mods are distributed under their own licenses</strong></em><br></li>
+<li><em><strong>All art assets (textures, models, animations) are distributed under their own licenses</strong></em></li>
 </ul>
-<h3>Original</h3>
+<h3 id="original">Original</h3>
 <p>Download <a href="https://github.com/zer0Kerbal/OhScrap/releases/latest/">Here</a><br />
 Source: <a href="https://github.com/zer0Kerbal/OhScrap/releases/latest/" title="GitHub">GitHub</a><br />
-License: <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/master/json/license.json?style=plastic" alt="License: MIT" /> <img src="https://i.postimg.cc/bvjfsMP5/MIT-17x17.png" alt="MIT-17x17.png" />  </p>
+License: <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zer0Kerbal/OhScrap/base/json/license.json?style=plastic" alt="License: MIT" /> <img src="https://i.postimg.cc/bvjfsMP5/MIT-17x17.png" alt="MIT-17x17.png" /></p>
 <hr />
-<p><a href="https://github.com/zer0Kerbal/OhScrap/releases/latest" target="_blank"><img src="https://i.imgur.com/RE4Ppr9.png"/></a>
-<a href="https://spacedock.info/mod/2364" target="_blank"><img src="https://i.imgur.com/m0a7tn2.png"/></a>
-<a href="https://www.curseforge.com/kerbal/ksp-mods/ohscrap" target="_blank"><img src="https://i.postimg.cc/RZNyB5vP/Download-On-Curse.png"/></a></p>
+<p><a href="https://github.com/zer0Kerbal/OhScrap/releases/latest" target="_blank"><img src="https://i.imgur.com/RE4Ppr9.png"/></a> <a href="https://spacedock.info/mod/2364" target="_blank"><img src="https://i.imgur.com/m0a7tn2.png"/></a> <a href="https://www.curseforge.com/kerbal/ksp-mods/ohscrap" target="_blank"><img src="https://i.postimg.cc/RZNyB5vP/Download-On-Curse.png"/></a></p>
 <p><em>Be Kind: Lithobrake, not jakebrake! Keep your Module Manager up to date</em></p>
-<h6>v2.0.1.0 original: 01 Oct 2019 zed'K | updated: 12 Mar 2020 zed'K</h6>
+<h6 id="v2010-original-01-oct-2019-zedk--updated-12-mar-2020-zedk">v2.0.1.0 original: 01 Oct 2019 zed'K | updated: 12 Mar 2020 zed'K</h6>
 <!--
 this file: GPLv2
 zer0Kerbal-->
-
-  </body>
-</html>
